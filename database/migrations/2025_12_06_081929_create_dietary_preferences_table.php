@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dietary_preferences', function (Blueprint $table) {
-            $table->id();
+            $table->id('dietary_preference_id');
             $table->string('diet_code')->unique();
             $table->string("diet_name");
             $table->timestamps();

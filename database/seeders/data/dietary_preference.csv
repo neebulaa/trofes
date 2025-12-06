@@ -1,0 +1,10 @@
+dietary_preference_id,diet_code,diet_name
+1,halal,Halal
+2,lactose_free,Lactose Free
+3,low_carb,Low Carb
+4,weight_loss,Weight Loss
+5,high_protein,High Protein
+6,gluten_free,Gluten Free
+7,dairy_free,Dairy Free
+8,spicy,Spicy
+9,not_fried,Not Fried

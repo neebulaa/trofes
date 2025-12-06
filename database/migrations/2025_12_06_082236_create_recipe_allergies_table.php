@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recipe_allergies', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('recipe_id')->constrained('recipes')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('allergy_id')->constrained('allergies')->onUpdate('cascade')->onDelete('cascade');
+            $table->id('recipe_allergy_id');
+            $table->foreignId('recipe_id')->constrained('recipes', 'recipe_id')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('allergy_id')->constrained('allergies', 'allergy_id')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

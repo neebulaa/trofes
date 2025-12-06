@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recipe_dietary_preferences', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('recipe_id')->constrained('recipes')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('dietary_preference_id')->constrained('dietary_preferences')->onUpdate('cascade')->onDelete('cascade');
+            $table->id('recipe_dietary_preference_id');
+            $table->foreignId('recipe_id')->constrained('recipes', 'recipe_id')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('dietary_preference_id')->constrained('dietary_preferences', 'dietary_preference_id')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -1,0 +1,10 @@
+allergy_id,allergy_code,allergy_name
+1,dairy,Dairy
+2,egg,Egg
+3,fish,Fish
+4,shellfish,Shellfish
+5,soy,Soy
+6,sesame,Sesame
+7,wheat,Wheat
+8,peanut,Peanut
+9,tree_nut,Tree Nut

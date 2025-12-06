@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('guides', function (Blueprint $table) {
             $table->id('guide_id');
+            $table->string('slug')->unique();
             $table->dateTime('published_at')->default(now());
-            $table->text('guide_content');
-            $table->string('guide_title');
-            $table->string('guide_image');
-            $table->foreignId('admin_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->text('content');
+            $table->string('title');
+            $table->string('image');
+            $table->foreignId('admin_id')->constrained('users', 'user_id')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
