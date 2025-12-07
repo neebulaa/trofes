@@ -10,4 +10,8 @@ class Guide extends Model
     use HasFactory;
     protected $primaryKey = 'guide_id';
     protected $guarded = ['guide_id'];
+
+    public function getRouteKeyName(){
+        return 'slug';
+    }
 }
