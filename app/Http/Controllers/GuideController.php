@@ -140,7 +140,17 @@ class GuideController extends Controller
     }
 
     
-    public function destroy(Request $request, Guide $guide){
+    public function destroy(Request $request, Guide $guide)
+    {
+        // delete image
+        if ($guide->image && Storage::disk('public')->exists($guide->image)) {
+            Storage::disk('public')->delete($guide->image);
+        }
 
+        $guide->delete();
+
+        return response([
+            "message" => "Delete guide success",
+        ], 200);
     }
 }
