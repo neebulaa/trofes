@@ -25,7 +25,7 @@ class OnboardingController extends Controller
     public function setupProfile(Request $request)
     {
         $validated = $request->validate([
-            "full_name" => "nullable|string|max:50",
+            "full_name" => "required|string|max:50",
             "phone" => [
                 "nullable",
                 "regex:/^(?:\+62|62|0)?8\d{8,12}$/",

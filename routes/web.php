@@ -28,6 +28,7 @@ Route::get('/contact-us', function(){
 
 Route::middleware('auth')->group(function(){
     Route::get('/profile', [UserController::class, 'index']);
+    Route::put('/profile/update', [UserController::class, 'update']);
     Route::get('/onboarding', [OnboardingController::class, 'onboarding']);
     Route::post('/onboarding/profile-setup', [OnboardingController::class, 'setupProfile']);
     Route::post('/onboarding/dietary-preferences-setup', [OnboardingController::class, 'setupDietaryPreferences']);

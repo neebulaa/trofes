@@ -8,7 +8,7 @@ export default function ProfileEditForm({
     allergies,
     dietary_preferences
 }) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, put, processing, errors } = useForm({
         full_name: user.full_name || '',
         username: user.username || '',
         gender: user.gender || '',
@@ -51,19 +51,26 @@ export default function ProfileEditForm({
     }
 
     function handleSubmit(e) {
+        console.log('submitted');
         e.preventDefault()
-        post('/profile/update')
+        put('/profile/update', {
+            onSuccess: () => {
+                handleEditProfile()
+            }
+        })
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className="profile-image">
-                <img
-                    src={user.profile_image
-                        ? user.profile_image
-                        : './assets/sample-images/default-profile.png'}
-                    alt={`profile-${user.username}`}
-                />
+            <div className="profile-image-container">
+                <div className="profile-image">
+                    <img
+                        src={user.profile_image
+                            ? user.profile_image
+                            : './assets/sample-images/default-profile.png'}
+                        alt={`profile-${user.username}`}
+                    />
+                </div>
                 <div className="profile-image-edit-badge">
                     <i className="fa-solid fa-pen"></i>
                     <p>Edit</p>
@@ -94,11 +101,12 @@ export default function ProfileEditForm({
                     value={data.gender}
                     onChange={e => setData('gender', e.target.value)}
                 >
-                    <option value="">Pilih</option>
+                    <option value="">Pilih Jenis Kelamin</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="silent">Prefer not to say</option>
                 </select>
+                {errors.gender && <small className="error-text">{errors.gender}</small>}
             </div>
 
             <div className="input-group input-sm">
@@ -107,11 +115,18 @@ export default function ProfileEditForm({
                     value={data.bio}
                     onChange={e => setData('bio', e.target.value)}
                 />
+                {errors.bio && <small className="error-text">{errors.bio}</small>}
             </div>
 
             <div className="input-group input-sm">
                 <label>Email</label>
-                <input value={data.email} disabled readOnly />
+                <input 
+                    value={data.email}
+                    onChange={e => setData('email', e.target.value)}
+                    // disabled={true}
+                    // readOnly={true}
+                 />
+                {errors.email && <small className="error-text">{errors.email}</small>}
             </div>
 
             <div className="input-group input-sm">
@@ -123,15 +138,19 @@ export default function ProfileEditForm({
                         onChange={e => setData('phone', e.target.value)}
                     />
                 </div>
+                {errors.phone && <small className="error-text">{errors.phone}</small>}
             </div>
 
             <div className="input-group input-sm">
                 <label>Date of Birth</label>
                 <input
+                    // readOnly={true}
+                    // disabled={true}
                     type="date"
                     value={data.birth_date}
                     onChange={e => setData('birth_date', e.target.value)}
                 />
+                {errors.birth_date && <small className="error-text">{errors.birth_date}</small>}
             </div>
 
             <CustomDatalist
@@ -161,7 +180,7 @@ export default function ProfileEditForm({
                     type="submit"
                     className="btn-full btn btn-fill btn-sm"
                     disabled={processing}
-                >
+                    >
                     Save
                 </button>
 

@@ -1,9 +1,9 @@
-import { usePage } from '@inertiajs/react'
 import Layout from '../Layouts/Layout'
 import { Link } from '@inertiajs/react';
 import RecipeCard from '../Components/RecipeCard';
 import ProfileInfo from '../PagesComponent/Profile/ProfileInfo';
 import ProfileEditForm from '../PagesComponent/Profile/ProfileEditForm';
+import FlashMessage from '../Components/FlashMessage';
 
 import '../../css/Profile.css';
 import { useState } from 'react';
@@ -16,6 +16,8 @@ export default function Profile({user, allergies, dietary_preferences}){
     }
 
     return (
+        <>
+        <FlashMessage className="mb-1 flash-screen"/>
         <section className="profile" id="profile">
             <div className="container">
                 <div className="profile-left">
@@ -51,6 +53,7 @@ export default function Profile({user, allergies, dietary_preferences}){
                 </div>
             </div>
         </section>
+        </>
     )
 }
 

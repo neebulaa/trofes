@@ -292,10 +292,6 @@ textarea:focus, select:focus,
 }
 
 .flash {
-    display: flex;
-    gap: .5rem;
-    justify-content: space-between;
-    align-items: center;
     border-radius: .5rem;
     /* padding-inline: 1rem; */
     padding-inline: 0.875rem;
@@ -303,11 +299,35 @@ textarea:focus, select:focus,
     border: 1px solid var(--type-bold);
     background: var(--type-bg);
     color: var(--type-bold);
+    font-weight: 500;
+}
+
+.flash-content {
+    margin: auto;
+    display: flex;
+    gap: .5rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flash-screen {
+    border: none;
+    border-radius: 0;
+    border-block: 1px solid var(--type-bold);
+}
+
+.flash-screen .flash-content {
+    padding-inline: 2rem;
+    width: min(100%, var(--maxw));
 }
 
 .flash > * {
     padding-block: .75rem;
+    
+}
 
+.flash-screen > * {
+    padding-block: 1rem;
 }
 
 .flash-success {

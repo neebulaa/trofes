@@ -9,8 +9,10 @@ export default function FlashMessage({className}) {
 
     return (
         <div className={`flash flash-${flash.type} ${className}`}>
-            <p>{flash.message}</p>
-            <button className="close-btn" onClick={() => setVisible(false)}><i className="fa-solid fa-xmark"></i></button>
+            <div className="flash-content">
+                <p>{flash.message}</p>
+                <button className="close-btn" onClick={() => setVisible(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
         </div>
     )
 }
