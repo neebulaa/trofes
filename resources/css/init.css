@@ -347,6 +347,31 @@ textarea:focus, select:focus {
     color: #888;
 }
 
+.list-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.list-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: #eef6f0;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.list-item button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: .9rem;
+    line-height: 1;
+}
+
 
 
 /* custom dropdown */

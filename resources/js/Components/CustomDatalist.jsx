@@ -11,6 +11,8 @@ export default function CustomDatalist({
     const [query, setQuery] = useState('')
     const ref = useRef(null)
 
+    console.log('options', options);
+
     useEffect(() => {
         function handleClickOutside(e) {
             if (ref.current && !ref.current.contains(e.target)) {
@@ -40,23 +42,7 @@ export default function CustomDatalist({
 
     return (
         <div className="input-group" ref={ref}>
-
-            {/* Selected items */}
-            {value.length > 0 && (
-                <div className="list-items">
-                    {value.map(item => (
-                        <span key={item.value} className="list-item">
-                            {item.label}
-                            <button
-                                type="button"
-                                onClick={() => handleRemove(item.value)}
-                            >
-                                ×
-                            </button>
-                        </span>
-                    ))}
-                </div>
-            )}
+            {label && <label>{label}</label>}
 
             <input
                 type="text"
@@ -68,6 +54,23 @@ export default function CustomDatalist({
                     setOpen(true)
                 }}
             />
+
+            {/* Selected items */}
+            {value.length > 0 && (
+                <div className="list-items mt-05">
+                    {value.map(item => (
+                        <span key={item.value} className="list-item">
+                            {item.label}
+                            <button
+                                type="button"
+                                onClick={() => handleRemove(item.value)}
+                            >
+                                <i className="fa-solid fa-xmark"></i>
+                            </button>
+                        </span>
+                    ))}
+                </div>
+            )}
 
             {open && (
                 <div className="datalist-dropdown">

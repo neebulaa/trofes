@@ -1,7 +1,13 @@
-import { useForm } from '@inertiajs/react';
-import { useState } from 'react';
-import CustomDatalist from '../../Components/CustomDatalist';
-export default function ProfileEditForm({user, handleEditProfile, allergies, dietary_preferences}) {
+import { useForm } from '@inertiajs/react'
+import { useState } from 'react'
+import CustomDatalist from '../../Components/CustomDatalist'
+
+export default function ProfileEditForm({
+    user,
+    handleEditProfile,
+    allergies,
+    dietary_preferences
+}) {
     const { data, setData, post, processing, errors } = useForm({
         full_name: user.full_name || '',
         username: user.username || '',
@@ -10,158 +16,163 @@ export default function ProfileEditForm({user, handleEditProfile, allergies, die
         email: user.email || '',
         phone: user.phone || '',
         birth_date: user.birth_date || '',
-    });
+        allergies: user.allergies?.map(a => a.allergy_id) || [],
+        dietary_preferences: user.dietary_preferences?.map(d => d.dietary_preference_id) || [],
+    })
 
-    const [selectedAllergy, setSelectedAllergy] = useState(user.allergies);
+    const [selectedAllergies, setSelectedAllergies] = useState(
+        user.allergies?.map(a => ({
+            value: a.allergy_id,
+            label: a.allergy_name,
+        })) || []
+    )
 
-    function addSelectedAllergy(option) {
-        setSelectedAllergy(prev => [...prev, option]);
+    const [selectedDietaryPreferences, setSelectedDietaryPreferences] = useState(
+        user.dietary_preferences?.map(d => ({
+            value: d.dietary_preference_id,
+            label: d.diet_name,
+        })) || []
+    )
+
+    function handleDietaryPreferencesChange(newValues) {
+        setSelectedDietaryPreferences(newValues)
+        setData(
+            'dietary_preferences',
+            newValues.map(v => v.value)
+        )
+    }
+
+    function handleAllergyChange(newValues) {
+        setSelectedAllergies(newValues)
+        setData(
+            'allergies',
+            newValues.map(v => v.value)
+        )
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault()
+        post('/profile/update')
     }
 
     return (
-        <>
-        <form action="">
+        <form onSubmit={handleSubmit}>
             <div className="profile-image">
                 <img
                     src={user.profile_image
                         ? user.profile_image
                         : './assets/sample-images/default-profile.png'}
-                        alt={`profile-${user.username}`}
-                        />
+                    alt={`profile-${user.username}`}
+                />
                 <div className="profile-image-edit-badge">
                     <i className="fa-solid fa-pen"></i>
-                    <p>
-                        Edit
-                    </p>
+                    <p>Edit</p>
                 </div>
             </div>
+
             <div className="input-group input-sm">
-                <label htmlFor="full_name">Full Name</label>
+                <label>Full Name</label>
                 <input
-                    type="text"
-                    id="full_name"
                     value={data.full_name}
-                    onChange={(e) => setData('full_name', e.target.value)}
-                    placeholder="Your name here"
+                    onChange={e => setData('full_name', e.target.value)}
                 />
-                {errors.full_name && (
-                    <small className="error-text">{errors.full_name}</small>
-                )}
+                {errors.full_name && <small className="error-text">{errors.full_name}</small>}
             </div>
 
             <div className="input-group input-sm">
-                <label htmlFor="username">Username</label>
+                <label>Username</label>
                 <input
-                    type="text"
-                    id="username"
                     value={data.username}
-                    onChange={(e) => setData('username', e.target.value)}
-                    placeholder="Your username here"
+                    onChange={e => setData('username', e.target.value)}
                 />
-                {errors.username && (
-                    <small className="error-text">{errors.username}</small>
-                )}
+                {errors.username && <small className="error-text">{errors.username}</small>}
             </div>
 
             <div className="input-group input-sm">
-                <label htmlFor="gender">Jenis Kelamin</label>
+                <label>Jenis Kelamin</label>
                 <select
-                    id="gender"
                     value={data.gender}
-                    onChange={(e) => setData('gender', e.target.value)}
+                    onChange={e => setData('gender', e.target.value)}
                 >
-                    <option value="">Pilih Jenis Kelamin</option>
+                    <option value="">Pilih</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="silent">Prefer not to say</option>
                 </select>
-                {errors.gender && (
-                    <small className="error-text">{errors.gender}</small>
-                )}
             </div>
 
             <div className="input-group input-sm">
-                <label htmlFor="bio">Bio</label>
-                <textarea name="bio" id="bio" value={data.bio} onChange={(e) => setData('bio', e.target.value)} placeholder="Your bio here"></textarea>
-                {errors.bio && (
-                    <small className="error-text">{errors.bio}</small>
-                )}
-            </div>
-            
-            <div className="input-group input-sm">
-                <label htmlFor="email">Email</label>
-                <input
-                    type="text"
-                    id="email"
-                    value={data.email}
-                    onChange={(e) => setData('email', e.target.value)}
-                    placeholder="Your email here"
-                    disabled={true}
-                    readOnly={true}
+                <label>Bio</label>
+                <textarea
+                    value={data.bio}
+                    onChange={e => setData('bio', e.target.value)}
                 />
-                {errors.email && (
-                    <small className="error-text">{errors.email}</small>
-                )}
             </div>
 
             <div className="input-group input-sm">
-                <label htmlFor="phone">Phone Number</label>
+                <label>Email</label>
+                <input value={data.email} disabled readOnly />
+            </div>
+
+            <div className="input-group input-sm">
+                <label>Phone</label>
                 <div className="nohp-input">
                     <div className="phone-identifier">+62</div>
                     <input
-                        type="tel"
-                        id="phone"
                         value={data.phone}
-                        onChange={(e) => setData('phone', e.target.value)}
-                        placeholder="81234567890"
+                        onChange={e => setData('phone', e.target.value)}
                     />
                 </div>
-                {errors.phone && (
-                    <small className="error-text">{errors.phone}</small>
-                )}
             </div>
 
             <div className="input-group input-sm">
-                <label htmlFor="birth_date">Date of Birth</label>
+                <label>Date of Birth</label>
                 <input
                     type="date"
-                    id="birth_date"
                     value={data.birth_date}
-                    onChange={(e) =>
-                        setData('birth_date', e.target.value)
-                    }
+                    onChange={e => setData('birth_date', e.target.value)}
                 />
-                {errors.birth_date && (
-                    <small className="error-text">
-                        {errors.birth_date}
-                    </small>
-                )}
             </div>
 
             <CustomDatalist
                 label="Select Allergies"
                 options={allergies.map(a => ({
                     value: a.allergy_id,
-                    label: a.allergy_name
+                    label: a.allergy_name,
                 }))}
-                value={selectedAllergy}
-                onChange={(option) => addSelectedAllergy(option)}
+                value={selectedAllergies}
+                onChange={handleAllergyChange}
                 placeholder="Type allergy..."
             />
 
+            <CustomDatalist
+                label="Select Dietary Preferences"
+                options={dietary_preferences.map(a => ({
+                    value: a.dietary_preference_id,
+                    label: a.diet_name,
+                }))}
+                value={selectedDietaryPreferences}
+                onChange={handleDietaryPreferencesChange}
+                placeholder="Type dietary preference..."
+            />
+
             <div className="edit-profile-btns">
-                <button 
+                <button
                     type="submit"
                     className="btn-full btn btn-fill btn-sm"
                     disabled={processing}
                 >
                     Save
                 </button>
-                <button type="button" className="btn-sm btn-full btn btn-line mr-05" onClick={handleEditProfile}>
+
+                <button
+                    type="button"
+                    className="btn-sm btn-full btn btn-line mr-05"
+                    onClick={handleEditProfile}
+                >
                     Cancel
                 </button>
             </div>
         </form>
-        </>
-    );
+    )
 }
