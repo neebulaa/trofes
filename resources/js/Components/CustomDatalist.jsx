@@ -55,7 +55,7 @@ export default function CustomDatalist({
     }
 
     return (
-        <div className="input-group datalist-container" ref={ref}>
+        <div className="input-group input-sm datalist-container" ref={ref}>
             {label && <label>{label}</label>}
 
             <div className="datalist-input">

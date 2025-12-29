@@ -128,10 +128,31 @@ textarea,
     transition: 0.2s;
 }
 
+.nohp-input,
+.password-input {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nohp-input {
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
 .input-sm input, 
 .input-sm textarea, 
-.input-sm select{
+.input-sm select,
+.input-sm .datalist-input,
+.input-sm .password-input {
     padding: 0.5rem 0.625rem !important;
+}
+
+.input-sm .datalist-input input,
+.input-sm .password-input input {
+    padding: 0 !important;
 }
 
 input:focus,
@@ -158,6 +179,10 @@ textarea:focus, select:focus,
     border-radius: 0;
 }
 
+.nohp-input input {
+    padding: 0.75rem 0.875rem;
+}
+
 .nohp-input input:focus,
 .password-input input:focus,
 .datalist-input input:focus {
@@ -165,17 +190,9 @@ textarea:focus, select:focus,
     border-color: transparent;
 }
 
-.nohp-input,
-.password-input {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: center;
-}
 
-.nohp-input {
-    padding: 0;
-    overflow: hidden;
+.input-sm .nohp-input .phone-identifier{
+    padding: 0.5rem 0.625rem;
 }
 
 .nohp-input .phone-identifier{
@@ -186,10 +203,6 @@ textarea:focus, select:focus,
     border-right: 1px solid var(--neutral-500);
 }
 
-.input-sm .nohp-input .phone-identifier,
-.input-sm .nohp-input input {
-    padding: 0.5rem 0.625rem !important;
-}
 
 /* for password input */
 .eye-btn:hover {
