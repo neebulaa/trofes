@@ -11,8 +11,6 @@ export default function CustomDatalist({
     const [query, setQuery] = useState('')
     const ref = useRef(null)
 
-    console.log('options', options);
-
     useEffect(() => {
         function handleClickOutside(e) {
             if (ref.current && !ref.current.contains(e.target)) {
@@ -24,7 +22,7 @@ export default function CustomDatalist({
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
 
-    // remove already selected items
+    // Filter options & remove already selected
     const filteredOptions = options.filter(opt =>
         opt.label.toLowerCase().includes(query.toLowerCase()) &&
         !value.some(v => v.value === opt.value)
@@ -40,37 +38,61 @@ export default function CustomDatalist({
         onChange(value.filter(v => v.value !== optionValue))
     }
 
+    function handleKeyDown(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+
+            if (!query.trim()) return
+            if (filteredOptions.length === 0) return
+
+            // Select first match
+            handleSelect(filteredOptions[0])
+        }
+    }
+
+    function handleRemoveAll(){
+        onChange([])
+    }
+
     return (
-        <div className="input-group" ref={ref}>
+        <div className="input-group datalist-container" ref={ref}>
             {label && <label>{label}</label>}
 
-            <input
-                type="text"
-                value={query}
-                placeholder={placeholder}
-                onFocus={() => setOpen(true)}
-                onChange={(e) => {
-                    setQuery(e.target.value)
-                    setOpen(true)
-                }}
-            />
+            <div className="datalist-input">
+                <input
+                    type="text"
+                    value={query}
+                    placeholder={placeholder}
+                    onFocus={() => setOpen(true)}
+                    onChange={(e) => {
+                        setQuery(e.target.value)
+                        setOpen(true)
+                    }}
+                    onKeyDown={handleKeyDown}
+                />
 
-            {/* Selected items */}
-            {value.length > 0 && (
-                <div className="list-items mt-05">
-                    {value.map(item => (
-                        <span key={item.value} className="list-item">
-                            {item.label}
-                            <button
-                                type="button"
-                                onClick={() => handleRemove(item.value)}
-                            >
-                                <i className="fa-solid fa-xmark"></i>
-                            </button>
-                        </span>
-                    ))}
-                </div>
-            )}
+                {/* Selected items */}
+                {value.length > 0 && (
+                    <div className="list-items">
+                        {value.map(item => (
+                            <span key={item.value} className="list-item">
+                                {item.label}
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemove(item.value)}
+                                >
+                                    <i className="fa-solid fa-xmark"></i>
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+                )}
+                {
+                    value.length > 0 &&
+                    <p className="remove-all-btn mt-1" onClick={handleRemoveAll}>Remove All</p>
+                }
+            </div>
+
 
             {open && (
                 <div className="datalist-dropdown">

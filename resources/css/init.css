@@ -96,6 +96,10 @@ input, textarea, select {
     resize: none;
     font-size: inherit;
     font-family: inherit;
+    outline: none;
+    border: none;
+    width: 100%;
+    font-size: .9rem;
 }
 
 label {
@@ -105,24 +109,17 @@ label {
     margin-bottom: .25rem;
 }
 
-input, textarea, select {
-    outline: none;
-    border: none;
-    width: 100%;
-    font-size: .9rem;
-}
-
 input:read-only {
     background: var(--neutral-200) !important;
     cursor: not-allowed;
 }
 
-input[type="text"]:not(.password-input input[type='text']),
 input,
+select,
+textarea,
 .password-input,
 .nohp-input,
-select,
-textarea {
+.datalist-input {
     width: 100%;
     padding: 0.75rem 0.875rem;
     border-radius: 6px;
@@ -137,18 +134,35 @@ textarea {
     padding: 0.5rem 0.625rem !important;
 }
 
-input[type="text"]:focus:not(.password-input input[type='text']),
-input[type="email"]:focus,
-input[type="date"]:focus,
+input:focus,
+textarea:focus, select:focus,
 .nohp-input:has(input:focus),
-.password-input:has(input[type="password"]:focus, input[type='text']:focus),
-textarea:focus, select:focus {
+.datalist-input:has(input:focus),
+.password-input:has(input[type="password"]:focus, input[type='text']:focus){    
     border-color: var(--primary-600);
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .input-group + .input-group {
     margin-top: 1rem;
+}
+
+.nohp-input input,
+.password-input input,
+.datalist-input input {
+    border: none;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    border-radius: 0;
+}
+
+.nohp-input input:focus,
+.password-input input:focus,
+.datalist-input input:focus {
+    box-shadow: none;
+    border-color: transparent;
 }
 
 .nohp-input,
@@ -160,14 +174,8 @@ textarea:focus, select:focus {
 }
 
 .nohp-input {
-    gap: 0;
     padding: 0;
     overflow: hidden;
-}
-
-.nohp-input input {
-    border: none;
-    padding: 0.75rem 0.875rem;
 }
 
 .nohp-input .phone-identifier{
@@ -315,7 +323,7 @@ textarea:focus, select:focus {
 }
 
 /* datalist */
-.input-group {
+.input-group.datalist-container {
     position: relative;
     width: 100%;
 }
@@ -351,15 +359,15 @@ textarea:focus, select:focus {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-top: .7rem;
 }
 
 .list-item {
+    background-color: var(--neutral-200);
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
     padding: 0.25rem 0.5rem;
-    background: #eef6f0;
     border-radius: 4px;
     font-size: 0.85rem;
 }
@@ -370,6 +378,14 @@ textarea:focus, select:focus {
     cursor: pointer;
     font-size: .9rem;
     line-height: 1;
+}
+
+.remove-all-btn {
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--danger-600);
+    /* text-decoration: underline; */
+    max-width: max-content;
 }
 
 
