@@ -29,6 +29,9 @@
     width: 100%;
     height: 160px;
     overflow: hidden;
+    box-shadow: 
+        0 4px 10px rgba(0,0,0,.06),
+        0 1px 4px rgba(0,0,0,.04);
     border-radius: 8px;
 }
 
@@ -53,4 +56,51 @@
     color: var(--neutral-500);
     margin-top: .5rem;
     font-weight: 600;
+}
+
+/* search bar (main design in init.css) */
+.search-and-filters form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    height: max-content;
+    max-height: 100px;
+}
+
+.search-and-filters .input-group {
+    width: 100%;
+}
+
+#guides-page .search-and-filters .dropdown-trigger {
+    border-radius: 6px;
+    height: 100%;
+    padding-inline: 1rem;
+    border-color: var(--neutral-500);
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+}
+
+.filters p.filters-text {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .search-and-filters form {
+        flex-direction: column;
+    }
+
+    .search-and-filters .input-group {
+        order: -1;
+    }
+
+    .filters p.filters-text {
+        display: block;
+        margin-right: .5rem;
+        font-size: 0.95rem;
+        color: var(--neutral-700);
+    }
 }

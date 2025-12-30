@@ -27,13 +27,7 @@ class GuideController extends Controller
         // using guide resource
         return Inertia::render('Guides', [
             'guides' => GuideResource::collection($guides),
-            'filters' => $request->only(['search', 'per_page']),
         ]);
-
-        // return Inertia::render('Guides', [
-        //     'guides' => $guides,
-        //     'filters' => $request->only(['search', 'per_page']),
-        // ]);
     }
 
 

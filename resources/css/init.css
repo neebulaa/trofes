@@ -119,7 +119,8 @@ select,
 textarea,
 .password-input,
 .nohp-input,
-.datalist-input {
+.datalist-input,
+.search-input {
     width: 100%;
     padding: 0.75rem 0.875rem;
     border-radius: 6px;
@@ -170,7 +171,8 @@ textarea:focus, select:focus,
 
 .nohp-input input,
 .password-input input,
-.datalist-input input {
+.datalist-input input,
+.search-input input {
     border: none;
     padding: 0;
     outline: none;
@@ -212,6 +214,27 @@ textarea:focus, select:focus,
 .password-input .eye-btn {
     cursor: pointer;
     color: var(--neutral-500);
+}
+
+.search-input {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-input {
+    padding: 0.5rem 0.75rem;
+}
+
+.search-input .search-btn {
+    background: var(--primary-600);
+    color: var(--white);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: .9rem;
+    transition: 0.2s;
 }
 
 .green-block {
@@ -586,9 +609,9 @@ textarea:focus, select:focus,
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: var(--neutral-100);
     padding: .625rem .875rem;
-    border-radius: 10px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: .9rem;
     line-height: 1;
     transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
@@ -822,5 +845,12 @@ textarea:focus, select:focus,
     to{
         opacity:1;
         transform:translateY(0);
+    }
+}
+
+
+@media (max-width: 560px) {
+    html {
+        font-size: calc(15px * var(--ui-scale));
     }
 }

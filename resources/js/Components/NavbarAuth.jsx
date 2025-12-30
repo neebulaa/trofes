@@ -80,8 +80,8 @@ export default function NavbarAuth({ user }) {
                         className={`nav-search-container${
                             openSearch ? ' nav-search-open' : ''
                         }`}
-                        onTransitionEnd={() => {
-                            if (!openSearch) {
+                        onTransitionEnd={(e) => {
+                            if (e.target == e.currentTarget && !openSearch) {
                                 setRenderSearch(false)
                             }
                         }}
