@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 
 use App\Models\Allergy;
 use Illuminate\Http\Request;
 use App\Models\DietaryPreference;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 

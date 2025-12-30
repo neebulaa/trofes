@@ -12,24 +12,24 @@ export default function SignUp({allergies, dietary_preferences, user, user_dieta
     const [onboardingScreen, setOnboardingScreen] = useState([
         {
             id: 1,
-            title: "Resep Enak, Pilihan Sehat. Kenali Gizinya",
-            description: "Nikmati hidangan lezat sambil memahami nilai gizi di baliknya. Pelajari cara memilih bahan yang lebih sehat dan membangun kebiasaan makan yang lebih baik setiap hari.",
+            rightTitle: "Resep Enak, Pilihan Sehat. Kenali Gizinya",
+            rightDescription: "Nikmati hidangan lezat sambil memahami nilai gizi di baliknya. Pelajari cara memilih bahan yang lebih sehat dan membangun kebiasaan makan yang lebih baik setiap hari.",
             title: "Mau dikenal orang lebih lagi?",
             subtitle: "Isi profilmu sekarang juga",
             screen: "ProfileSetup"
         },
         {
             id: 2,
-            title: "Resep Enak, Pilihan Sehat. Kenali Gizinya",
-            description: "Nikmati hidangan lezat sambil memahami nilai gizi di baliknya. Pelajari cara memilih bahan yang lebih sehat dan membangun kebiasaan makan yang lebih baik setiap hari.",
+            rightTitle: "Resep Enak, Pilihan Sehat. Kenali Gizinya",
+            rightDescription: "Nikmati hidangan lezat sambil memahami nilai gizi di baliknya. Pelajari cara memilih bahan yang lebih sehat dan membangun kebiasaan makan yang lebih baik setiap hari.",
             title: "Ada Preferensi makanan?",
             subtitle: "Tentukan tipe apa kamu sebagai pecinta makanan",
             screen: "DietaryPreferencesSetup"
         },
         {
             id: 3,
-            title: "Resep Enak, Pilihan Sehat. Kenali Gizinya",
-            description: "Nikmati hidangan lezat sambil memahami nilai gizi di baliknya. Pelajari cara memilih bahan yang lebih sehat dan membangun kebiasaan makan yang lebih baik setiap hari.",
+            rightTitle: "Resep Enak, Pilihan Sehat. Kenali Gizinya",
+            rightDescription: "Nikmati hidangan lezat sambil memahami nilai gizi di baliknya. Pelajari cara memilih bahan yang lebih sehat dan membangun kebiasaan makan yang lebih baik setiap hari.",
             title: "Ada alergi makanan?",
             subtitle: "Tentukan makanan yang paling Anda hindari",
             screen: "AllergiesSetup"
@@ -82,10 +82,9 @@ export default function SignUp({allergies, dietary_preferences, user, user_dieta
 
             <div className="auth-right">
                 <div className="right-text">
-                    <h1>Resep Enak, Pilihan Sehat. Kenali Gizinya</h1>
+                    <h1>{onboardingScreen[currentScreenIndex]?.rightTitle}</h1>
                     <p>
-                        Nikmati hidangan lezat sambil memahami nilai gizi di baliknya.
-                        Pelajari cara memilih bahan yang lebih sehat dan membangun kebiasaan makan yang lebih baik setiap hari.
+                        {onboardingScreen[currentScreenIndex]?.rightDescription}
                     </p>
                 </div>
             </div>

@@ -564,6 +564,71 @@ textarea:focus, select:focus,
     background: var(--neutral-50);
 }
 
+/* paginator */
+.paginator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.paginator-ellipsis {
+    padding: 0 6px;
+    font-size: 1rem;
+    opacity: 0.6;
+    user-select: none;
+}
+
+.paginator-btn,
+.paginator-page {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: var(--neutral-100);
+    padding: .625rem .875rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.paginator-btn:hover,
+.paginator-page:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.paginator-btn:disabled
+{
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.paginator-pages {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.paginator-page.is-active {
+    background: var(--primary-600); /* green */
+    border-color: var(--primary-600);
+    color: var(--white);
+    cursor: default;
+    box-shadow: none;
+    transform: none;
+}
+
+.paginator-meta {
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+
 
 /* recipe cards and container */
 .recipes-container {
