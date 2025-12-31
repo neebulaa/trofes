@@ -1,7 +1,8 @@
-import { Link, usePage } from '@inertiajs/react'
+import { usePage } from '@inertiajs/react'
 import Dropdown from './Dropdown'
 import ProfileDropdown from './ProfileDropdown'
 import { useEffect, useState } from 'react'
+import NavLinks from './NavLinks'
 
 export default function NavbarAuth({ user }) {
     const { url } = usePage()
@@ -36,8 +37,6 @@ export default function NavbarAuth({ user }) {
     ]
 
     const [category, setCategory] = useState(categoryOptions[0])
-
-    const isActive = (path) => url === path
 
     function openNavbar() {
         setOpen(!open)
@@ -106,39 +105,7 @@ export default function NavbarAuth({ user }) {
                 )}
 
                 <div className="nav-content">
-                    <div className="nav-links">
-                        <Link
-                            href="/"
-                            className={isActive('/') ? 'active' : ''}
-                            onClick={handleNavigate}
-                        >
-                            Beranda
-                        </Link>
-
-                        <Link
-                            href="/search"
-                            className={isActive('/search') ? 'active' : ''}
-                            onClick={handleNavigate}
-                        >
-                            Pencarian
-                        </Link>
-
-                        <Link
-                            href="/guides"
-                            className={isActive('/guides') ? 'active' : ''}
-                            onClick={handleNavigate}
-                        >
-                            Panduan
-                        </Link>
-
-                        <Link
-                            href="/contact-us"
-                            className={isActive('/contact-us') ? 'active' : ''}
-                            onClick={handleNavigate}
-                        >
-                            Hubungi Kami
-                        </Link>
-                    </div>
+                    <NavLinks url={url} handleNavigate={handleNavigate} />
                 </div>
 
                 <div className="nav-content-auth">

@@ -9,7 +9,7 @@ export default function ProfileDropdown({ user }) {
     const { post, processing } = useForm()
 
     const isActive = (path) => {
-        return url === path;
+        return url.startsWith(path);
     };
 
     useEffect(() => {

@@ -24,7 +24,7 @@ export default function Guides({guides}){
 
                 <div className="guides-grid">
                     {guides.map(guide => (
-                        <GuideCard guide={guide}/>
+                        <GuideCard guide={guide} key={guide.guide_id}/>
                     ))}
                 </div>
             </div>

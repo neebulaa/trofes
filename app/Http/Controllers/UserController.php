@@ -77,7 +77,6 @@ class UserController extends Controller
             'bio'         => $request->bio,
             'full_name'   => $request->full_name,
             'gender'      => $request->gender ?? $user->gender, 
-            
             'username'    => $request->username,
             'email'       => $request->email,
             'phone'       => $phone,

@@ -1,13 +1,10 @@
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import {useState} from 'react';
+import NavLinks from './NavLinks';
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
     const { url } = usePage();
-
-    const isActive = (path) => {
-        return url === path;
-    };
 
     function openNavbar(){
         setOpen(!open);
@@ -24,39 +21,7 @@ export default function Navbar() {
                     <img src="/assets/logo/logo-transparent.png" alt="Trofes Logo" />
                 </div>
                 <div className="nav-content">
-                    <div className="nav-links">
-                        <Link
-                            href="/"
-                            className={isActive('/') ? 'active' : ''}
-                            onClick={handleNavigate}
-                        >
-                            Beranda
-                        </Link>
-
-                        <Link
-                            href="/search"
-                            className={isActive('/search') ? 'active' : ''}
-                            onClick={handleNavigate}
-                        >
-                            Pencarian
-                        </Link>
-
-                        <Link
-                            href="/guides"
-                            className={isActive('/guides') ? 'active' : ''}
-                            onClick={handleNavigate}
-                        >
-                            Panduan
-                        </Link>
-
-                        <Link
-                            href="/contact-us"
-                            className={isActive('/contact-us') ? 'active' : ''}
-                            onClick={handleNavigate}
-                        >
-                            Hubungi Kami
-                        </Link>
-                    </div>
+                    <NavLinks url={url} handleNavigate={handleNavigate} />
 
                     <div className="nav-action">
                         <Link href="/login">Log In</Link>

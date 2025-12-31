@@ -18,8 +18,8 @@ Route::get('/', function(){
     ]);
 })->name('home');
 
-Route::get('/search', function(){
-    return Inertia::render('Searching');
+Route::get('/recipes', function(){
+    return Inertia::render('Recipes');
 });
 
 
