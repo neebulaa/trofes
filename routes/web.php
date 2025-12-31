@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OnboardingController;
+use App\Models\Guide;
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
 Route::get('/', function(){
-    return Inertia::render('Home');
+    return Inertia::render('Home', [
+        'guides' => Guide::all()->take(3),
+    ]);
 })->name('home');
 
 Route::get('/search', function(){

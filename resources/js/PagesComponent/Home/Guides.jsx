@@ -1,6 +1,7 @@
+import GuideCard from "../../Components/GuideCard";
+import {Link} from '@inertiajs/react';
 
-
-export default function Guides(){
+export default function Guides({guides}){
     return (
         <section className="guides" id="guides">
             <div className="container">
@@ -16,38 +17,15 @@ export default function Guides(){
                             <p className="about-text">
                                 Pahami lebih banyak tentang nutrisi yang Anda butuhkan untuk mendukung gaya hidup sehat dan membuat setiap pilihan makanan lebih tepat.
                             </p>
-                            <a className="btn btn-line" href="#panduan">Pelajari Lebih Banyak</a>
+                            <Link href="/guides" className="btn btn-line">Pelajari Lebih Banyak</Link>
                         </div>
                     </div>
                 </div>
 
                 <div className="guides-grid">
-                    <article className="guide-card">
-                        <div className="guide-img">
-                            <img src="/assets/sample-images/guide-3.jpg" alt="" />
-                        </div>
-                        <h3 className="guide-title">Tentang Protein</h3>
-                        <p className="guide-text">Protein adalah zat gizi penting yang berfungsi sebagai bahan pembangun tubuh...</p>
-                        <span className="guide-date">18/10/25</span>
-                    </article>
-
-                    <article className="guide-card">
-                        <div className="guide-img">
-                            <img src="/assets/sample-images/guide-1.jpg" alt="" />
-                        </div>
-                        <h3 className="guide-title">Tentang Vitamin</h3>
-                        <p className="guide-text">Vitamin adalah senyawa penting yang dibutuhkan tubuh dalam jumlah kecil ...</p>
-                        <span className="guide-date">18/10/25</span>
-                    </article>
-
-                    <article className="guide-card">
-                        <div className="guide-img">
-                            <img src="/assets/sample-images/guide-2.jpg" alt="" />
-                        </div>
-                        <h3 className="guide-title">Tentang Kalori</h3>
-                        <p className="guide-text">Kalori adalah satuan energi yang dibutuhkan tubuh untuk beraktivitas. Energi ini...</p>
-                        <span className="guide-date">18/10/25</span>
-                    </article>
+                    {guides.map(guide => (
+                        <GuideCard guide={guide}/>
+                    ))}
                 </div>
             </div>
         </section>

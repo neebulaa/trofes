@@ -4,12 +4,12 @@ import About from "../PagesComponent/Home/About";
 import Guides from "../PagesComponent/Home/Guides";
 import '../../css/Home.css'
 
-export default function Home(){
+export default function Home({guides}){
     return (
         <>
             <Hero />
             <About />
-            <Guides />
+            <Guides guides={guides} />
         </>
     );
 }

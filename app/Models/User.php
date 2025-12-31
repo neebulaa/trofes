@@ -14,6 +14,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $primaryKey = 'user_id';
+    protected $appends = ['public_profile_image'];
 
     /**
      * The attributes that are mass assignable.
@@ -45,6 +46,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getPublicProfileImageAttribute(){
+        return $this->profile_image ? asset('storage') . '/' . $this->profile_image : asset('assets/sample-images/default-profile.png');
     }
 
     public function dietaryPreferences()

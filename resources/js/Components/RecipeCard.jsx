@@ -3,7 +3,7 @@ export default function Recipe({recipe}){
         <div key={recipe.id} className="recipe-card">
             <div className="recipe-image">
                 <img
-                    src={`./assets/food-images/${recipe.image}.jpg`}
+                    src={recipe.public_image}
                     alt={recipe.image}
                     className="profile-liked-recipe-image"
                 />

@@ -47,6 +47,7 @@
 }
 
 .guide-card-excerpt {
+    margin-top: .25rem;
     font-size: 1rem;
     color: var(--muted);
 }

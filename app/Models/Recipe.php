@@ -9,7 +9,11 @@ class Recipe extends Model
     protected $primaryKey = 'recipe_id';
 
     protected $guarded = ['recipe_id'];
-    protected $appends = ['total_ingredient'];
+    protected $appends = ['total_ingredient', 'public_image'];
+
+    public function getPublicImageAttribute(){
+        return $this->image ? asset('assets/food-images') . '/' . $this->image : null;
+    }
 
     public function dietaryPreferences()
     {

@@ -39,9 +39,7 @@ export default function ProfileDropdown({ user }) {
                 onClick={() => setOpen(prev => !prev)}
             >
                 <img
-                    src={user.profile_image
-                        ? './storage/' + user.profile_image
-                        : './assets/sample-images/default-profile.png'}
+                    src={user.public_profile_image}
                     alt={`profile-${user.username}`}
                 />
             </div>
@@ -49,9 +47,7 @@ export default function ProfileDropdown({ user }) {
             <div className="dropdown-menu">
                 <div className="profile-dropdown-desc">
                     <img
-                        src={user.profile_image
-                            ? './storage/' + user.profile_image
-                            : './assets/sample-images/default-profile.png'}
+                        src={user.public_profile_image}
                         alt={`profile-${user.username}`}
                     />
                     <div className="profile-info">
