@@ -1,6 +1,7 @@
 import { usePage } from '@inertiajs/react';
 import {useState} from 'react';
 import NavLinks from './NavLinks';
+import {Link} from '@inertiajs/react';
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);

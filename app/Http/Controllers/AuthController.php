@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Rules\StrongPassword;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
 
 function usernameToFullName(string $username): string
 {
@@ -37,12 +39,12 @@ class AuthController extends Controller
                 "unique:users,username",
                 "regex:/^[a-z0-9_.]+$/i",
             ],
-            "email" => "required|email:rfc,dns|unique:users,email",
-            "password" => "required|min:6|confirmed",
-            "password_confirmation" => "required",
-            "remember" => "sometimes|boolean"
+            "email" => ["required", "email:rfc,dns", "unique:users,email"],
+            "password" => ["required", new StrongPassword, "confirmed"],
+            "password_confirmation" => ["required"],
+            "remember" => ["sometimes", "boolean"],
         ], [
-            "username.regex" => "Username can only contains alphanumeric characters, underscore (_), and dot (.)"
+            "username.regex" => "Username can only contains alphanumeric characters, underscore (_), and dot (.)",
         ]);
 
         $user = User::create([
@@ -59,9 +61,9 @@ class AuthController extends Controller
     }
 
     public function authenticate(Request $request){
-        $validator = $request->validate([
+        $request->validate([
             "login" => "required",
-            "password" => "required|min:6",
+            "password" => "required",
             "remember" => "sometimes|boolean",
         ]);
 
@@ -81,7 +83,6 @@ class AuthController extends Controller
             ]);
         }
 
-        $user = Auth::user();
         $request->session()->regenerate();
         return redirect()->intended('/');
     }
@@ -91,5 +92,78 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+
+    public function forgotPassword(){
+        return Inertia::render('ForgotPassword', [
+            'turnstileSiteKey' => config('services.turnstile.site_key'),
+        ]);
+    }
+
+    public function sendResetLink(Request $request){
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'exists:users,email'],
+        ], [
+            'email.exists' => 'Account not found.',
+        ]);
+
+        $status = Password::sendResetLink(['email' => $validated['email']]);
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('flash', [
+                'type' => 'success',
+                'message' => __($status),
+            ]);
+        }
+
+        return back()->with('flash', [
+            'type' => 'error',
+            'message' => __($status),
+        ]); 
+    }
+
+    public function resetPassword($token){
+        $user = User::where('email', request('email'))->first();
+        return Inertia::render('ResetPassword', [
+            'token' => $token,
+            'email' => request('email'),
+            'username' => $user->username
+        ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'token' => ['required'],
+            'email' => ['required', 'email'],
+            'password' => ['required', new StrongPassword, 'confirmed'],
+            'password_confirmation' => ['required'],
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request) {
+                // $user->update([
+                //     'password' => $request->password,
+                //     'remember_token' => Str::random(60),
+                // ]);
+                $user->forceFill([
+                    'password' => $request->password,
+                    'remember_token' => Str::random(60),
+                ])->save();
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect('/login')->with('flash', [
+                'type' => 'success',
+                'message' => __($status),
+            ]);
+        }
+
+        return back()->with('flash', [
+            'type' => 'error',
+            'message' => __($status),
+        ]);
     }
 }

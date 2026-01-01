@@ -9,7 +9,7 @@
 #onboarding .auth-left {
     width: 50%;
     min-height: 100%;
-    padding: calc(3.2rem * var(--ui-scale)) calc(5rem * var(--ui-scale));
+    padding: 3.2rem 5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,8 +20,8 @@
 #login .logo img,
 #sign-up .logo img,
 #onboarding .logo img {
-    width: calc(7.5rem * var(--ui-scale));
-    margin-bottom: calc(1.5625rem * var(--ui-scale));
+    width: 7.5rem;
+    margin-bottom: 1.5625rem;
     transition: .3s;
     cursor: pointer;
 }
@@ -35,9 +35,9 @@
 #login h2,
 #sign-up h2,
 #onboarding h2 {
-    font-size: calc(1.5rem * var(--ui-scale));
+    font-size: 1.5rem;
     font-weight: 600;
-    margin-top: calc(0.5rem * var(--ui-scale));
+    margin-top: 0.5rem;
     text-align: center;
 }
 
@@ -45,8 +45,8 @@
 #sign-up .subtitle,
 #onboarding .subtitle {
     color: #555;
-    font-size: calc(0.9rem * var(--ui-scale));
-    margin: calc(0.25rem * var(--ui-scale)) 0 calc(2rem * var(--ui-scale));
+    font-size: .9rem;
+    margin: 0.25rem 0 2rem;
     text-align: center;
 }
 
@@ -63,38 +63,37 @@
 #sign-up form,
 #onboarding form.profile-setup-form {
     width: 100%;
-    max-width: calc(23.75rem * var(--ui-scale));
+    max-width: 23.75rem;
 }
 
 .wrapper {
-    padding-top: calc(2rem * var(--ui-scale));
+    padding-top: 2rem;
     border-top: 1px solid var(--neutral-400);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: calc(30rem * var(--ui-scale));
+    max-width: 30rem;
 }
 
 .onboarding .btn {
-    max-width: calc(23.75rem * var(--ui-scale));
+    max-width: 23.75rem;
 }
-
 
 .checkbox-row {
     display: flex;
     gap: .5rem;
     align-items: center;
     justify-content: space-between;
-    margin: calc(1rem * var(--ui-scale)) 0 calc(1.375rem * var(--ui-scale));
-    font-size: calc(0.875rem * var(--ui-scale));
+    margin: 1rem 0 1.375rem;
+    font-size: 0.875rem;
 }
 
 .checkbox-mini {
     display: flex;
     align-items: center;
-    gap: calc(0.5rem * var(--ui-scale));
+    gap: 0.5rem;
 }
 
 .checkbox-mini label {
@@ -103,13 +102,13 @@
 
 .checkbox-mini input {
     accent-color: var(--primary-600);
-    width: calc(1.125rem * var(--ui-scale));
-    height: calc(1.125rem * var(--ui-scale));
+    width: 1.125rem;
+    height: 1.125rem;
 }
 
 .forgot {
-    color: #111;
-    font-weight: 500;
+    color: var(--neutral-700);
+    font-weight: 600;
     text-decoration: none;
 }
 
@@ -120,38 +119,37 @@
 /* google button */
 .btn.btn-google {
     width: 100%;
-    padding: calc(0.75rem * var(--ui-scale));
-    margin-top: calc(.65rem * var(--ui-scale));
+    padding: 0.75rem;
+    margin-top: .65rem;
     border: 1px solid #d1d1d1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: calc(0.625rem * var(--ui-scale));
+    gap: 0.625rem;
     background: var(--white);
     color: var(--neutral-600);
 }
 
 .btn-google img {
-    width: calc(1.25rem * var(--ui-scale));
-    height: calc(1.25rem * var(--ui-scale));
+    width: 1.25rem;
+    height: 1.25rem;
     object-fit: contain;
 }
 
 .signup-cta {
-    margin-top: calc(1.125rem * var(--ui-scale));
+    margin-top: 1.125rem;
     text-align: center;
-    font-size: calc(0.9rem * var(--ui-scale));
+    font-size: 0.9rem;
 }
 
 .signup-cta a {
     font-weight: 600;
-    color: #000;
+    color: var(--neutral-700);
 }
 
 .signup-cta a:hover {
     text-decoration: underline;
 }
-
 
 .auth-right {
     width: 50%;
@@ -194,23 +192,23 @@
 
 .right-text h1 {
     color: var(--white);
-    font-size: calc(2.625rem * var(--ui-scale));
+    font-size: 2.625rem;
     font-weight: 700;
     line-height: 1.25;
-    margin-bottom: calc(1rem * var(--ui-scale));
+    margin-bottom: 1rem;
 }
 
 .right-text p {
-    max-width: calc(35rem * var(--ui-scale));
-    font-size: calc(1rem * var(--ui-scale));
+    max-width: 35rem;
+    font-size: 1rem;
     opacity: .94;
     color: var(--neutral-200);
 }
 
 #onboarding .prev-btn {
     align-self: flex-start;
-    margin-bottom: calc(1.5rem * var(--ui-scale));
-    font-size: calc(0.9rem * var(--ui-scale));
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
     color: var(--neutral-600);
     cursor: pointer;
 }
@@ -226,11 +224,11 @@
     #sign-up .auth-left,
     #onboarding .auth-left{
         width: 90%;
-        max-width: calc(500px * var(--ui-scale));
+        max-width: 500px;
         background: rgba(255,255,255,.95);
-        padding: calc(2.1875rem * var(--ui-scale));
-        border-radius: calc(1.125rem * var(--ui-scale));
-        margin: calc(2.5rem * var(--ui-scale)) auto;
+        padding: 2.1875rem;
+        border-radius: 1.125rem;
+        margin: 2.5rem auto;
         position: relative;
         z-index: 3;
         backdrop-filter: blur(6px);
@@ -255,10 +253,9 @@
     #login .auth-left,
     #sign-up .auth-left,
     #onboarding .auth-left{
-        padding: calc(1.5rem * var(--ui-scale));
-        margin: calc(1.5rem * var(--ui-scale)) auto;
+        padding: 1.5rem;
+        margin: 1.5rem auto;
     }
-
 
     .checkbox-row {
         flex-direction: column;

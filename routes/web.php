@@ -49,6 +49,12 @@ Route::middleware('auth')->group(function(){
 });
 
 Route::middleware('guest')->group(function(){
+    // reset password
+    Route::get('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->middleware('throttle:5,1')->name('password.email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'resetPassword'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'updatePassword'])->name('password.update');
+    
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'authenticate']);
     Route::get('/sign-up', [AuthController::class, 'signup']);

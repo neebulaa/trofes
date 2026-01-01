@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@inertiajs/react": "^2.3.4",
+        "@marsidev/react-turnstile": "^1.4.1",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "react-easy-crop": "^5.5.6"

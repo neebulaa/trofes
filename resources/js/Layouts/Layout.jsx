@@ -10,7 +10,9 @@ export default function Layout({ children }) {
     const { url, props } = usePage();
     const { auth: { user } } = props;
 
-    const hideLayout = ['/login', '/sign-up', '/onboarding'].includes(url);
+    const hideLayout =
+    url.startsWith('/reset-password') ||
+    ['/login', '/sign-up', '/onboarding', '/forgot-password'].includes(url);
 
     return (
         <>

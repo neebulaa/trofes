@@ -72,7 +72,8 @@ footer {
 .footer-links {
     display: flex;
     gap: calc(1rem * var(--ui-scale));
-    color: #000;
+    color: var(--neutral-700);
+    font-weight: 600;
     text-decoration: underline;
     font-size: calc(0.875rem * var(--ui-scale));
 }
