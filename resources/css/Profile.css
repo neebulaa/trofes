@@ -38,12 +38,12 @@
 }
 
 .profile-left .profile-fullname {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
     font-weight: 600;
 }
 
 .profile-left .profile-username {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 400;
     color: var(--neutral-600);
 }

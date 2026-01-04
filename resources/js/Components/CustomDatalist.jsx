@@ -5,7 +5,8 @@ export default function CustomDatalist({
     options,
     value = [],
     onChange,
-    placeholder = 'Search...'
+    placeholder = 'Search...',
+    className
 }) {
     const [open, setOpen] = useState(false)
     const [query, setQuery] = useState('')
@@ -45,17 +46,20 @@ export default function CustomDatalist({
             if (!query.trim()) return
             if (filteredOptions.length === 0) return
 
-            // Select first match
+            // select first match
             handleSelect(filteredOptions[0])
         }
     }
 
     function handleRemoveAll(){
-        onChange([])
+        const confirmation = confirm("Are you sure you want to remove all selected items?");
+        if (confirmation) {
+            onChange([])
+        }
     }
 
     return (
-        <div className="input-group input-sm datalist-container" ref={ref}>
+        <div className={`input-group datalist-container ${className || ''}`} ref={ref}>
             {label && <label>{label}</label>}
 
             <div className="datalist-input">

@@ -152,7 +152,7 @@ export default function ProfileEditForm({
 
             <div className="input-group input-sm">
                 <label>Email</label>
-                <input 
+                <input
                     value={data.email}
                     onChange={e => setData('email', e.target.value)}
                     // disabled={true}
@@ -186,6 +186,7 @@ export default function ProfileEditForm({
             </div>
 
             <CustomDatalist
+                className="input-sm"
                 label="Select Allergies"
                 options={allergies.map(a => ({
                     value: a.allergy_id,
@@ -194,9 +195,10 @@ export default function ProfileEditForm({
                 value={selectedAllergies}
                 onChange={handleAllergyChange}
                 placeholder="Type allergy..."
-            />
+                />
 
             <CustomDatalist
+                className="input-sm"
                 label="Select Dietary Preferences"
                 options={dietary_preferences.map(a => ({
                     value: a.dietary_preference_id,

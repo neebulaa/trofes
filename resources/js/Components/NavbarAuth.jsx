@@ -3,6 +3,7 @@ import Dropdown from './Dropdown'
 import ProfileDropdown from './ProfileDropdown'
 import { useEffect, useState } from 'react'
 import NavLinks from './NavLinks'
+import { Link } from '@inertiajs/react'
 
 export default function NavbarAuth({ user }) {
     const { url } = usePage()
@@ -109,13 +110,14 @@ export default function NavbarAuth({ user }) {
                 </div>
 
                 <div className="nav-content-auth">
-                    <button
+                    <Link
+                        href="/custom-search-recipes"
                         type="button"
                         className="custom-search-btn"
                     >
                         <i className="fa-brands fa-searchengin"></i>
                         <p>Custom</p>
-                    </button>
+                    </Link>
 
                     <ProfileDropdown user={user} />
                 </div>

@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OnboardingController;
 use App\Models\Guide;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\RecipeController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -37,9 +38,8 @@ Route::middleware('auth')->group(function(){
         Route::delete('/profile/remove-profile-image', [UserController::class, 'removeProfileImage']);
 
         // recipes
-        Route::get('/recipes', function(){
-            return Inertia::render('Recipes');
-        });
+        Route::get('/recipes', [RecipeController::class, 'index']);
+        Route::get('/custom-search-recipes', [RecipeController::class, 'customSearchRecipes']);
     });
 
     // onboarding
@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function(){
     Route::post('/onboarding/dietary-preferences-setup', [OnboardingController::class, 'setupDietaryPreferences']);
     Route::post('/onboarding/allergies-setup', [OnboardingController::class, 'setupAllergies']);
     Route::post('/onboarding/complete', [OnboardingController::class, 'completeOnboarding']);
-
+    
     // logout / sign out
     Route::post('/sign-out', [AuthController::class, 'signOut']);
 });

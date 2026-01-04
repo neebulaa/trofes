@@ -180,6 +180,7 @@ header {
     background: var(--primary-600);
     cursor: pointer;
     font-size: .9rem;
+    font-weight: 500;
 }
 
 .nav-content-auth .custom-search-btn i {
