@@ -23,6 +23,7 @@ return new class extends Migration
             $table->date('birth_date')->nullable();
             $table->string('profile_image')->nullable();
             $table->boolean('is_admin')->default(false);
+            $table->boolean('onboarding_completed')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

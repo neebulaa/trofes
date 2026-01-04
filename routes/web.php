@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function(){
     Route::post('/onboarding/profile-setup', [OnboardingController::class, 'setupProfile']);
     Route::post('/onboarding/dietary-preferences-setup', [OnboardingController::class, 'setupDietaryPreferences']);
     Route::post('/onboarding/allergies-setup', [OnboardingController::class, 'setupAllergies']);
+    Route::post('/onboarding/complete', [OnboardingController::class, 'completeOnboarding']);
 
     // logout / sign out
     Route::post('/sign-out', [AuthController::class, 'signOut']);

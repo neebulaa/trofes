@@ -78,8 +78,17 @@ class OnboardingController extends Controller
 
         $user = Auth::user();
         $user->allergies()->sync($validated['allergies'] ?? []);
-
         return back();
+    }
+
+    public function completeOnboarding()
+    {
+        $user = Auth::user();
+        $user->update([
+            'onboarding_completed' => true,
+        ]);
+
+        return redirect('/');
     }
 
 

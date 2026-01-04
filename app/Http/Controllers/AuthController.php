@@ -6,9 +6,10 @@ use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Rules\StrongPassword;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
 
 function usernameToFullName(string $username): string
@@ -102,14 +103,39 @@ class AuthController extends Controller
 
     public function sendResetLink(Request $request){
         $validated = $request->validate([
-            'email' => ['required', 'email', 'exists:users,email'],
+            // 'email' => ['required', 'email', 'exists:users,'],
+            'email' => ['required', 'email'],
+            'turnstile_token' => ['required', 'string', 'max:2048'],
         ], [
             'email.exists' => 'Account not found.',
+            'turnstile_token.required' => 'Please complete the captcha.',
         ]);
+
+        // turnstile verification to cloudflare bro tired
+        $response = Http::asForm()
+            ->timeout(5)
+            ->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                'secret'   => config('services.turnstile.secret_key'),
+                'response' => $validated['turnstile_token'],
+                'remoteip' => $request->ip(),
+            ]);
+
+        if (!$response->ok() || $response->json('success') !== true) {
+            return back()->withErrors([
+                'turnstile_token' => 'Captcha verification failed. Please try again.',
+            ]);
+        }
+
+        if (!($response->json('success') === true)) {
+            return back()->withErrors([
+                'turnstile_token' => 'Captcha verification failed. Please try again.',
+            ]);
+        }
 
         $status = Password::sendResetLink(['email' => $validated['email']]);
 
-        if ($status === Password::RESET_LINK_SENT) {
+        // ini biar mencegah user jahat ngecek email yang terdaftar apa nggak
+        if ($status === Password::RESET_LINK_SENT || $status === Password::INVALID_USER) {
             return back()->with('flash', [
                 'type' => 'success',
                 'message' => __($status),

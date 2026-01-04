@@ -40,7 +40,7 @@ export default function SignUp({allergies, dietary_preferences, user, user_dieta
 
     function handleNextScreen(){
         if(currentScreenIndex == 2){
-            router.visit('/');
+            router.post('/onboarding/complete');
             return;
         };
         setCurrentScreenIndex(prev => prev + 1);

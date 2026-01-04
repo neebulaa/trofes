@@ -25,7 +25,7 @@ class GuideFactory extends Factory
             'published_at' => $this->faker->dateTime(),
             'content' => $this->faker->paragraphs(5, true),
             'title' => $title,
-            'image' => $this->faker->imageUrl(640, 480, 'food', true),
+            'image' => null,
             'admin_id' => User::factory(),
         ];
     }

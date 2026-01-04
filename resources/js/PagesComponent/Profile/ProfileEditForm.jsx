@@ -89,9 +89,7 @@ export default function ProfileEditForm({
             <div className="profile-image-container">
                 <div className="profile-image">
                     <img
-                        src={user.profile_image
-                        ? './storage/' + user.profile_image
-                        : './assets/sample-images/default-profile.png'}
+                        src={user.public_profile_image}
                         alt={`profile-${user.username}`}
                     />
                 </div>
