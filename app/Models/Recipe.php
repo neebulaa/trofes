@@ -12,7 +12,7 @@ class Recipe extends Model
     protected $appends = ['total_ingredient', 'public_image'];
 
     public function getPublicImageAttribute(){
-        return $this->image ? asset('assets/food-images') . '/' . $this->image : null;
+        return $this->image ? asset('assets/food-images') . '/' . $this->image . '.jpg' : asset('assets/sample-images/default-image.png');
     }
 
     public function dietaryPreferences()
@@ -27,5 +27,15 @@ class Recipe extends Model
 
     public function getTotalIngredientAttribute(){
         return $this->hasMany(RecipeIngredient::class, 'recipe_id', 'recipe_id')->count();
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(LikeRecipe::class, 'recipe_id', 'recipe_id');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

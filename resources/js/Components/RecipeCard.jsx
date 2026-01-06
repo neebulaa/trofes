@@ -1,24 +1,22 @@
+import {Link} from '@inertiajs/react';
+
 export default function Recipe({recipe}){
     return (
-        <div key={recipe.id} className="recipe-card">
+        <Link key={recipe.id} className="recipe-card" href={`/recipes/${recipe.slug}`}>
             <div className="recipe-image">
                 <img
                     src={recipe.public_image}
                     alt={recipe.image}
                     className="profile-liked-recipe-image"
                 />
-                {/* <span className="recipe-card-badge">
-                    <i class="fa-solid fa-crown"></i>
-                    <p>
-                        Premium
-                    </p>
-                </span> */}
-                {/* <span className="recipe-card-badge">
-                    <i class="fa-solid fa-heart"></i>
-                    <p>
-                        Favs
-                    </p>
-                </span> */}
+
+                {
+                    recipe.is_favorite && 
+                    <span className="recipe-card-badge favs">
+                        <i class="fa-solid fa-heart"></i>
+                        <span className="badge-text">Popular</span>
+                    </span>
+                }
             </div>
             <div className="recipe-content">
                 <h3 className="profile-liked-recipe-title">{recipe.title}</h3>
@@ -37,6 +35,6 @@ export default function Recipe({recipe}){
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }

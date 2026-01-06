@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OnboardingController;
 use App\Models\Guide;
+use App\Models\Recipe;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\RecipeController;
 
@@ -17,6 +18,7 @@ use App\Http\Controllers\RecipeController;
 Route::get('/', function(){
     return Inertia::render('Home', [
         'guides' => Guide::all()->take(3),
+        'recipes' => Recipe::inRandomOrder()->limit(5)->get(),
     ]);
 })->name('home');
 
@@ -39,6 +41,7 @@ Route::middleware('auth')->group(function(){
 
         // recipes
         Route::get('/recipes', [RecipeController::class, 'index']);
+        Route::get('/recipes/{recipe}', [RecipeController::class, 'show']);
         Route::get('/custom-search-recipes', [RecipeController::class, 'customSearchRecipes']);
     });
 

@@ -37,7 +37,7 @@ export default function Profile({user, liked_recipes, allergies, dietary_prefere
                         <p className='mb-05 liked-recipes-count'>Liked {liked_recipes.data.length} recipes</p>
                     }
 
-                    <div className={"profile-liked-recipes-container " + (liked_recipes.data.length > 0 ? ' recipe-container' : '')}>
+                    <div className={"profile-liked-recipes-container " + (liked_recipes.data.length > 0 ? ' recipes-container' : '')}>
                         {
                             liked_recipes.data.length > 0 ? (
                                 liked_recipes.data.map((recipe) => (

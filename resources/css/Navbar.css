@@ -49,7 +49,7 @@ header {
 }
 
 .nav-links a.active {
-    color: var(--green-dark);
+    color: var(--primary-700);
 }
 
 .nav-action {
@@ -181,6 +181,7 @@ header {
     cursor: pointer;
     font-size: .9rem;
     font-weight: 500;
+    width: max-content;
 }
 
 .nav-content-auth .custom-search-btn i {

@@ -4,10 +4,10 @@ import About from "../PagesComponent/Home/About";
 import Guides from "../PagesComponent/Home/Guides";
 import '../../css/Home.css'
 
-export default function Home({guides}){
+export default function Home({guides, recipes}) {
     return (
         <>
-            <Hero />
+            <Hero recipes={recipes} />
             <About />
             <Guides guides={guides} />
         </>

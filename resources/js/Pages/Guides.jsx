@@ -114,9 +114,7 @@ export default function Guides({ guides, filters }) {
                     ))}
                 </div>
 
-                <div className="guides-page-paginator">
-                    <Paginator paginator={guides} onNavigate={(url) => router.get(url)} />
-                </div>
+                <Paginator paginator={guides} onNavigate={(url) => router.get(url)} />
             </div>
         </section>
     );

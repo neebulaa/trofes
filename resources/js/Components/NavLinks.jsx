@@ -1,6 +1,17 @@
 import {Link} from '@inertiajs/react'
 export default function NavLinks({url, handleNavigate}){
-    const isActive = (path) => url === path
+    const isActive = (path) => {
+        if(path == '/guides' && url.startsWith('/guides')){
+            return true
+        }
+
+        if(path == '/recipes' && url.startsWith('/recipes')){
+            return true
+        }
+
+        return url === path
+    }
+
     return (
         <div className="nav-links">
             <Link

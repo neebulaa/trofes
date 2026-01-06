@@ -116,7 +116,7 @@ export default function NavbarAuth({ user }) {
                         className="custom-search-btn"
                     >
                         <i className="fa-brands fa-searchengin"></i>
-                        <p>Custom</p>
+                        <p>Custom Search</p>
                     </Link>
 
                     <ProfileDropdown user={user} />

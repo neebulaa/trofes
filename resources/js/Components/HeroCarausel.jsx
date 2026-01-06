@@ -8,9 +8,9 @@ const cardsData = [
     { id: 5, img: "/assets/sample-images/chicken masala.jpg", label: "Chicken Masala" },
 ];
 
-export default function HeroCarousel() {
+export default function HeroCarousel({recipes}) {
     const [activeIndex, setActiveIndex] = useState(2);
-    const total = cardsData.length;
+    const total = recipes.length;
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -36,17 +36,19 @@ export default function HeroCarousel() {
         <div className="carousel-wrap">
             <div className="carousel-shell">
                 <div className="carousel-coverflow">
-                    {cardsData.map((card, index) => {
+                    {recipes.map((card, index) => {
                         const pos = getPosition(index);
 
                         return (
                             <article
-                                key={card.id}
+                                key={card.recipe_id}
                                 className="food-card"
                                 style={{ "--x": pos }}
                             >
-                                <img src={card.img} alt={card.label} />
-                                <div className="label">{card.label}</div>
+                                <img src={card.public_image} alt={card.title} />
+                                <div className="recipe-card-badge for-name">
+                                    <span className="badge-text">{card.title}</span>
+                                </div>
                             </article>
                         );
                     })}

@@ -1,7 +1,7 @@
 import HeroCarausel from "../../Components/HeroCarausel"
 import { Link } from "@inertiajs/react"
 
-export default function Hero(){
+export default function Hero({recipes}) {
     return (
         <section id="hero" className="hero">
             <div className="hero-inner container">
@@ -24,7 +24,7 @@ export default function Hero(){
 
             </div>
 
-            <HeroCarausel />
+            <HeroCarausel recipes={recipes} />
         </section>
     )
 }
