@@ -13,7 +13,7 @@ export default function Recipe({recipe}){
                 {
                     recipe.is_favorite && 
                     <span className="recipe-card-badge favs">
-                        <i class="fa-solid fa-heart"></i>
+                        <i className="fa-solid fa-heart"></i>
                         <span className="badge-text">Popular</span>
                     </span>
                 }

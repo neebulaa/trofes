@@ -89,6 +89,52 @@
     gap: .5rem;
 }
 
+#recipes-page .recipe-filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    height: max-content;
+    max-height: 100px;
+}
+
+#recipes-page .filter-pills {
+    margin-left: auto;
+    display: flex;
+    gap: .75rem;
+    overflow-x: auto;
+    padding-bottom: .25rem;
+}
+
+#recipes-page .recipe-filters .pill {
+    padding: .5rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid var(--neutral-300);
+    background: var(--neutral-100);
+    font-size: .9rem;
+    cursor: pointer;
+    transition: all 200ms ease;
+}
+
+#recipes-page .recipe-filters .pill:hover {
+    background: var(--neutral-200);
+    transition: all 200ms ease;
+}
+
+#recipes-page .recipe-filters .pill.active {
+    background: var(--primary-600);
+    color: white;
+    border-color: var(--primary-700);
+}
+
+#recipes-page .recipe-filters .dropdown-trigger {
+    border-radius: 6px;
+    height: 100%;
+    padding-inline: 1rem;
+    border-color: var(--neutral-500);
+}
+
 @media(max-width: 900px){
     #recipes-page .recipes-page-hero-right {
         flex: 5;

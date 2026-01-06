@@ -29,6 +29,11 @@ class Recipe extends Model
         return $this->hasMany(RecipeIngredient::class, 'recipe_id', 'recipe_id')->count();
     }
 
+    public function ingredients()
+    {
+        return $this->belongsToMany(Ingredient::class, 'recipe_ingredients', 'recipe_id', 'ingredient_id');
+    }
+
     public function likes()
     {
         return $this->hasMany(LikeRecipe::class, 'recipe_id', 'recipe_id');

@@ -1,7 +1,8 @@
 export default function ProfileInfo({user, handleEditProfile}){
     function getPronouns(gender){
         if(gender === 'male') return 'he/him'
-        return 'she/her'
+        if(gender == 'female') return 'she/her'
+        return '';
     }
 
     return (

@@ -21,6 +21,7 @@ export default function Paginator({
     maxVisible = 5,
 }) {
     if (!paginator) return null;
+    console.log(paginator);
 
     // resource/non-resource normalize into one shape
     const isResourceShape = !!paginator.meta;
@@ -54,7 +55,6 @@ export default function Paginator({
         window.location.href = url;
     };
 
-    // Numeric page links only (Laravel includes Previous/Next labels in links array)
     const pageLinks = linksArray.filter((l) => {
         const label = String(l.label).toLowerCase();
         return label !== "previous" && label !== "next";
@@ -82,66 +82,66 @@ export default function Paginator({
 
     return (
         <nav className={`paginator ${className}`} aria-label="Pagination">
-        <button
-            type="button"
-            className="paginator-btn"
-            onClick={() => navigate(prevUrl)}
-            disabled={!prevUrl}
-        >
-            &lt;
-            Prev
-        </button>
-
-        <div className="paginator-pages">
-            {showFirst && firstLink?.url && (
-            <>
-                <button
-                type="button"
-                className="paginator-page"
-                onClick={() => navigate(firstLink.url)}
-                >
-                1
-                </button>
-                <span className="paginator-ellipsis">…</span>
-            </>
-            )}
-
-            {visiblePages.map((link, idx) => (
             <button
-                key={`${link.label}-${idx}`}
                 type="button"
-                className={`paginator-page ${link.active ? "is-active" : ""}`}
-                onClick={() => navigate(link.url)}
-                disabled={!link.url || link.active}
-                aria-current={link.active ? "page" : undefined}
+                className="paginator-btn"
+                onClick={() => navigate(prevUrl)}
+                disabled={!prevUrl}
             >
-                {link.label}
+                &lt;
+                Prev
             </button>
-            ))}
 
-            {showLast && lastLink?.url && (
-            <>
-                <span className="paginator-ellipsis">…</span>
-                <button
+            <div className="paginator-pages">
+                {showFirst && firstLink?.url && (
+                <>
+                    <button
+                        type="button"
+                        className="paginator-page"
+                        onClick={() => navigate(firstLink.url)}
+                    >
+                        1
+                    </button>
+                    <span className="paginator-ellipsis">…</span>
+                </>
+                )}
+
+                {visiblePages.map((link, idx) => (
+                    <button
+                        key={`${link.label}-${idx}`}
+                        type="button"
+                        className={`paginator-page ${link.active ? "is-active" : ""}`}
+                        onClick={() => navigate(link.url)}
+                        disabled={!link.url || link.active}
+                        aria-current={link.active ? "page" : undefined}
+                    >
+                        {link.label}
+                    </button>
+                ))}
+
+                {showLast && lastLink?.url && (
+                    <>
+                        <span className="paginator-ellipsis">…</span>
+                        <button
+                            type="button"
+                            className="paginator-page"
+                            onClick={() => navigate(lastLink.url)}
+                        >
+                            {last_page}
+                        </button>
+                    </>
+                )}
+            </div>
+
+            <button
                 type="button"
-                className="paginator-page"
-                onClick={() => navigate(lastLink.url)}
-                >
-                {last_page}
-                </button>
-            </>
-            )}
-        </div>
-
-        <button
-            type="button"
-            className="paginator-btn"
-            onClick={() => navigate(nextUrl)}
-            disabled={!nextUrl}
-        >
-            Next
-            &gt;
-        </button>
+                className="paginator-btn"
+                onClick={() => navigate(nextUrl)}
+                disabled={!nextUrl}
+            >
+                Next
+                &gt;
+            </button>
         </nav>
     );
 }

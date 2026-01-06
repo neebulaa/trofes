@@ -1,21 +1,12 @@
 import Layout from "../Layouts/Layout";
 import "../../css/Recipes.css";
-import { useForm } from "@inertiajs/react";
-import { useEffect, useRef, useState } from "react";
+import { useForm, router, Link } from "@inertiajs/react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import RecipeCard from "../Components/RecipeCard";
 import Paginator from "../Components/Paginator";
-import { router } from "@inertiajs/react";
-import { Link } from "@inertiajs/react";
+import Dropdown from "../Components/Dropdown";
 
-const cardsData = [
-    { id: 1, img: "/assets/sample-images/nasi hainan.jpg", label: "Nasi Hainan Tiongkok" },
-    { id: 2, img: "/assets/sample-images/sate ayam.jpg", label: "Sate Ayam" },
-    { id: 3, img: "/assets/sample-images/nasi lemak.jpg", label: "Nasi Lemak Malaysia" },
-    { id: 4, img: "/assets/sample-images/ramen sapi.jpg", label: "Beef Ramen" },
-    { id: 5, img: "/assets/sample-images/chicken masala.jpg", label: "Chicken Masala" },
-];
-
-export default function Recipes({recipes, hero_recipes, recommended_recipes}) {
+export default function Recipes({recipes, hero_recipes, recommended_recipes, recipe_filter_options = [], active_filter = null}) {
     const { data, setData, errors } = useForm({ search: "" });
 
     const [activeIndex, setActiveIndex] = useState(0);
@@ -23,9 +14,19 @@ export default function Recipes({recipes, hero_recipes, recommended_recipes}) {
     const timersRef = useRef({ intervalId: null, timeoutId: null });
 
     const SHOW_MS = 5000;
-    const FADE_MS = 450;  // samain dgn CSS transition duration
+    const FADE_MS = 450;
 
     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get("search") ?? "";
+        console.log(q);
+        if (q && !data.search) {
+            setData("search", q);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!hero_recipes?.length) return;
         const firstIn = setTimeout(() => setIsVisible(true), 0);
 
         timersRef.current.intervalId = setInterval(() => {
@@ -42,9 +43,85 @@ export default function Recipes({recipes, hero_recipes, recommended_recipes}) {
             clearInterval(timersRef.current.intervalId);
             clearTimeout(timersRef.current.timeoutId);
         };
-    }, []);
+    }, [hero_recipes?.length]);
 
-    const card = hero_recipes[activeIndex];
+    const card = hero_recipes?.[activeIndex];
+
+    const categoryOptions = [
+        {label: 'None', value: 'none'},
+        { label: "Latest", value: "latest" },
+        { label: "Oldest", value: "oldest" },
+        { label: "A - Z", value: "alphabetical" },
+        { label: "Z - A", value: "reverse-alphabetical" },
+    ];
+
+    const [category, setCategory] = useState(categoryOptions[0]);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        // keep current filter when searching
+        router.get(
+        "/recipes",
+        {
+            search: data.search,
+            filter_type: active_filter?.type ?? undefined,
+            filter_id: active_filter?.id ?? undefined,
+        },
+        { preserveState: true, preserveScroll: true, replace: true }
+        );
+    }
+
+    function handlePillClick(pill) {
+        router.get("/recipes", {
+                search: data.search,
+                filter_type: pill.type === "all" ? undefined : pill.type,
+                filter_id: pill.type === "all" ? undefined : (pill.id ?? undefined)
+            },
+            { preserveState: true, preserveScroll: true, replace: true }
+        );
+    }
+
+    function clearFilter() {
+        router.get(
+        "/recipes",
+        { search: data.search },
+        { preserveState: true, preserveScroll: true, replace: true }
+        );
+    }
+
+    const displayRecipes = useMemo(() => {
+        const items = Array.isArray(recipes?.data) ? [...recipes.data] : [];
+
+        switch (category.value) {
+            case "latest":
+                return items.sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                );
+
+            case "oldest":
+                return items.sort(
+                    (a, b) => new Date(a.created_at) - new Date(b.created_at)
+                );
+
+            case "alphabetical":
+                return items.sort((a, b) =>
+                    String(a.title).localeCompare(String(b.title), "id", {
+                        sensitivity: "base",
+                    })
+                );
+
+            case "reverse-alphabetical":
+                return items.sort((a, b) =>
+                    String(b.title).localeCompare(String(a.title), "id", {
+                        sensitivity: "base",
+                    })
+                );
+
+            default:
+                return items;
+        }
+    }, [recipes, category]);
 
     return (
         <section id="recipes-page" className="recipes-page">
@@ -58,7 +135,7 @@ export default function Recipes({recipes, hero_recipes, recommended_recipes}) {
                         Discover the Best Food Recipes in the World helps users find a variety of selected dishes from different countries.
                     </p>
 
-                    <form action="" className="mt-2 recipes-search-form-first">
+                    <form onSubmit={handleSubmit} className="mt-2 recipes-search-form-first">
                         <div className="input-group">
                             <div className="search-input">
                                 <span>
@@ -69,7 +146,7 @@ export default function Recipes({recipes, hero_recipes, recommended_recipes}) {
                                     type="text"
                                     value={data.search}
                                     onChange={(e) => setData("search", e.target.value)}
-                                    placeholder="Search guides..."
+                                    placeholder="Search recipes..."
                                 />
 
                                 <button type="submit" className="search-btn">
@@ -94,7 +171,7 @@ export default function Recipes({recipes, hero_recipes, recommended_recipes}) {
                 </div>
             </div>
 
-            <form action="" className="mt-2 recipes-search-form-second">
+            <form onSubmit={handleSubmit} className="mt-2 recipes-search-form-second">
                 <div className="input-group">
                     <div className="search-input">
                         <span>
@@ -137,9 +214,43 @@ export default function Recipes({recipes, hero_recipes, recommended_recipes}) {
                 <p className="text-muted">Search according to your own preferences and needs with 'Custom Search'.</p>
             </div>
 
+            <div className="recipe-filters mt-3">
+                <Dropdown
+                    options={categoryOptions}
+                    value={category}
+                    onChange={setCategory}
+                />
+
+                <div className="filter-pills">
+                    {recipe_filter_options.map((pill) => {
+                        const isActive = (() => {
+                            const activeType = active_filter?.type ?? "all";
+                            const activeId = active_filter?.id ?? null;
+
+                            if (pill.type === "all") return activeType === "all";
+                            if (pill.type === "popular") return activeType === "popular";
+                            if (pill.id == null || activeId == null) return false;
+                            return activeType === pill.type && Number(activeId) === Number(pill.id);
+                        })();
+
+                        return (
+                            <button
+                                key={pill.key}
+                                type="button"
+                                className={`pill ${isActive ? "active" : ""}`}
+                                onClick={() => handlePillClick(pill)}
+                                title={pill.label}
+                            >
+                                {pill.label}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
             <h2 className="recipes-container-title mt-3">All Recipes</h2>
             <div className="recipes-container mt-1">
-                {recipes.data.map((recipe) => (
+                {displayRecipes.map((recipe) => (
                     <RecipeCard recipe={recipe} key={recipe.recipe_id}/>
                 ))}
             </div>

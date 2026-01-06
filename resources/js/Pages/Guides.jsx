@@ -77,12 +77,12 @@ export default function Guides({ guides, filters }) {
                 <div className="search-and-filters">
                     <form onSubmit={handleSubmit}>
                         <div className="filters">
-                        <p className="filters-text">Filter by:</p>
-                        <Dropdown
-                            options={categoryOptions}
-                            value={category}
-                            onChange={setCategory}
-                        />
+                            <p className="filters-text">Filter by:</p>
+                            <Dropdown
+                                options={categoryOptions}
+                                value={category}
+                                onChange={setCategory}
+                            />
                         </div>
 
                         <div className="input-group">

@@ -16,6 +16,8 @@ use App\Http\Controllers\RecipeController;
 // });
 
 Route::get('/', function(){
+
+
     return Inertia::render('Home', [
         'guides' => Guide::all()->take(3),
         'recipes' => Recipe::inRandomOrder()->limit(5)->get(),

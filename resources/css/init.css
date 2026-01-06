@@ -249,7 +249,11 @@ input[type='text']:focus),
     border-radius: 6px;
     cursor: pointer;
     font-size: .9rem;
-    transition: 0.2s;
+    transition: 0.3s;
+}
+
+.search-input .search-btn:hover {
+    filter: brightness(.95);
 }
 
 .green-block {
