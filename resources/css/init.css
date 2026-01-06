@@ -339,7 +339,7 @@ input[type='text']:focus),
 
 .btn-line-white {
     background: var(--white);
-    border-color: var(--neutral-500);
+    border-color: var(--neutral-400);
     color: var(--neutral-700);
 }
 
@@ -954,5 +954,9 @@ input[type='text']:focus),
 @media (max-width: 560px) {
     html {
         font-size: calc(15px * var(--ui-scale));
+    }
+
+    .container {
+        padding-inline: 1.5rem;
     }
 }

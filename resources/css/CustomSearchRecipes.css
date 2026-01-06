@@ -28,3 +28,31 @@
     border: 1px solid var(--neutral-400);
     border-radius: 5px;
 }
+
+.custom-search-form-btns {
+    display: flex;
+    gap: .75rem;
+}
+
+@media (max-width: 900px) {
+    #custom-search-recipes-page .custom-search-recipes-left h1 {
+        font-size: clamp(3rem, 10vw, 3.5rem);
+        line-height: 1.2;
+    }
+
+    #custom-search-recipes-page .custom-search-recipes-right {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    #custom-search-recipes-page .container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    #custom-search-recipes-page .custom-search-recipes-left,
+    #custom-search-recipes-page .custom-search-recipes-right {
+        flex: unset;
+    }
+}

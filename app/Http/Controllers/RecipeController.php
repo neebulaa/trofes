@@ -155,4 +155,85 @@ class RecipeController extends Controller
             'ingredients' => Ingredient::all()
         ]);
     }
+
+    public function performCustomSearchRecipes(Request $request)
+    {
+        $validated = $request->validate([
+            'ingredients' => 'array',
+            'ingredients.*' => 'integer|exists:ingredients,ingredient_id',
+            'dietary_preferences' => 'array',
+            'dietary_preferences.*' => 'integer|exists:dietary_preferences,dietary_preference_id',
+            'allergies' => 'array',
+            'allergies.*' => 'integer|exists:allergies,allergy_id',
+            'calories' => 'nullable|numeric|min:0',
+            'protein'  => 'nullable|numeric|min:0',
+            'fat'      => 'nullable|numeric|min:0',
+            'sodium'   => 'nullable|numeric|min:0',
+        ]);
+
+        $query = Recipe::query()->withCount('likes');
+
+        // recipe contains all selected ingredients huh
+        if (!empty($validated['ingredients'])) {
+            foreach ($validated['ingredients'] as $ingredientId) {
+                $query->whereHas('ingredients', function ($q) use ($ingredientId) {
+                    $q->where('ingredients.ingredient_id', $ingredientId);
+                });
+            }
+        }
+
+        // recipe matches all selected dietary preferences
+        if (!empty($validated['dietary_preferences'])) {
+            foreach ($validated['dietary_preferences'] as $dietId) {
+                $query->whereHas('dietaryPreferences', function ($q) use ($dietId) {
+                    $q->where(
+                        'dietary_preferences.dietary_preference_id',
+                        $dietId
+                    );
+                });
+            }
+        }
+
+        // recipe must not contains all selected allergies
+        if (!empty($validated['allergies'])) {
+            foreach ($validated['allergies'] as $allergyId) {
+                $query->whereDoesntHave('allergies', function ($q) use ($allergyId) {
+                    $q->where('allergies.allergy_id', $allergyId);
+                });
+            }
+        }
+
+        // ± tolerance makes search usable
+        $tolerance = [
+            'calories' => 50,   // kcal
+            'protein'  => 5,    // grams
+            'fat'      => 5,    // grams
+            'sodium'   => 100,  // mg
+        ];
+
+        foreach (['calories', 'protein', 'fat', 'sodium'] as $field) {
+            if (!empty($validated[$field])) {
+                $value = (float) $validated[$field];
+                $delta = $tolerance[$field];
+
+                $query->whereBetween($field, [
+                    max(0, $value - $delta),
+                    $value + $delta,
+                ]);
+            }
+        }
+
+        // sorting but optional nanti lah diskusi
+        // $query->orderByDesc('likes_count');
+
+        $recipes = $query->paginate(16)->withQueryString();
+        return Inertia::render('Recipes', [
+            'recipes' => $recipes,
+            'hero_recipes' => Recipe::inRandomOrder()->limit(5)->get(),
+            'recommended_recipes' => Recipe::inRandomOrder()->limit(4)->get(),
+            'recipe_filter_options' => $this->getFilterPillsFromSession(),
+            'active_filter' => null,
+        ]);
+    }
+
 }

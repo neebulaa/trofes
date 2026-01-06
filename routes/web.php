@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/recipes', [RecipeController::class, 'index']);
         Route::get('/recipes/{recipe}', [RecipeController::class, 'show']);
         Route::get('/custom-search-recipes', [RecipeController::class, 'customSearchRecipes']);
+        Route::post('/custom-search-recipes', [RecipeController::class, 'performCustomSearchRecipes']);
     });
 
     // onboarding
