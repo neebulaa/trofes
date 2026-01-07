@@ -31,11 +31,40 @@ class GuideController extends Controller
 
 
     public function show(Request $request, Guide $guide){
+        $publishedAt = $guide->published_at;
+
+        $nextGuide = Guide::query()
+            ->where(function ($q) use ($publishedAt, $guide) {
+                $q->where('published_at', '>', $publishedAt)
+                ->orWhere(function ($q2) use ($publishedAt, $guide) {
+                    $q2->where('published_at', '=', $publishedAt)
+                        ->where('guide_id', '>', $guide->guide_id);
+                });
+            })
+            ->orderBy('published_at', 'asc')
+            ->orderBy('guide_id', 'asc')
+            ->first();
+
+        $prevGuide = Guide::query()
+            ->where(function ($q) use ($publishedAt, $guide) {
+                $q->where('published_at', '<', $publishedAt)
+                ->orWhere(function ($q2) use ($publishedAt, $guide) {
+                    $q2->where('published_at', '=', $publishedAt)
+                        ->where('guide_id', '<', $guide->guide_id);
+                });
+            })
+            ->orderBy('published_at', 'desc')
+            ->orderBy('guide_id', 'desc')
+            ->first();
+
         return Inertia::render('GuideDetail', [
             'guide' => $guide,
-            'next_guide' => Guide::where('guide_id', '>', $guide->guide_id)->orderBy('guide_id')->first(),
-            'prev_guide' => Guide::where('guide_id', '<', $guide->guide_id)->orderBy('guide_id', 'desc')->first(),
-            'other_guides' => Guide::where('guide_id', '!=', $guide->guide_id)->inRandomOrder()->limit(5)->get(),
+            'next_guide' => $nextGuide,
+            'prev_guide' => $prevGuide,
+            'other_guides' => Guide::where('guide_id', '!=', $guide->guide_id)
+                ->inRandomOrder()
+                ->limit(5)
+                ->get(),
         ]);
     }
 }
