@@ -84,7 +84,9 @@ export default function NavbarAuth({ user }) {
         <header id="auth-navbar">
         <nav className={`container nav ${open ? "nav-open" : ""}`}>
             <div className="logo">
-            <img src="/assets/logo/logo-transparent.png" alt="Trofes Logo" />
+                <Link href="/"> 
+                    <img src="/assets/logo/logo-transparent.png" alt="Trofes Logo" />
+                </Link>
             </div>
 
             <div className="nav-search-toggle" onClick={openSearchBar}>
