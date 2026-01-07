@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\EnsureOnboardingCompleted;
+use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         // $middleware->append(EnsureOnboardingCompleted::class);
         $middleware->alias([
-            'onboarded' => EnsureOnboardingCompleted::class
+            'onboarded' => EnsureOnboardingCompleted::class,
+            "is_admin" => EnsureUserIsAdmin::class,
         ]);
         // $middleware->redirectGuestsTo('/login');
         $middleware->redirectGuestsTo(fn (Request $request) => route('login'));

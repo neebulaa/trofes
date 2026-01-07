@@ -10,14 +10,13 @@ use App\Models\Guide;
 use App\Models\Recipe;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\DashboardController;
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
 Route::get('/', function(){
-
-
     return Inertia::render('Home', [
         'guides' => Guide::all()->take(3),
         'recipes' => Recipe::inRandomOrder()->limit(5)->get(),
@@ -57,6 +56,9 @@ Route::middleware('auth')->group(function(){
     
     // logout / sign out
     Route::post('/sign-out', [AuthController::class, 'signOut']);
+
+    // dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('is_admin')->name('dashboard.index');
 });
 
 Route::middleware('guest')->group(function(){

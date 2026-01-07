@@ -56,6 +56,16 @@ export default function ProfileDropdown({ user }) {
                     </div>
                 </div>
 
+                {
+                    user.is_admin == 1 && 
+                    <Link 
+                    className={`dropdown-item ${isActive('/dashboard') ? 'active' : ''}`}
+                    href="/dashboard">
+                        <i class="fa-solid fa-border-all"></i>
+                        <p>Dashboard</p>
+                    </Link>
+                }
+
                 <Link 
                 className={`dropdown-item ${isActive('/profile') ? 'active' : ''}`}
                 href="/profile">

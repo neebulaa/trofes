@@ -31,7 +31,7 @@ export default function NavbarAuth({ user }) {
         window.addEventListener("resize", handleResize);
 
         return () => {
-        window.removeEventListener("resize", handleResize);
+            window.removeEventListener("resize", handleResize);
         };
     }, []);
 
@@ -127,26 +127,26 @@ export default function NavbarAuth({ user }) {
             )}
 
             <div className="nav-content">
-            <NavLinks url={url} handleNavigate={handleNavigate} />
+                <NavLinks url={url} handleNavigate={handleNavigate} />
             </div>
 
             <div className="nav-content-auth">
-            <Link
-                href="/custom-search-recipes"
-                type="button"
-                className="custom-search-btn"
-            >
-                <i className="fa-brands fa-searchengin"></i>
-                <p>Custom Search</p>
-            </Link>
+                <Link
+                    href="/custom-search-recipes"
+                    type="button"
+                    className="custom-search-btn"
+                >
+                    <i className="fa-brands fa-searchengin"></i>
+                    <p>Custom Search</p>
+                </Link>
 
-            <ProfileDropdown user={user} />
+                <ProfileDropdown user={user} />
             </div>
 
             <button className="hamburger" aria-label="menu" onClick={openNavbar}>
-            <span></span>
-            <span></span>
-            <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
         </nav>
         </header>

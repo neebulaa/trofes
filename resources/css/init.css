@@ -589,10 +589,14 @@ input[type='text']:focus),
 .dropdown-item {
     min-width: calc(var(--size) * var(--ui-scale));
     font-size: .9rem;
-    padding: 0.575rem 1rem;
+    padding: 0.75rem 1rem;
     width: 100%;
     cursor: pointer;
     text-align: left;
+}
+
+.dropdown-item + .dropdown-item {
+    margin-top: .25rem;
 }
 
 .dropdown-item.active {
@@ -604,6 +608,21 @@ input[type='text']:focus),
     display: flex;
     gap: .5rem;
     align-items: center;
+}
+
+.profile-dropdown .user-profile {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid var(--neutral-400);
+}
+
+.profile-dropdown .user-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .profile-dropdown .dropdown-item button{
