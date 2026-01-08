@@ -45,7 +45,7 @@ export default function DietaryPreferencesSetup({ dietary_preferences, handleNex
 
                             <div className="icon-box">
                                 <img
-                                    src={preference.image}
+                                    src={preference.public_image}
                                     alt={preference.diet_name}
                                 />
                             </div>

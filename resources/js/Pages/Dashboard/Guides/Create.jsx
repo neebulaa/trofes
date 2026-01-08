@@ -132,8 +132,7 @@ export default function CreateGuide() {
                     className="btn btn-fill mt-1"
                     disabled={processing}
                 >
-                    <i className="fa-solid fa-plus" />
-                    <span className="ml-05">
+                    <span>
                         {processing ? "Publishing..." : "Publish Guide"}
                     </span>
                 </button>

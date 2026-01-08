@@ -72,12 +72,12 @@ Route::middleware('auth')->group(function(){
         Route::delete('/dashboard/guides/{guide}', [DashboardGuideController::class, 'destroy']);
 
         // dashboard allergies
-        // Route::get("/dashboard/allergies", [DashboardAllergyController::class, 'index']);
-        // Route::get("/dashboard/allergies/create", [DashboardAllergyController::class, 'create']);
-        // Route::post("/dashboard/allergies", [DashboardAllergyController::class, 'store']);
-        // Route::get("/dashboard/allergies/{allergy}/edit", [DashboardAllergyController::class, 'edit']);
-        // Route::put("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'update']);
-        // Route::delete("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'destroy']);
+        Route::get("/dashboard/allergies", [DashboardAllergyController::class, 'index']);
+        Route::get("/dashboard/allergies/create", [DashboardAllergyController::class, 'create']);
+        Route::post("/dashboard/allergies", [DashboardAllergyController::class, 'store']);
+        Route::get("/dashboard/allergies/{allergy}/edit", [DashboardAllergyController::class, 'edit']);
+        Route::put("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'update']);
+        Route::delete("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'destroy']);
 
         // dashboard dietary preferences
         // Route::get("/dashboard/allergies", [DashboardAllergyController::class, 'index']);

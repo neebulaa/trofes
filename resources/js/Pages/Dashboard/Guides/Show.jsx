@@ -4,7 +4,7 @@ import DashboardIcon from "../../../Components/Dashboard/DashboardIcon";
 
 import '../../../../css/Dashboard/DashboardGuides.css';
 
-export default function Guides({ guide }) {
+export default function ShowGuide({ guide }) {
     return (
         <DashboardLayout title="Dashboard - Guides">
             <div className="crud-header">

@@ -2,86 +2,79 @@ import { useEffect, useRef, useState } from "react";
 import DashboardLayout from "../../../Layouts/DashboardLayout";
 import { Link, useForm } from "@inertiajs/react";
 import DashboardIcon from "../../../Components/Dashboard/DashboardIcon";
-import RichTextEditor from "../../../Components/RichTextEditor";
 
-export default function EditGuide({ guide }) {
-    const { data, setData, post, processing, errors, clearErrors } = useForm({
-        _method: "put",
-        title: guide.title ?? "",
-        content: guide.content ?? "",
+export default function CreateAllergy() {
+    const { data, setData, post, processing, errors } = useForm({
+        allergy_name: "",
+        examples: "",
         image: null,
-        image_removed: "0",
     });
 
     const fileRef = useRef(null);
-    const [preview, setPreview] = useState(guide.public_image ?? null);
+    const [preview, setPreview] = useState(null);
 
     useEffect(() => {
-        if (!data.image) return;
+        if (!data.image) {
+            setPreview(null);
+            return;
+        }
 
         const url = URL.createObjectURL(data.image);
         setPreview(url);
-        setData("image_removed", "0");
 
         return () => URL.revokeObjectURL(url);
     }, [data.image]);
 
+    const submit = (e) => {
+        e.preventDefault();
+        post("/dashboard/allergies", { forceFormData: true });
+    };
+
     const removeImage = () => {
         setData("image", null);
-        setData("image_removed", "1");
         setPreview(null);
 
         if (fileRef.current) fileRef.current.value = "";
     };
 
-    const submit = (e) => {
-        e.preventDefault();
-        clearErrors();
-
-        post(`/dashboard/guides/${guide.slug}`, {
-            forceFormData: true,
-            preserveScroll: true,
-        });
-    };
-
     return (
-        <DashboardLayout title="Dashboard - Edit Guide">
+        <DashboardLayout title="Dashboard - Allergies">
             <div className="crud-header">
-                <Link href="/dashboard/guides" aria-label="Back">
+                <Link href="/dashboard/allergies" aria-label="Back">
                     <DashboardIcon name="chevronLeft" />
                 </Link>
                 <div>
-                    <h1 className="crud-title">Edit Guide</h1>
-                    <p className="text-muted">
-                        Update existing nutrition guide.
-                    </p>
+                    <h1 className="crud-title">Create Allergy</h1>
+                    <p className="text-muted">Publish a new nutrition allergy.</p>
                 </div>
             </div>
 
             <form onSubmit={submit} className="mt-1 crud-form">
                 <div className="input-group">
-                    <label htmlFor="title">Title</label>
+                    <label htmlFor="allergy_name">Allergy Name</label>
                     <input
-                        id="title"
+                        id="allergy_name"
                         type="text"
-                        value={data.title}
-                        onChange={(e) => setData("title", e.target.value)}
-                        placeholder="Enter guide title"
+                        value={data.allergy_name}
+                        onChange={(e) => setData("allergy_name", e.target.value)}
+                        placeholder="Enter allergy name"
                     />
-                    {errors.title && (
-                        <small className="error-text">{errors.title}</small>
+                    {errors.allergy_name && (
+                        <small className="error-text">{errors.allergy_name}</small>
                     )}
                 </div>
 
                 <div className="input-group">
-                    <label>Content</label>
-                    <RichTextEditor
-                        initialHTML={guide.content}
-                        onChange={(html) => setData("content", html)}
-                        placeholder="Write your guide content..."
+                    <label>Examples</label>
+                    <input
+                        id="examples"
+                        type="text"
+                        value={data.examples}
+                        onChange={(e) => setData("examples", e.target.value)}
+                        placeholder="Enter examples"
                     />
-                    {errors.content && (
-                        <small className="error-text">{errors.content}</small>
+                    {errors.examples && (
+                        <small className="error-text">{errors.examples}</small>
                     )}
                 </div>
 
@@ -102,7 +95,7 @@ export default function EditGuide({ guide }) {
                     <label htmlFor="image" className="file-input-trigger">
                         <i className="fa-regular fa-image"></i>
                         <span className="ml-05">
-                            {preview ? "Change image" : "Choose image"}
+                            {data.image ? "Change image" : "Choose image"}
                         </span>
                     </label>
 
@@ -120,7 +113,7 @@ export default function EditGuide({ guide }) {
                     )}
 
                     {preview && (
-                        <div className="image-preview mt-05">
+                        <div className="image-preview mt-05 image-preview-contain">
                             <img src={preview} alt="Preview" />
                             <button
                                 type="button"
@@ -141,7 +134,7 @@ export default function EditGuide({ guide }) {
                     disabled={processing}
                 >
                     <span>
-                        {processing ? "Saving..." : "Update Guide"}
+                        {processing ? "Publishing..." : "Publish Guide"}
                     </span>
                 </button>
             </form>

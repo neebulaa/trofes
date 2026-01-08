@@ -9,6 +9,7 @@ export default function Icon ({ name }) {
         chevronLeft: <i className="fa-solid fa-chevron-left" aria-hidden="true" />,
         menu: <i className="fa-solid fa-bars" aria-hidden="true" />,
         close: <i className="fa-solid fa-xmark" aria-hidden="true" />,
+        allergies: <i class="fa-solid fa-shrimp"></i>,
     };
 
     return (
