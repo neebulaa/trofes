@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\DashboardAllergyController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardDietaryPreferenceController;
 use App\Http\Controllers\DashboardGuideController;
 // Route::get('/', function () {
 //     return view('welcome');
@@ -80,12 +81,12 @@ Route::middleware('auth')->group(function(){
         Route::delete("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'destroy']);
 
         // dashboard dietary preferences
-        // Route::get("/dashboard/allergies", [DashboardAllergyController::class, 'index']);
-        // Route::get("/dashboard/allergies/create", [DashboardAllergyController::class, 'create']);
-        // Route::post("/dashboard/allergies", [DashboardAllergyController::class, 'store']);
-        // Route::get("/dashboard/allergies/{allergy}/edit", [DashboardAllergyController::class, 'edit']);
-        // Route::put("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'update']);
-        // Route::delete("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'destroy']);
+        Route::get("/dashboard/dietary-preferences", [DashboardDietaryPreferenceController::class, 'index']);
+        Route::get("/dashboard/dietary-preferences/create", [DashboardDietaryPreferenceController::class, 'create']);
+        Route::post("/dashboard/dietary-preferences", [DashboardDietaryPreferenceController::class, 'store']);
+        Route::get("/dashboard/dietary-preferences/{dietary_preference}/edit", [DashboardDietaryPreferenceController::class, 'edit']);
+        Route::put("/dashboard/dietary-preferences/{dietary_preference}", [DashboardDietaryPreferenceController::class, 'update']);
+        Route::delete("/dashboard/dietary-preferences/{dietary_preference}", [DashboardDietaryPreferenceController::class, 'destroy']);
     });
 });
 

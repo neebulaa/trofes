@@ -26,12 +26,6 @@
     cursor: pointer;
 }
 
-#login .logo img:hover,
-#sign-up .logo img:hover,
-#onboarding .logo img:hover {
-    transform: scale(1.08) rotate(4deg);
-}
-
 #login h2,
 #sign-up h2,
 #onboarding h2 {

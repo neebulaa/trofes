@@ -16,6 +16,7 @@ export default function Sidebar({ collapsed, mobileOpen, onToggleCollapsed, onCl
         { type: "link", label: "Home", href: "/dashboard", icon: "home" },
         { type: "link", label: "Guides", href: "/dashboard/guides", icon: "guides" },
         { type: "link", label: "Allergies", href: "/dashboard/allergies", icon: "allergies" },
+        { type: "link", label: "Dietary", href: "/dashboard/dietary-preferences", icon: "diet" },
     ], []);
 
     return (
@@ -30,13 +31,13 @@ export default function Sidebar({ collapsed, mobileOpen, onToggleCollapsed, onCl
         <div className="dash-sidebarTop">
             <Link href="/">
                 <div className="dash-brand">
-                    <div className="dash-brand-logo">
-                            <img src="/assets/logo/logo-transparent.png" alt="Trofes Logo Dashboard" />
+                    <div className="dash-brand-logo logo">
+                        <img src="/assets/logo/logo-transparent.png" alt="Trofes Logo Dashboard" />
                     </div>
 
                     <div className="dash-brand-text">
                         <h3 className="">Trofes</h3>
-                        <span className="text-muted">Dashboard</span>
+                        <span className="text-muted">Admin Dashboard</span>
                     </div>
                 </div>
             </Link>

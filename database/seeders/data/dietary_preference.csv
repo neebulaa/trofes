@@ -1,10 +1,10 @@
-dietary_preference_id,diet_code,diet_name
-1,halal,Halal
-2,lactose_free,Lactose Free
-3,low_carb,Low Carb
-4,weight_loss,Weight Loss
-5,high_protein,High Protein
-6,gluten_free,Gluten Free
-7,dairy_free,Dairy Free
-8,spicy,Spicy
-9,not_fried,Not Fried
+dietary_preference_id,diet_code,diet_name,diet_desc
+1,halal,Halal,Permitted under Islamic law
+2,lactose_free,Lactose Free,No milk sugars present
+3,low_carb,Low Carb,Minimizes sugars and grains
+4,weight_loss,Weight Loss,Supports calorie reduction goals
+5,high_protein,High Protein,Emphasizes protein-rich ingredients
+6,gluten_free,Gluten Free,Excludes wheat and barley
+7,dairy_free,Dairy Free,Contains no milk products
+8,spicy,Spicy,Contains hot or pungent flavors
+9,not_fried,Not Fried,Prepared without deep-frying

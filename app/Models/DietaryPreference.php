@@ -12,4 +12,9 @@ class DietaryPreference extends Model
     public function getPublicImageAttribute(){
         return $this->image ? asset('storage') . '/' . $this->image : asset('assets/sample-images/default-image.png');
     }
+
+    public function getRouteKeyName()
+    {
+        return 'diet_code';
+    }
 }

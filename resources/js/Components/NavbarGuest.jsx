@@ -19,10 +19,12 @@ export default function Navbar() {
         <header>
             <nav className={`container nav ${open ? "nav-open" : ""}`}>
                 <div className="logo">
-                    <img
-                        src="/assets/logo/logo-transparent.png"
-                        alt="Trofes Logo"
-                    />
+                    <Link href="/">
+                        <img
+                            src="/assets/logo/logo-transparent.png"
+                            alt="Trofes Logo"
+                        />
+                    </Link>
                 </div>
                 <div className="nav-content">
                     <NavLinks url={url} handleNavigate={handleNavigate} />

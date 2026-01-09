@@ -58,7 +58,7 @@ export default function Allergies({ allergies }) {
                     {allergies.data.map((allergy) => (
                         <tr key={allergy.allergy_code}>
                             <td>
-                                <div className="crud-image">
+                                <div className="crud-image crud-image-contain">
                                     <img
                                         src={allergy.public_image}
                                         alt={allergy.allergy_name}

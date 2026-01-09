@@ -18,14 +18,24 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
         User::create([
             "full_name" => "Admin 7DS",
-            "password" => "sevendeadlysins",
-            "username" => "sevendeadlysins",
-            "email" => "sevendeadlysins@gmail.com",
-            "phone" => "089694636303",
+            "password" => "trofesadmin",
+            "username" => "trofesadmin",
+            "email" => "trofesadmin@gmail.com",
+            "phone" => "+6289694636303",
             "bio" => "There is no mercy for light",
             "birth_date" => "2006-03-18",
-            
             "is_admin" => true
+        ]);
+
+        User::create([
+            "full_name" => "Guest 7DS",
+            "password" => "trofesguest",
+            "username" => "trofesguest",
+            "email" => "trofesguest@gmail.com",
+            "phone" => "+6289694636302",
+            "bio" => "There is no mercy for light",
+            "birth_date" => "2006-03-18",
+            "is_admin" => false
         ]);
         $this->call([
             GuideSeeder::class,

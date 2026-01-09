@@ -60,10 +60,14 @@
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    display: grid;
-    place-items: center;
     font-weight: 700;
     box-shadow: 0 10px 25px rgba(47, 178, 72, 0.18);
+}
+
+.dash-brand-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .dash-brand-text {
@@ -578,6 +582,10 @@
 .crud-image-wide {
     width: 80px;
     height: 60px;
+}
+
+.crud-image.crud-image-contain img {
+    object-fit: contain;
 }
 
 .crud-image img {

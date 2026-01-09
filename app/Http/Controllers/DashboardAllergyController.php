@@ -53,7 +53,7 @@ class DashboardAllergyController extends Controller
     public function store(Request $request){
         $validated = $request->validate([
             'allergy_name' => ['required', 'string', 'max:255'],
-            'examples' => ['nullable', 'string', 'max:255'],
+            'examples' => ['required', 'string', 'max:255'],
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
@@ -76,7 +76,7 @@ class DashboardAllergyController extends Controller
         $allergy = Allergy::create([
             'allergy_name' => $validated['allergy_name'],
             'allergy_code' => $allergyCode,
-            'examples' => $validated['examples'] ?? null,
+            'examples' => $validated['examples'],
             'image' => $imagePath,
         ]);
 
@@ -95,7 +95,7 @@ class DashboardAllergyController extends Controller
     public function update(Request $request, Allergy $allergy){
         $validated = $request->validate([
             'allergy_name' => ['required', 'string', 'max:255'],
-            'examples' => ['nullable', 'string', 'max:255'],
+            'examples' => ['required', 'string', 'max:255'],
             'image' => [
                 'nullable',
                 'required_if:image_removed,1',
@@ -120,14 +120,14 @@ class DashboardAllergyController extends Controller
         $counter = 1;
         $originalCode = $allergyCode;
         
-        while (Allergy::where('allergy_code', $allergyCode)->exists()) {
+        while (Allergy::where('allergy_code', $allergyCode)->where('allergy_id', '!=', $allergy->allergy_id)->exists()) {
             $allergyCode = $originalCode . '_' . $counter;
             $counter++;
         }
 
         $allergy->update([
             'allergy_name' => $validated['allergy_name'],
-            'examples' => $validated['examples'] ?? null,
+            'examples' => $validated['examples'],
             'allergy_code' => $allergyCode,
             'image' => $validated['image'] ?? $allergy->image,
         ]);

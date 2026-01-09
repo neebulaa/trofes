@@ -50,7 +50,10 @@ export default function DietaryPreferencesSetup({ dietary_preferences, handleNex
                                 />
                             </div>
 
-                            <p>{preference.diet_name}</p>
+                            <p className="pref-item-name">{preference.diet_name}</p>
+                            <div className="pref-item-desc">
+                                {preference.diet_desc}
+                            </div>
                         </div>
                     )
                 })}

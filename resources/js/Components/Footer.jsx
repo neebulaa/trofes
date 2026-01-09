@@ -3,7 +3,7 @@ export default function Footer() {
     return (
         <footer id="footer">
             <div className="container footer-center">
-                <div className="footer-logo">
+                <div className="footer-logo logo">
                     <Link href="/">
                         <img
                             src="/assets/logo/logo-transparent.png"

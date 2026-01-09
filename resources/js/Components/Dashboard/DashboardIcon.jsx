@@ -10,11 +10,12 @@ export default function Icon ({ name }) {
         menu: <i className="fa-solid fa-bars" aria-hidden="true" />,
         close: <i className="fa-solid fa-xmark" aria-hidden="true" />,
         allergies: <i class="fa-solid fa-shrimp"></i>,
+        diet: <i class="fa-regular fa-lemon"></i>
     };
 
     return (
         <span className="dash-ic" aria-hidden="true">
-        {map[name] ?? <i className="fa-solid fa-circle" aria-hidden="true" />}
+            {map[name] ?? <i className="fa-solid fa-circle" aria-hidden="true" />}
         </span>
     );
 };

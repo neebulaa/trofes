@@ -107,6 +107,14 @@ img {
     display: block;
 }
 
+.logo img {
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.08) rotate(4deg);
+}
+
 input, textarea, select {
     resize: none;
     font-size: inherit;
