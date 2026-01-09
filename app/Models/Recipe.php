@@ -9,10 +9,13 @@ class Recipe extends Model
     protected $primaryKey = 'recipe_id';
 
     protected $guarded = ['recipe_id'];
-    protected $appends = ['total_ingredient', 'public_image'];
+    protected $appends = ['total_ingredient', 'public_image', 'is_liked', 'likes_count'];
 
-    public function getPublicImageAttribute(){
-        return $this->image ? asset('assets/food-images') . '/' . $this->image . '.jpg' : asset('assets/sample-images/default-image.png');
+    public function getPublicImageAttribute()
+    {
+        return $this->image 
+            ? asset('assets/food-images') . '/' . $this->image . '.jpg' 
+            : asset('assets/sample-images/default-image.png');
     }
 
     public function dietaryPreferences()
@@ -25,7 +28,8 @@ class Recipe extends Model
         return $this->belongsToMany(Allergy::class, 'recipe_allergies', 'recipe_id', 'allergy_id');
     }
 
-    public function getTotalIngredientAttribute(){
+    public function getTotalIngredientAttribute()
+    {
         return $this->hasMany(RecipeIngredient::class, 'recipe_id', 'recipe_id')->count();
     }
 
@@ -37,6 +41,22 @@ class Recipe extends Model
     public function likes()
     {
         return $this->hasMany(LikeRecipe::class, 'recipe_id', 'recipe_id');
+    }
+
+    public function getIsLikedAttribute()
+    {
+        if (!auth()->check()) {
+            return false;
+        }
+        
+        return $this->likes()
+            ->where('user_id', auth()->id())
+            ->exists();
+    }
+
+    public function getLikesCountAttribute()
+    {
+        return $this->likes()->count();
     }
 
     public function getRouteKeyName()

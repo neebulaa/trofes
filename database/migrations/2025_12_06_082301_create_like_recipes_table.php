@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users', 'user_id')->onUpdate('cascade')->onDelete('cascade');
             $table->dateTime('liked_at')->default(now());
             $table->timestamps();
+
+            $table->unique(['recipe_id', 'user_id']);
         });
     }
 

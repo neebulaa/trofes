@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\LikeRecipe;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
@@ -37,6 +38,7 @@ class DatabaseSeeder extends Seeder
             "birth_date" => "2006-03-18",
             "is_admin" => false
         ]);
+
         $this->call([
             GuideSeeder::class,
             AllergySeeder::class,
@@ -46,6 +48,26 @@ class DatabaseSeeder extends Seeder
             RecipeIngredientSeeder::class,
             RecipeAllergySeeder::class,
             RecipeDietaryPreferenceSeeder::class,
+        ]);
+
+        LikeRecipe::create([
+            'user_id' => 11,
+            'recipe_id' => 1,
+        ]);
+
+        LikeRecipe::create([
+            'user_id' => 11,
+            'recipe_id' => 2,
+        ]);
+
+        LikeRecipe::create([
+            'user_id' => 12,
+            'recipe_id' => 1,
+        ]);
+
+        LikeRecipe::create([
+            'user_id' => 12,
+            'recipe_id' => 4,
         ]);
     }
 }

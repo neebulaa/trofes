@@ -1,19 +1,22 @@
 <?php
 
-use App\Http\Controllers\GuideController;
 use Inertia\Inertia;
+use App\Models\Guide;
+use App\Models\Recipe;
+use App\Models\LikeRecipe;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\OnboardingController;
-use App\Models\Guide;
-use App\Models\Recipe;
-use App\Http\Controllers\Auth\GoogleAuthController;
-use App\Http\Controllers\DashboardAllergyController;
+use App\Http\Controllers\GuideController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DashboardDietaryPreferenceController;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\Api\LikeRecipeController;
 use App\Http\Controllers\DashboardGuideController;
+use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\DashboardAllergyController;
+use App\Http\Controllers\DashboardDietaryPreferenceController;
+
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -47,6 +50,10 @@ Route::middleware('auth')->group(function(){
         Route::get('/recipes/{recipe}', [RecipeController::class, 'show']);
         Route::get('/custom-search-recipes', [RecipeController::class, 'customSearchRecipes']);
         Route::post('/custom-search-recipes', [RecipeController::class, 'performCustomSearchRecipes']);
+
+        // like recipe
+        Route::post('/recipes/{recipe}/like', [LikeRecipeController::class, 'store']);
+        Route::delete('/recipes/{recipe}/like', [LikeRecipeController::class, 'destroy']);
     });
 
     // onboarding

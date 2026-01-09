@@ -83,7 +83,13 @@ class RecipeController extends Controller
         $filterType = $request->query('filter_type'); // popular/{ingredient}/{diet}/{no_allergy}
         $filterId = $request->query('filter_id'); // integer for ingredient/diet/no_allergy
 
-        $query = Recipe::query()->withCount('likes');
+        $query = Recipe::query()
+            ->withCount('likes')
+            ->when($request->user(), function ($q) use ($request) {
+                $q->withExists([
+                    'likes as liked_by_me' => fn ($qq) => $qq->where('user_id', $request->user()->user_id),
+                ]);
+            });
 
         if ($search) {
             $query->where(function ($q) use ($search) {

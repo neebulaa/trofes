@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import {Link} from '@inertiajs/react'
 const cardsData = [
     {
         id: 1,
@@ -52,7 +52,8 @@ export default function HeroCarousel({ recipes }) {
                         const pos = getPosition(index);
 
                         return (
-                            <article
+                            <Link
+                                href={`/recipes/${card.slug}`}
                                 key={card.recipe_id}
                                 className="food-card"
                                 style={{ "--x": pos }}
@@ -63,7 +64,7 @@ export default function HeroCarousel({ recipes }) {
                                         {card.title}
                                     </span>
                                 </div>
-                            </article>
+                            </Link>
                         );
                     })}
                 </div>
