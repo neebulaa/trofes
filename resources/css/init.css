@@ -263,8 +263,9 @@ select:focus,
     padding: 0;
 }
 
+/* for custom search recipes inference */
 .datalist-input:has(.input-group-identifier ~ .list-items) .input-group-identifier,
-.datalist-input:has(.input-group-identifier ~ .loading-text) {
+.datalist-input:has(.input-group-identifier ~ .loading-text) .input-group-identifier{
     border-bottom: 1px solid var(--neutral-500);
     border-radius: 6px 6px 0 0;
 }

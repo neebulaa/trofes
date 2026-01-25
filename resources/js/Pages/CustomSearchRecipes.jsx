@@ -372,7 +372,7 @@ export default function CustomSearchRecipes({
                             placeholder="Type dietary preference..."
                         />
 
-                    <CustomDatalist
+                        <CustomDatalist
                             useCamera={true}
                             label="Select Ingredients"
                             options={(ingredients || []).map((i) => ({
