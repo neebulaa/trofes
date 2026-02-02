@@ -1,0 +1,168 @@
+.cooking-timer {
+    background: var(--neutral-50);
+    color: var(--neutral-700);
+    min-height: 100vh;
+    padding: 2rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    position: fixed;
+    z-index: 100;
+    min-height: calc(100dvh - 80px);
+    top: 80px;
+    left: 0;
+    translate: -100%;
+    transition: translate 0.3s;
+    border-right: 1px solid var(--neutral-300);
+}
+
+.cooking-timer.open {
+    translate: 0;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.cooking-timer-toggler {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: .9rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    width: max-content;
+    background: var(--primary-700);
+    color: var(--white);
+    padding: .5rem 1rem;
+    border-radius: 8px 8px 0 0;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    translate: 59.30% -50%;
+    rotate: 90deg;
+}
+
+.cooking-timer-toggler i {
+    rotate: 180deg;
+    transition: rotate .3s
+}
+
+.cooking-timer.open .cooking-timer-toggler i {
+    rotate: 0deg;
+}
+
+.cooking-timer h2 {
+    margin-bottom: 2rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.wheel-wrapper {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.wheel-column {
+    width: 90px;
+    text-align: center;
+}
+
+.wheel-label {
+    font-size: 0.75rem;
+    color: var(--neutral-500);
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.wheel-mask {
+    position: relative;
+    height: 144px; /* 3 * 48px */
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--neutral-100);
+}
+
+.wheel-list {
+    height: 100%;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    padding: 3rem 0; /* 1 item top + 1 item bottom */
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.wheel-list::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.wheel-item {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: center;
+    font-size: 1.5rem;
+    color: var(--neutral-600);
+}
+
+.wheel-item.active {
+    color: var(--neutral-700);
+    font-size: 1.875rem;
+    font-weight: 600;
+}
+
+.wheel-highlight {
+    position: absolute;
+    top: 48px; /* middle item */
+    left: 0;
+    right: 0;
+    height: 48px;
+    border-top: 1px solid var(--neutral-300);
+    border-bottom: 1px solid var(--neutral-300);
+    pointer-events: none;
+}
+
+/* Clock */
+.clock-wrapper {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin-bottom: 2rem;
+}
+
+.clock-ring {
+    transform: rotate(90deg) rotateY(180deg);
+}
+
+.ring-bg {
+    fill: none;
+    stroke: var(--neutral-700);
+    stroke-width: 12;
+}
+
+.ring-progress {
+    fill: none;
+    stroke: var(--primary-600);
+    stroke-width: 12;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s linear;
+}
+
+.clock-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+}
