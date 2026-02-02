@@ -1,79 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "../../../css/CookingTimer.css";
 import CookingAlarm from "../../../../public/assets/sounds/cooking-alarm.mp3";
+import WheelColumn from "./WheelColumn.jsx";
 
 const ITEM_HEIGHT = 48;
 const REPEAT = 5;
 const CENTER_BLOCK = Math.floor(REPEAT / 2);
-
-function WheelColumn({ label, values, value, onChange }) {
-    const ref = useRef(null);
-    const isSyncing = useRef(false);
-
-    const repeated = useMemo(
-        () => Array.from({ length: REPEAT }).flatMap(() => values),
-        [values],
-    );
-
-    const centerIndex = useMemo(
-        () => CENTER_BLOCK * values.length + values.indexOf(value),
-        [values, value],
-    );
-
-    const [activeIndex, setActiveIndex] = useState(centerIndex);
-
-    useEffect(() => {
-        if (!ref.current) return;
-        ref.current.scrollTop = centerIndex * ITEM_HEIGHT;
-        setActiveIndex(centerIndex);
-    }, [centerIndex]);
-
-    const handleScroll = () => {
-        if (!ref.current || isSyncing.current) return;
-        isSyncing.current = true;
-
-        requestAnimationFrame(() => {
-            const listLength = values.length;
-            const scrollTop = ref.current.scrollTop;
-            const index = Math.round(scrollTop / ITEM_HEIGHT);
-
-            const valueIndex = ((index % listLength) + listLength) % listLength;
-            onChange(values[valueIndex]);
-            setActiveIndex(index);
-
-            const minIndex = listLength;
-            const maxIndex = listLength * (REPEAT - 2);
-            if (index < minIndex || index > maxIndex) {
-                ref.current.scrollTop =
-                    (CENTER_BLOCK * listLength + valueIndex) * ITEM_HEIGHT;
-                setActiveIndex(CENTER_BLOCK * listLength + valueIndex);
-            }
-
-            isSyncing.current = false;
-        });
-    };
-
-    return (
-        <div className="wheel-column">
-            <div className="wheel-label">{label}</div>
-            <div className="wheel-mask">
-                <div className="wheel-list" ref={ref} onScroll={handleScroll}>
-                    {repeated.map((v, i) => (
-                        <div
-                            key={`${v}-${i}`}
-                            className={`wheel-item ${
-                                i === activeIndex ? "active" : ""
-                            }`}
-                        >
-                            {String(v).padStart(2, "0")}
-                        </div>
-                    ))}
-                </div>
-                <div className="wheel-highlight" />
-            </div>
-        </div>
-    );
-}
 
 export default function CookingTimer() {
     const [open, setOpen] = useState(false);
@@ -99,6 +31,7 @@ export default function CookingTimer() {
     const [isAlarmPlaying, setIsAlarmPlaying] = useState(false);
 
     const audioRef = useRef(null);
+    const timerRef = useRef(null);
 
     useEffect(() => {
         const audio = new Audio(CookingAlarm);
@@ -165,6 +98,18 @@ export default function CookingTimer() {
         return () => clearInterval(id);
     }, [isRunning]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (timerRef.current && !timerRef.current.contains(event.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, []);
+
     const displayH = String(Math.floor(remaining / 3600)).padStart(2, "0");
     const displayM = String(Math.floor((remaining % 3600) / 60)).padStart(
         2,
@@ -178,9 +123,12 @@ export default function CookingTimer() {
     const dashOffset = circumference * (1 - progress);
 
     return (
-        <div className={`cooking-timer ${open ? " open" : ""}`}>
-            <div className="cooking-timer-toggler" onClick={() => setOpen(!open)}>
-                <i class="fa-solid fa-chevron-down"></i>
+        <div className={`cooking-timer ${open ? " open" : ""}`} ref={timerRef}>
+            <div
+                className="cooking-timer-toggler"
+                onClick={() => setOpen(!open)}
+            >
+                <i className="fa-solid fa-chevron-down"></i>
                 Open Cooking Timer
             </div>
 
@@ -189,18 +137,27 @@ export default function CookingTimer() {
             {mode === "set" ? (
                 <div className="wheel-wrapper">
                     <WheelColumn
+                        ITEM_HEIGHT={ITEM_HEIGHT}
+                        CENTER_BLOCK={CENTER_BLOCK}
+                        REPEAT={REPEAT}
                         label="HRS"
                         values={hoursList}
                         value={hours}
                         onChange={setHours}
                     />
                     <WheelColumn
+                        ITEM_HEIGHT={ITEM_HEIGHT}
+                        CENTER_BLOCK={CENTER_BLOCK}
+                        REPEAT={REPEAT}
                         label="MIN"
                         values={minutesList}
                         value={minutes}
                         onChange={setMinutes}
                     />
                     <WheelColumn
+                        ITEM_HEIGHT={ITEM_HEIGHT}
+                        CENTER_BLOCK={CENTER_BLOCK}
+                        REPEAT={REPEAT}
                         label="SEC"
                         values={secondsList}
                         value={seconds}
@@ -209,7 +166,7 @@ export default function CookingTimer() {
                 </div>
             ) : (
                 <div className="clock-wrapper">
-                    <svg className="clock-ring" width="280" height="280">
+                    <svg className="clock-ring" width="100%" height="100%" viewBox="0 0 280 280">
                         <circle
                             className="ring-bg"
                             cx="140"
@@ -241,7 +198,10 @@ export default function CookingTimer() {
                     </button>
                 ) : isCompleted ? (
                     <>
-                        <button className="btn btn-sm btn-fill" onClick={stopAlarm}>
+                        <button
+                            className="btn btn-sm btn-fill"
+                            onClick={stopAlarm}
+                        >
                             Snooze
                         </button>
                         <button className="btn btn-sm" onClick={resetTimer}>

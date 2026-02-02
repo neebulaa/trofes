@@ -26,25 +26,25 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: .9rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    margin-bottom: 1.5rem;
     cursor: pointer;
     width: max-content;
-    background: var(--primary-700);
+    background: var(--accent-info-600);
     color: var(--white);
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 8px 8px 0 0;
     position: absolute;
     top: 50%;
     right: 0;
-    translate: 59.30% -50%;
+    translate: 59.3% -50%;
     rotate: 90deg;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .cooking-timer-toggler i {
     rotate: 180deg;
-    transition: rotate .3s
+    transition: rotate 0.3s;
 }
 
 .cooking-timer.open .cooking-timer-toggler i {
@@ -105,13 +105,13 @@
     align-items: center;
     justify-content: center;
     scroll-snap-align: center;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: var(--neutral-600);
 }
 
 .wheel-item.active {
     color: var(--neutral-700);
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     font-weight: 600;
 }
 
@@ -140,7 +140,7 @@
 
 .ring-bg {
     fill: none;
-    stroke: var(--neutral-700);
+    stroke: var(--neutral-300);
     stroke-width: 12;
 }
 
@@ -157,12 +157,118 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2rem;
-    font-weight: 600;
-    letter-spacing: 2px;
+    font-size: 2.5rem;
+    font-weight: 700;
 }
 
 .controls {
     display: flex;
     gap: 1rem;
+}
+
+@media (max-width: 1200px) {
+    .cooking-timer h2 {
+        margin-bottom: 1rem;
+    }
+
+    .cooking-timer {
+        right: 0;
+        left: initial;
+        translate: 0 -100%;
+        min-height: max-content;
+        border-bottom: 1px solid var(--neutral-300);
+        border-radius: 0 0 0 8px;
+    }
+
+    .wheel-wrapper {
+        gap: 0rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .wheel-mask {
+        border-radius: 0;
+    }
+
+    .cooking-timer.open {
+        translate: 0;
+    }
+
+    .cooking-timer.open {
+        translate: 0;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .cooking-timer-toggler {
+        border-radius: 0 0 8px 8px;
+        position: absolute;
+        top: initial;
+        right: 50%;
+        bottom: 0;
+        translate: 50% 100%;
+        rotate: 0deg;
+        margin-bottom: 0;
+    }
+
+    .cooking-timer-toggler i {
+        rotate: 0deg;
+    }
+
+    .cooking-timer.open .cooking-timer-toggler i {
+        rotate: 180deg;
+    }
+
+    .clock-wrapper {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        margin-bottom: 1rem;
+    }
+
+    .clock-ring {
+        width: 220px;
+        height: 220px;
+    }
+
+    .clock-text {
+        font-size: 2.1rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .cooking-timer h2 {
+        font-size: 1.15rem;
+    }
+
+    .cooking-timer {
+        top: 73px;
+    }
+
+    .wheel-column {
+        width: 70px;
+        text-align: center;
+    }
+
+    .wheel-item {
+        font-size: 1.15rem;
+    }
+
+    .wheel-item.active {
+        font-size: 1.35rem;
+    }
+
+    .clock-wrapper {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin-bottom: 1rem;
+    }
+
+    .clock-ring {
+        width: 200px;
+        height: 200px;
+    }
+
+    .clock-text {
+        font-size: 1.8rem;
+    }
 }
