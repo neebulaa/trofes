@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Allergy;
+use App\Models\ActivityLog;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardAllergyController extends Controller
 {
@@ -80,6 +82,14 @@ class DashboardAllergyController extends Controller
             'image' => $imagePath,
         ]);
 
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'allergy.added',
+            'meta' => json_encode([
+                'allergy' => $allergy->allergy_name,
+            ]),
+        ]);
+
         return redirect('/dashboard/allergies')->with('flash', [
             'type' => 'success',
             'message' => 'Allergy created successfully.'
@@ -132,6 +142,14 @@ class DashboardAllergyController extends Controller
             'image' => $validated['image'] ?? $allergy->image,
         ]);
 
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'allergy.updated',
+            'meta' => json_encode([
+                'allergy' => $allergy->allergy_name,
+            ]),
+        ]);
+
         return redirect('/dashboard/allergies')->with('flash', [
             'type' => 'success',
             'message' => 'Allergy updated successfully.'
@@ -139,8 +157,14 @@ class DashboardAllergyController extends Controller
     }
 
     public function destroy(Allergy $allergy){
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'allergy.deleted',
+            'meta' => json_encode([
+                'allergy' => $allergy->allergy_name,
+            ]),
+        ]);
         $allergy->delete();
-
         return redirect('/dashboard/allergies')->with('flash', [
             'type' => 'success',
             'message' => 'Allergy deleted successfully.'

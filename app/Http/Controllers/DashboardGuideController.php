@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Guide;
+use App\Models\ActivityLog;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Mews\Purifier\Facades\Purifier;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -58,6 +60,14 @@ class DashboardGuideController extends Controller
             'image' => $imagePath,
             'admin_id' => auth()->id(),
             'published_at' => now(),
+        ]);
+
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'guide.added',
+            'meta' => json_encode([
+                'guide' => $guide->title,
+            ]),
         ]);
 
         return redirect('/dashboard/guides')
@@ -116,6 +126,14 @@ class DashboardGuideController extends Controller
             'image' => $validated['image'] ?? $guide->image,
         ]);
 
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'guide.updated',
+            'meta' => json_encode([
+                'guide' => $guide->title,
+            ]),
+        ]);
+
         return redirect('/dashboard/guides')
             ->with('flash', [
                 'type' => 'success',
@@ -128,7 +146,15 @@ class DashboardGuideController extends Controller
             Storage::disk('public')->delete($guide->image);
         }
 
-        $guide->delete();
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'guide.deleted',
+            'meta' => json_encode([
+                'guide' => $guide->title,
+            ]),
+        ]);
+
+    $guide->delete();
 
         return redirect('/dashboard/guides')
             ->with('flash', [

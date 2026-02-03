@@ -1,0 +1,171 @@
+.dash-home {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+/* Header */
+.dash-home__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.dash-home__title {
+    font-size: 1.9rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.dash-home__subtitle {
+    color: var(--neutral-600);
+    font-size: 0.95rem;
+}
+
+/* Stats */
+.dash-home__stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.dash-home__stat {
+    background: var(--white);
+    border: 1px solid var(--neutral-300);
+    border-radius: 14px;
+    padding: 1rem 1.15rem;
+}
+
+.dash-home__stat-label {
+    font-size: 0.85rem;
+    color: var(--neutral-600);
+}
+
+.dash-home__stat-value {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+/* Section Card */
+.dash-home__card {
+    background: var(--white);
+    border: 1px solid var(--neutral-300);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+}
+
+.dash-home__section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.dash-home__section-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.dash-home__link {
+    font-size: 0.85rem;
+    color: var(--primary-600);
+    font-weight: 500;
+}
+
+/* Meals */
+.dash-home__meals {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.dash-home__meal {
+    border: 1px solid var(--neutral-300);
+    border-radius: 12px;
+    padding: 1rem;
+    background: var(--neutral-50);
+}
+
+.dash-home__meal-title {
+    font-weight: 600;
+}
+
+.dash-home__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.6rem 0 0.75rem;
+}
+
+.dash-home__tag {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: var(--primary-100);
+    color: var(--primary-700);
+    font-weight: 500;
+}
+
+.dash-home__meal-meta {
+    font-size: 0.85rem;
+    color: var(--neutral-600);
+}
+
+/* Activity */
+.dash-home__activity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    font-size: 0.9rem;
+    color: var(--neutral-700);
+}
+
+.dash-home__activity-item {
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.dash-home__activity-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Actions */
+.dash-home__actions {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.dash-home__action-btn {
+    width: 100%;
+}
+
+/* Layout grid for last section */
+.dash-home__split {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    .dash-home__stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dash-home__meals {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .dash-home__stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .dash-home__split {
+        grid-template-columns: 2fr 1fr;
+    }
+}

@@ -12,7 +12,7 @@
 
 .crud-form {
     max-width: 600px;
-}
+}   
 
 .dash--sidebar-collapsed {
     grid-template-columns: var(--sidebar-w-collapsed) 1fr;

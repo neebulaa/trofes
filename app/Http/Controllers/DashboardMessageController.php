@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Message;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
 class DashboardMessageController extends Controller
@@ -30,6 +31,13 @@ class DashboardMessageController extends Controller
     }
 
     public function destroy(Request $request, Message $message){
+        ActivityLog::create([
+            'user_id' => null,
+            'action' => 'message.deleted',
+            'meta' => json_encode([
+                'name' => $message->name,
+            ]),
+        ]);
         $message->delete();
 
         return redirect()->back()->with('flash', [

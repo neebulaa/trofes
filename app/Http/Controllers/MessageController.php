@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use Inertia\Inertia;
 use App\Models\Message;
 use Illuminate\Http\Request;
@@ -20,6 +21,14 @@ class MessageController extends Controller
         ]);
 
         Message::create($validated);
+
+        ActivityLog::create([
+            'user_id' => null,
+            'action' => 'message.submitted',
+            'meta' => json_encode([
+                'name' => $validated['name'],
+            ]),
+        ]);
 
         return redirect()->back()->with('flash', [
             'type' => 'success',
