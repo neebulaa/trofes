@@ -1,6 +1,7 @@
 import DashboardLayout from "../../Layouts/DashboardLayout";
 import "../../../css/Dashboard/DashboardHome.css";
 import RecipeCard from "../../Components/RecipeCard";
+import { Link } from "@inertiajs/react";
 
 export default function Home({
     recipe_count,
@@ -101,15 +102,18 @@ export default function Home({
                             </h2>
                         </div>
                         <div className="dash-home__actions">
-                            <button className="btn btn-fill btn-sm dash-home__action-btn">
-                                Add New Recipe
-                            </button>
-                            <button className="btn btn-line btn-sm dash-home__action-btn">
-                                Update Dietary Tags
-                            </button>
-                            <button className="btn btn-line-white btn-sm dash-home__action-btn">
-                                View User Feedback
-                            </button>
+                            <Link href="/dashboard/roles" className="btn btn-fill btn-sm dash-home__action-btn">
+                                Change User Role
+                            </Link>
+                            <Link href="/dashboard/dietary-preferences/create" className="btn btn-line btn-sm dash-home__action-btn">
+                                Add New Dietary Preference
+                            </Link>
+                            <Link href="/dashboard/allergies" className="btn btn-line btn-sm dash-home__action-btn">
+                                View all Allergies
+                            </Link>
+                            <Link href="/dashboard/messages" className="btn btn-line btn-sm dash-home__action-btn">
+                                View User Message
+                            </Link>
                         </div>
                     </div>
                 </section>

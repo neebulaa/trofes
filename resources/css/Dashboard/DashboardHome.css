@@ -150,18 +150,22 @@
 }
 
 /* Responsive */
-@media (min-width: 768px) {
+@media (min-width: 540px) {
     .dash-home__stats {
         grid-template-columns: repeat(2, 1fr);
     }
 
     .dash-home__meals {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 1024px) {
     .dash-home__stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .dash-home__meals {
         grid-template-columns: repeat(3, 1fr);
     }
 

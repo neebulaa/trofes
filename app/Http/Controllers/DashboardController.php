@@ -15,7 +15,7 @@ class DashboardController extends Controller
 {
     public function index(){
         $latest_activity = ActivityLog::latest()
-            ->take(6)
+            ->take(4)
             ->get()
             ->map(function ($log) {
                 return ActivityLogFormatter::toText(
