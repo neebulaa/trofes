@@ -101,11 +101,11 @@ class NutrientsCalculatorController extends Controller
             'weight' => 'required|numeric|min:1|max:500',
             'height' => 'required|numeric|min:30|max:300',
             'activity_level' => 'required|string|in:LOW,MIDDLE,HIGH,VERY HIGH',
-            'goal' => 'required|string|in:LOSE,MAINTAIN,GAIN,MUSCLE',
-            'calories' => 'required|numeric',
-            'carbs_g' => 'required|numeric',
-            'protein_g' => 'required|numeric',
-            'fat_g' => 'required|numeric',
+            'goal' => 'nullable|string|in:LOSE,MAINTAIN,GAIN,MUSCLE',
+            'calories' => 'nullable|numeric',
+            'carbs_g' => 'nullable|numeric',
+            'protein_g' => 'nullable|numeric',
+            'fat_g' => 'nullable|numeric',
         ]);
 
         $age = $data['age'];
