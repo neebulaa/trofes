@@ -123,6 +123,11 @@ class RecipeController extends Controller
                     ]);
 
                 if (!$response->successful()) {
+                    // dd([
+                    //     'status' => $response->status(),
+                    //     'body' => $response->body(), 
+                    //     'json' => $response->json()
+                    // ]);
                     Log::warning('AI recommend failed', ['status' => $response->status()]);
                     throw new \Exception("AI API Down"); // Agar cache gak diisi random dan bakal coba lagi di refresh berikutnya
                     // return collect(); // no cache of error response body
@@ -219,6 +224,8 @@ class RecipeController extends Controller
                     ];
                 }
             } catch (\Throwable $e) {
+                // dd($recommendedIds);
+                // dd('random');
                 Log::warning('AI recommend exception', ['msg' => $e->getMessage()]);
                 return [
                     'data' => Recipe::inRandomOrder()->limit($limit)->get(),
