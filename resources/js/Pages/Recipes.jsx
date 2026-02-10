@@ -163,12 +163,12 @@ export default function Recipes({recipes, hero_recipes, recommended_recipes, rec
 
                 <div className="recipes-page-hero-right">
                     <div className="recipe-show">
-                        <div className={`recipe-show-card ${isVisible ? "in" : "out"}`} key={card.recipe_id}>
+                        <Link href={`/recipes/${card.slug}`} style={{ display: 'block' }} className={`recipe-show-card ${isVisible ? "in" : "out"}`} key={card.recipe_id}>
                             <img src={card.public_image} alt={card.title} />
                             <p className="recipe-card-badge for-name">
                                 <span className="badge-text">{card.title}</span>
                             </p>
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -217,11 +217,16 @@ export default function Recipes({recipes, hero_recipes, recommended_recipes, rec
             </div>
 
             <div className="recipe-filters mt-3">
-                <Dropdown
-                    options={categoryOptions}
-                    value={category}
-                    onChange={setCategory}
-                />
+                <div className="filters-sort">
+                    <span className="filters-text">
+                        Filter by:
+                    </span>
+                    <Dropdown
+                        options={categoryOptions}
+                        value={category}
+                        onChange={setCategory}
+                    />
+                </div>
 
                 <div className="filter-pills">
                     {recipe_filter_options.map((pill) => {

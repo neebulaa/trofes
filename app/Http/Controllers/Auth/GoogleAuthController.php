@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\ActivityLog;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
@@ -49,6 +50,14 @@ class GoogleAuthController extends Controller
         }
 
         Auth::login($user, true);
+
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'user.login',
+            'meta' => json_encode([
+                'username' => $user->username,
+            ]),
+        ]);
 
         if ($isNewUser) return redirect('/onboarding'); 
         else return redirect()->intended('/');

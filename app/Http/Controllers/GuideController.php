@@ -12,7 +12,7 @@ class GuideController extends Controller
         $search = $request->query('search');
         $perPage = $request->query('per_page', 9);
 
-        $query = Guide::query();
+        $query = Guide::query()->latest();
 
         if ($search) {
             $query->where(function ($q) use ($search) {

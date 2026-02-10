@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('dietary_preference_id');
             $table->string('diet_code')->unique();
             $table->string("diet_name");
+            $table->string('diet_desc')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });

@@ -91,7 +91,6 @@ class OnboardingController extends Controller
         return redirect('/');
     }
 
-
     public function onboarding(){
         return Inertia::render('Onboarding', [
             'allergies' => Allergy::all(),

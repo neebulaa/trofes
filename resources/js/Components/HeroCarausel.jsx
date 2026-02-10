@@ -1,14 +1,26 @@
 import { useEffect, useState } from "react";
-
+import { Link } from "@inertiajs/react";
 const cardsData = [
-    { id: 1, img: "/assets/sample-images/nasi hainan.jpg", label: "Nasi Hainan Tiongkok" },
+    {
+        id: 1,
+        img: "/assets/sample-images/nasi hainan.jpg",
+        label: "Nasi Hainan Tiongkok",
+    },
     { id: 2, img: "/assets/sample-images/sate ayam.jpg", label: "Sate Ayam" },
-    { id: 3, img: "/assets/sample-images/nasi lemak.jpg", label: "Nasi Lemak Malaysia" },
+    {
+        id: 3,
+        img: "/assets/sample-images/nasi lemak.jpg",
+        label: "Nasi Lemak Malaysia",
+    },
     { id: 4, img: "/assets/sample-images/ramen sapi.jpg", label: "Beef Ramen" },
-    { id: 5, img: "/assets/sample-images/chicken masala.jpg", label: "Chicken Masala" },
+    {
+        id: 5,
+        img: "/assets/sample-images/chicken masala.jpg",
+        label: "Chicken Masala",
+    },
 ];
 
-export default function HeroCarousel({recipes}) {
+export default function HeroCarousel({ recipes }) {
     const [activeIndex, setActiveIndex] = useState(2);
     const total = recipes.length;
 
@@ -40,16 +52,19 @@ export default function HeroCarousel({recipes}) {
                         const pos = getPosition(index);
 
                         return (
-                            <article
+                            <Link
+                                href={`/recipes/${card.slug}`}
                                 key={card.recipe_id}
                                 className="food-card"
                                 style={{ "--x": pos }}
                             >
                                 <img src={card.public_image} alt={card.title} />
                                 <div className="recipe-card-badge for-name">
-                                    <span className="badge-text">{card.title}</span>
+                                    <span className="badge-text">
+                                        {card.title}
+                                    </span>
                                 </div>
-                            </article>
+                            </Link>
                         );
                     })}
                 </div>

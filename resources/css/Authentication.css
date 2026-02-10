@@ -1,5 +1,5 @@
 #login, #sign-up, #onboarding {
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     background: var(--neutral-50);
 }
@@ -24,12 +24,6 @@
     margin-bottom: 1.5625rem;
     transition: .3s;
     cursor: pointer;
-}
-
-#login .logo img:hover,
-#sign-up .logo img:hover,
-#onboarding .logo img:hover {
-    transform: scale(1.08) rotate(4deg);
 }
 
 #login h2,
@@ -119,7 +113,6 @@
 /* google button */
 .btn.btn-google {
     width: 100%;
-    padding: 0.75rem;
     margin-top: .65rem;
     border: 1px solid #d1d1d1;
     display: flex;
@@ -214,24 +207,34 @@
 }
 
 /* RESPONSIVE */
-@media (max-width: 900px) {
+@media (max-width: 940px) {
     body {
         flex-direction: column;
         overflow-y: auto;
+    }
+
+    #login, 
+    #sign-up,
+    #onboarding {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     #login .auth-left,
     #sign-up .auth-left,
     #onboarding .auth-left{
         width: 90%;
-        max-width: 500px;
-        background: rgba(255,255,255,.95);
-        padding: 2.1875rem;
+        max-width: max-content;
+        max-height: max-content;
+        background: var(--neutral-50);
+        padding: 3rem;
         border-radius: 1.125rem;
         margin: 2.5rem auto;
         position: relative;
         z-index: 3;
         backdrop-filter: blur(6px);
+        box-shadow: 0 0 15px rgba(0,0,0,.05);
     }
 
     .auth-right {

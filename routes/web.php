@@ -1,32 +1,43 @@
 <?php
 
-use App\Http\Controllers\GuideController;
 use Inertia\Inertia;
+use App\Models\Guide;
+use App\Models\Recipe;
+use App\Models\LikeRecipe;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\OnboardingController;
-use App\Models\Guide;
-use App\Models\Recipe;
-use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\GuideController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\YoutubeController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\Api\LikeRecipeController;
+use App\Http\Controllers\DashboardGuideController;
+use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\DashboardAllergyController;
+use App\Http\Controllers\NutrientsCalculatorController;
+use App\Http\Controllers\DashboardRoleManagementController;
+use App\Http\Controllers\DashboardDietaryPreferenceController;
+use App\Http\Controllers\DashboardMessageController;
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
 Route::get('/', function(){
-
-
     return Inertia::render('Home', [
         'guides' => Guide::all()->take(3),
         'recipes' => Recipe::inRandomOrder()->limit(5)->get(),
     ]);
 })->name('home');
 
-Route::get('/contact-us', function(){
-    return Inertia::render('ContactUs');
-});
+Route::get('/contact-us', [MessageController::class, 'index']);
+Route::post('/contact-us', [MessageController::class, 'store']);
+
+Route::get('/nutrients-calculator', [NutrientsCalculatorController::class, 'index'])->name('nutrients-calculator');
+Route::post('/nutrients-calculator', [NutrientsCalculatorController::class, 'findRecommendation']);
 
 Route::middleware('auth')->group(function(){
 
@@ -46,6 +57,10 @@ Route::middleware('auth')->group(function(){
         Route::get('/recipes/{recipe}', [RecipeController::class, 'show']);
         Route::get('/custom-search-recipes', [RecipeController::class, 'customSearchRecipes']);
         Route::post('/custom-search-recipes', [RecipeController::class, 'performCustomSearchRecipes']);
+
+        // like recipe
+        Route::post('/recipes/{recipe}/like', [LikeRecipeController::class, 'store']);
+        Route::delete('/recipes/{recipe}/like', [LikeRecipeController::class, 'destroy']);
     });
 
     // onboarding
@@ -57,6 +72,47 @@ Route::middleware('auth')->group(function(){
     
     // logout / sign out
     Route::post('/sign-out', [AuthController::class, 'signOut']);
+
+    // dashboard
+    Route::middleware('is_admin')->group(function(){
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+        // dashboard guides
+        Route::get('/dashboard/guides', [DashboardGuideController::class, 'index']);
+        Route::get('/dashboard/guides/create', [DashboardGuideController::class, 'create']);
+        Route::post('/dashboard/guides', [DashboardGuideController::class, 'store']);
+        Route::get('/dashboard/guides/{guide}', [DashboardGuideController::class, 'show']);
+        Route::get('/dashboard/guides/{guide}/edit', [DashboardGuideController::class, 'edit']);
+        Route::put('/dashboard/guides/{guide}', [DashboardGuideController::class, 'update']);
+        Route::delete('/dashboard/guides/{guide}', [DashboardGuideController::class, 'destroy']);
+
+        // dashboard allergies
+        Route::get("/dashboard/allergies", [DashboardAllergyController::class, 'index']);
+        Route::get("/dashboard/allergies/create", [DashboardAllergyController::class, 'create']);
+        Route::post("/dashboard/allergies", [DashboardAllergyController::class, 'store']);
+        Route::get("/dashboard/allergies/{allergy}/edit", [DashboardAllergyController::class, 'edit']);
+        Route::put("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'update']);
+        Route::delete("/dashboard/allergies/{allergy}", [DashboardAllergyController::class, 'destroy']);
+
+        // dashboard dietary preferences
+        Route::get("/dashboard/dietary-preferences", [DashboardDietaryPreferenceController::class, 'index']);
+        Route::get("/dashboard/dietary-preferences/create", [DashboardDietaryPreferenceController::class, 'create']);
+        Route::post("/dashboard/dietary-preferences", [DashboardDietaryPreferenceController::class, 'store']);
+        Route::get("/dashboard/dietary-preferences/{dietary_preference}/edit", [DashboardDietaryPreferenceController::class, 'edit']);
+        Route::put("/dashboard/dietary-preferences/{dietary_preference}", [DashboardDietaryPreferenceController::class, 'update']);
+        Route::delete("/dashboard/dietary-preferences/{dietary_preference}", [DashboardDietaryPreferenceController::class, 'destroy']);
+
+        // role management
+        Route::get('/dashboard/roles', [DashboardRoleManagementController::class, 'index']);
+        Route::post('/dashboard/roles/assign', [DashboardRoleManagementController::class, 'assign']);
+
+        // messages
+        Route::get('/dashboard/messages', [DashboardMessageController::class, 'index']);
+        Route::delete('/dashboard/messages/{message}', [DashboardMessageController::class, 'destroy']);
+    });
+
+    // youtube search
+    Route::get('/youtube/search', [YoutubeController::class, 'search']);
 });
 
 Route::middleware('guest')->group(function(){

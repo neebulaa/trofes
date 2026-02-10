@@ -77,7 +77,7 @@ class User extends Authenticatable
 
     public function likedRecipes()
     {
-        return $this->belongsToMany(Recipe::class, 'like_recipes', 'user_id', 'recipe_id');
+        return $this->belongsToMany(Recipe::class, 'like_recipes', 'user_id', 'recipe_id')->withTimestamps();
     }
 
     public function sendPasswordResetNotification($token)

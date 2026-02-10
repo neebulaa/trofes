@@ -6,7 +6,7 @@ export default function Guides({guides}){
         <section className="guides" id="guides">
             <div className="container">
                 <div className="guides-head">
-                    <h2 className="guides-title">Panduan  Untukmu</h2>
+                    <h2 className="guides-title">Healty guides for you</h2>
                     <img
                         src="/assets/graphics/highlight.png"
                         alt=""
@@ -15,14 +15,14 @@ export default function Guides({guides}){
                     <div className="guides-desc">
                         <div className="guides-cta-box">
                             <p className="about-text">
-                                Pahami lebih banyak tentang nutrisi yang Anda butuhkan untuk mendukung gaya hidup sehat dan membuat setiap pilihan makanan lebih tepat.
+                                Understand more about the nutrients you need to support a healthy lifestyle. Make every food choice more accurate and easier to decide for your body.
                             </p>
-                            <Link href="/guides" className="btn btn-line">Pelajari Lebih Banyak</Link>
+                            <Link href="/guides" className="btn btn-line">Learn more </Link>
                         </div>
                     </div>
                 </div>
 
-                <div className="guides-grid">
+                <div className="guides-page-list">
                     {guides.map(guide => (
                         <GuideCard guide={guide} key={guide.guide_id}/>
                     ))}

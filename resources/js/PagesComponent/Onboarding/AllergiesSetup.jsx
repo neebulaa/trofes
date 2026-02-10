@@ -45,7 +45,7 @@ export default function AllergiesSetup({ allergies, handleNextScreen, user_aller
 
                             <div className="icon-box">
                                 <img
-                                    src={allergy.image}
+                                    src={allergy.public_image}
                                     alt={allergy.allergy_name}
                                 />
                             </div>

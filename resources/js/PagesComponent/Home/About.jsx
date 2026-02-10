@@ -8,29 +8,29 @@ export default function About(){
                 className="about-scribble"
             />
             <h2 className="about-title">
-                Rekomendasi Makanan yang Cerdas Membuat Hidangan Lebih Mudah
+                Personalized Smart Food Recommendations to Simplify Your Daily Prep and Make Every Meal Easier
             </h2>
 
 
             <div className="about-bottom">
                 <div className="stats">
-                <div className="stat">
-                    <div className="label">Jumlah Resep</div>
-                    <div className="value">13K +</div>
-                </div>
-                <div className="stat">
-                    <div className="label">Jumlah Bahan Dikenali</div>
-                    <div className="value">10K +</div>
-                </div>
+                    <div className="stat">
+                        <div className="label">Number of Recipes</div>
+                        <div className="value">4K+</div>
+                    </div>
+                    <div className="stat">
+                        <div className="label">Amount of ingredients Recognized</div>
+                        <div className="value">100+</div>
+                    </div>
                 </div>
 
                 <div className="about-cta">
                     <p>
-                    Trofes  menjadi asisten gizi pintar yang memberi rekomendasi makanan sesuai kebutuhanmu. Dengan saran yang tepat dan mudah dipahami, kami membantu membuat setiap hidangan lebih sehat, praktis, dan sederhana untuk dipilih setiap hari.
+                    Trofes is an intelligent nutrition partner designed to deliver food recommendations that fit your lifestyle and goals. We empower you to make healthier decisions through simple, actionable insights that take the guesswork out of every meal.
                     </p>
 
                     <a className="btn btn-line" href="#hubungi">
-                        Hubungi Kami Sekarang
+                        Contact us now
                     </a>
                 </div>
             </div>

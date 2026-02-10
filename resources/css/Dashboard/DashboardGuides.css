@@ -1,0 +1,29 @@
+.crud-guide-card {
+    display: flex;
+    flex-direction: column;
+    padding-block: 2rem;
+}
+
+.crud-guide-card .guide-detail-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 350px;
+    object-fit: contain;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    background: var(--neutral-100);
+}
+
+.guide-title {
+    margin-top: 1rem;
+    font-size: 1.9rem;
+    font-weight: 600;
+}
+
+.crud-guide-card a {
+    color: var(--primary-700);
+    text-decoration: underline;
+}
+
+

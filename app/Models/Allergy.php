@@ -10,6 +10,10 @@ class Allergy extends Model
     protected $guarded = ['allergy_id'];
     protected $appends = ['public_image'];
     public function getPublicImageAttribute(){
-        return $this->image ? asset('assets/allergy-images') . '/' . $this->image : null;
+        return $this->image ? asset('storage') . '/' . $this->image : asset('assets/sample-images/default-image.png');
+    }
+
+    public function getRouteKeyName(){
+        return 'allergy_code';
     }
 }

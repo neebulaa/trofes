@@ -68,11 +68,11 @@ export default function Guides({ guides, filters }) {
         <section className="guides-page" id="guides-page">
             <div className="container guides-container">
                 <h1 className="guides-page-title">
-                    Ayo <span className="green-block">Belajar</span> Bersama
+                    Lets <span className="green-block">Study</span> Together
                 </h1>
 
                 <p className="guides-page-about">
-                    Temukan berbagai tutorial yang telah kami siapkan untuk membantu Anda memahami setiap langkah dengan lebih mudah. Mulai dari panduan dasar hingga tips lanjutan, semuanya dirancang agar proses belajar terasa ringan, jelas, dan menyenangkan.
+                    Discover various tutorials prepared to assist you in understanding each step more effectively.
                 </p>
 
                 <div className="search-and-filters">

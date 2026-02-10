@@ -7,16 +7,20 @@ export default function GuideDetail({guide, next_guide, prev_guide, other_guides
         <section className="guide-detail" id="guide-detail">
             <div className="container guide-detail-container">
                 <div className="guide-content">
-                    <div className="guide-detail-date">
-                        <Link href="/guides"><i className="fa-solid fa-chevron-left"></i></Link>
-                        <i className="fa-regular fa-calendar"></i> {new Date(guide.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    </div>
+                    <Link href="/guides">
+                        <div className="guide-detail-date">
+                                <i className="fa-solid fa-chevron-left"></i>
+                            <i className="fa-regular fa-calendar"></i> {new Date(guide.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </div>
+                    </Link>
                     <h1 className="guide-detail-title">{guide.title}</h1>
                     <div className="guide-detail-image">
                         <img src={guide.public_image} alt={guide.title} />
                     </div>
 
-                    <p className="guide-detail-content">{guide.content}</p>
+                    <p className="guide-detail-content"
+                        dangerouslySetInnerHTML={{ __html: guide.content }}
+                    />
 
                     <div className="guide-detail-navigation">
                         <h2>Selesai. Ayo lanjut <span className="green-block">Belajar!</span></h2>
@@ -35,6 +39,7 @@ export default function GuideDetail({guide, next_guide, prev_guide, other_guides
                         </div>
                     </div>
                 </div>
+                
                 <div className="guide-other">
                     <h2 className="guide-other-title">Panduan Lainnya</h2>
                     <div className="guide-other-list">

@@ -3,7 +3,7 @@
 }
 
 #not-found .hero-title {
-    font-size: clamp(4rem, 10vw, 6rem);
+    font-size: clamp(4rem, 10vw, 5rem);
     font-weight: 600;
     line-height: 1.1;
     max-width: 800px;
@@ -48,5 +48,11 @@
 
     .hero-title-bottom {
         margin-left: 0rem;
+    }
+}
+
+@media (max-width: 768px) {
+    #not-found .hero-title {
+        font-size: clamp(3rem, 10vw, 4rem);
     }
 }

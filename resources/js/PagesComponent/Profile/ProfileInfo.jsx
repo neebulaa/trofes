@@ -1,7 +1,7 @@
 export default function ProfileInfo({user, handleEditProfile}){
     function getPronouns(gender){
-        if(gender === 'male') return 'he/him'
-        if(gender == 'female') return 'she/her'
+        if(gender === 'male') return ' - he/him'
+        if(gender == 'female') return ' - she/her'
         return '';
     }
 
@@ -18,7 +18,7 @@ export default function ProfileInfo({user, handleEditProfile}){
                 <h2 className="profile-fullname">{user.full_name}</h2>
                 <h3 className="profile-username">
                     {user.username}
-                    {user.gender != 'silent' ? ' - ' + getPronouns(user.gender) : ''}
+                    {user.gender && user.gender != 'silent' ? ' - ' + getPronouns(user.gender) : ''}
                 </h3>
             </div>
         </div>

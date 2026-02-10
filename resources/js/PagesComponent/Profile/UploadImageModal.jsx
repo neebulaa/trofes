@@ -1,42 +1,42 @@
-import Cropper from 'react-easy-crop'
-import { useState, useCallback, useMemo } from 'react'
-import { router } from '@inertiajs/react'
+import Cropper from "react-easy-crop";
+import { useState, useCallback, useMemo } from "react";
+import { router } from "@inertiajs/react";
 
 export default function UploadImageModal({ file, onSaved, onClose }) {
-    const imageUrl = useMemo(() => URL.createObjectURL(file), [file])
+    const imageUrl = useMemo(() => URL.createObjectURL(file), [file]);
 
-    const [crop, setCrop] = useState({ x: 0, y: 0 })
-    const [zoom, setZoom] = useState(1)
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
-    const [isProcessing, setIsProcessing] = useState(false)
-    const [error, setError] = useState(null)
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [error, setError] = useState(null);
 
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-        setCroppedAreaPixels(croppedAreaPixels)
-    }, [])
+        setCroppedAreaPixels(croppedAreaPixels);
+    }, []);
 
     async function handleSave() {
         if (!croppedAreaPixels) {
-            setError('Please adjust the image first')
-            return
+            setError("Please adjust the image first");
+            return;
         }
 
-        setIsProcessing(true)
-        setError(null)
+        setIsProcessing(true);
+        setError(null);
 
         try {
-            const canvas = document.createElement('canvas')
-            const img = new Image()
-            img.src = imageUrl
+            const canvas = document.createElement("canvas");
+            const img = new Image();
+            img.src = imageUrl;
 
             await new Promise((resolve) => {
-                img.onload = resolve
-            })
+                img.onload = resolve;
+            });
 
-            canvas.width = croppedAreaPixels.width
-            canvas.height = croppedAreaPixels.height
+            canvas.width = croppedAreaPixels.width;
+            canvas.height = croppedAreaPixels.height;
 
-            const ctx = canvas.getContext('2d')
+            const ctx = canvas.getContext("2d");
             ctx.drawImage(
                 img,
                 croppedAreaPixels.x,
@@ -47,38 +47,40 @@ export default function UploadImageModal({ file, onSaved, onClose }) {
                 0,
                 croppedAreaPixels.width,
                 croppedAreaPixels.height
-            )
+            );
 
             // convert canvas ke blob (currently CAPE)
             canvas.toBlob(async (blob) => {
                 if (!blob) {
-                    setError('Failed to create image')
-                    setIsProcessing(false)
-                    return
+                    setError("Failed to create image");
+                    setIsProcessing(false);
+                    return;
                 }
 
-                const formData = new FormData()
-                formData.append('profile_image', blob, 'profile.jpg')
+                const formData = new FormData();
+                formData.append("profile_image", blob, "profile.jpg");
 
                 // harus pakai router post nih kalau useForm nga bisa gambar dari canvas
-                router.post('/profile/update-profile-image', formData, {
+                router.post("/profile/update-profile-image", formData, {
                     forceFormData: true,
                     onSuccess: () => {
-                        const previewUrl = URL.createObjectURL(blob)
-                        onSaved(previewUrl)
-                        onClose()
+                        const previewUrl = URL.createObjectURL(blob);
+                        onSaved(previewUrl);
+                        onClose();
                     },
                     onError: (errors) => {
-                        setError(errors.profile_image || 'Failed to upload image')
+                        setError(
+                            errors.profile_image || "Failed to upload image"
+                        );
                     },
                     onFinish: () => {
-                        setIsProcessing(false)
-                    }
-                })
-            }, 'image/jpeg')
+                        setIsProcessing(false);
+                    },
+                });
+            }, "image/jpeg");
         } catch (err) {
-            setError('An error occurred while processing the image')
-            setIsProcessing(false)
+            setError("An error occurred while processing the image");
+            setIsProcessing(false);
         }
     }
 
@@ -86,12 +88,11 @@ export default function UploadImageModal({ file, onSaved, onClose }) {
         <div className="modal-container">
             <div className="modal-content">
                 <h2>Crop your new profile picture</h2>
-                
+
                 <div className="instructions">
                     <small>
-                        <i className="fa-solid fa-arrows-up-down-left-right"></i> 
-                        Drag to move |
-                        <i className="fa-solid fa-mouse"></i> 
+                        <i className="fa-solid fa-arrows-up-down-left-right"></i>
+                        Drag to move |<i className="fa-solid fa-mouse"></i>
                         Scroll to zoom
                     </small>
                 </div>
@@ -114,14 +115,19 @@ export default function UploadImageModal({ file, onSaved, onClose }) {
                         objectFit="contain" // bagaimana gambar fit dlm container
                     />
                 </div>
-                
+
                 {error && <small className="error-text">{error}</small>}
-                <button 
-                type="button"
-                className="btn btn-sm btn-muted" onClick={() => { setCrop({ x: 0, y: 0 }); setZoom(1); }}>
+                <button
+                    type="button"
+                    className="btn btn-sm btn-muted reset-btn"
+                    onClick={() => {
+                        setCrop({ x: 0, y: 0 });
+                        setZoom(1);
+                    }}
+                >
                     Reset Position
                 </button>
-                
+
                 <div className="modal-actions">
                     <button
                         type="button"
@@ -129,7 +135,7 @@ export default function UploadImageModal({ file, onSaved, onClose }) {
                         onClick={handleSave}
                         disabled={isProcessing || !croppedAreaPixels}
                     >
-                        {isProcessing ? 'Saving...' : 'Save'}
+                        {isProcessing ? "Saving..." : "Save"}
                     </button>
 
                     <button
@@ -143,5 +149,5 @@ export default function UploadImageModal({ file, onSaved, onClose }) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

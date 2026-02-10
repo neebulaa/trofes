@@ -24,7 +24,8 @@ class DietaryPreferenceSeeder extends Seeder
 
             DietaryPreference::create([
                 'diet_code' => $data['diet_code'],
-                'diet_name' => $data['diet_name']
+                'diet_name' => $data['diet_name'],
+                'diet_desc' => $data['diet_desc'],
             ]);
         }
     }

@@ -24,9 +24,13 @@ class UserController extends Controller
     public function index(){
         $user = Auth::user()->load(['dietaryPreferences', 'allergies']);
 
-        $likedRecipes = Auth::user()
+        $likedRecipes = $user
             ->likedRecipes()
-            ->latest()
+            ->withCount('likes')
+            ->withExists([
+                'likes as liked_by_me' => fn ($q) => $q->where('user_id', $user->user_id),
+            ])
+            ->latest('like_recipes.liked_at')
             ->paginate(6)
             ->withQueryString();
 

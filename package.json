@@ -9,7 +9,7 @@
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
         "@vitejs/plugin-react": "^5.1.2",
-        "axios": "^1.11.0",
+        "axios": "^1.13.2",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^2.0.0",
         "tailwindcss": "^4.0.0",
@@ -17,7 +17,15 @@
     },
     "dependencies": {
         "@inertiajs/react": "^2.3.4",
+        "@lexical/history": "^0.39.0",
+        "@lexical/html": "^0.39.0",
+        "@lexical/link": "^0.39.0",
+        "@lexical/list": "^0.39.0",
+        "@lexical/markdown": "^0.39.0",
+        "@lexical/react": "^0.39.0",
+        "@lexical/rich-text": "^0.39.0",
         "@marsidev/react-turnstile": "^1.4.1",
+        "lexical": "^0.39.0",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "react-easy-crop": "^5.5.6"

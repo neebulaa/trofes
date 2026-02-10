@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GuideController;
+use App\Http\Controllers\Api\RecipeController;
 
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
@@ -20,3 +21,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('/guides/{guide}', [GuideController::class, 'update']);
     Route::delete('/guides/{guide}', [GuideController::class, 'destroy']);
 });
+
+
+Route::get('/recipes', [RecipeController::class, 'index']);

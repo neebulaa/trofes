@@ -10,6 +10,11 @@ class DietaryPreference extends Model
     protected $guarded = ['dietary_preference_id'];
     protected $appends = ['public_image'];
     public function getPublicImageAttribute(){
-        return $this->image ? asset('assets/dietary-preference-images') . '/' . $this->image : null;
+        return $this->image ? asset('storage') . '/' . $this->image : asset('assets/sample-images/default-image.png');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'diet_code';
     }
 }

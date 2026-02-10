@@ -1,22 +1,22 @@
-import {Link} from '@inertiajs/react'
-export default function NavLinks({url, handleNavigate}){
+import { Link } from "@inertiajs/react";
+export default function NavLinks({ url, handleNavigate }) {
     const isActive = (path) => {
-        if(path == '/guides' && url.startsWith('/guides')){
-            return true
+        if (path == "/guides" && url.startsWith("/guides")) {
+            return true;
         }
 
-        if(path == '/recipes' && url.startsWith('/recipes')){
-            return true
+        if (path == "/recipes" && url.startsWith("/recipes")) {
+            return true;
         }
 
-        return url === path
-    }
+        return url === path;
+    };
 
     return (
         <div className="nav-links">
             <Link
                 href="/"
-                className={isActive('/') ? 'active' : ''}
+                className={isActive("/") ? "active" : ""}
                 onClick={handleNavigate}
             >
                 Home
@@ -24,7 +24,7 @@ export default function NavLinks({url, handleNavigate}){
 
             <Link
                 href="/recipes"
-                className={isActive('/recipes') ? 'active' : ''}
+                className={isActive("/recipes") ? "active" : ""}
                 onClick={handleNavigate}
             >
                 Recipes
@@ -32,15 +32,23 @@ export default function NavLinks({url, handleNavigate}){
 
             <Link
                 href="/guides"
-                className={isActive('/guides') ? 'active' : ''}
+                className={isActive("/guides") ? "active" : ""}
                 onClick={handleNavigate}
             >
                 Guides
             </Link>
 
             <Link
+                href="/nutrients-calculator"
+                className={isActive("/nutrients-calculator") ? "active" : ""}
+                onClick={handleNavigate}
+            >
+                Nutrients Calculator
+            </Link>
+
+            <Link
                 href="/contact-us"
-                className={isActive('/contact-us') ? 'active' : ''}
+                className={isActive("/contact-us") ? "active" : ""}
                 onClick={handleNavigate}
             >
                 Contact Us

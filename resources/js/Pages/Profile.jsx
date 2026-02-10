@@ -45,7 +45,7 @@ export default function Profile({user, liked_recipes, allergies, dietary_prefere
                                 ))
                             ) : (
                                 <>
-                                    <p>You haven't liked any recipes yet. Explore and like your favorite recipes!</p>
+                                    <p className="mb-05">You haven't liked any recipes yet. Explore and like your favorite recipes!</p>
                                     <Link className="btn btn-fill btn-sm mt-05" href="/recipes">Explore Recipes</Link>
                                 </>
                             )

@@ -4,8 +4,8 @@
 
 .guides-page-title {
     text-align: center;
-    font-size: clamp(4rem, 10vw, 5rem);
-    font-weight: 600;
+    font-size: clamp(2.2rem, 10vw, 3rem);
+    font-weight: 700;
     margin-bottom: 1rem;
     line-height: 1.1;
 }
@@ -15,48 +15,7 @@
     font-size: 1rem;
     color: var(--muted);
     max-width: calc(800px * var(--ui-scale));
-    margin: 0 auto 3rem auto;
-}
-
-.guides-page-list {
-    margin-top: 2rem;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
-    gap: 2rem 1rem;
-}
-
-.guide-card-image {
-    border: 1px solid var(--line);
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    max-height: 200px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 8px;
-}
-
-.guide-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.guide-card-title {
-    margin-top: .85rem;
-    font-size: 1.125rem;
-}
-
-.guide-card-excerpt {
-    margin-top: .25rem;
-    font-size: 1rem;
-    color: var(--muted);
-}
-
-.guide-card-date {
-    font-size: .85rem;
-    color: var(--neutral-500);
-    margin-top: .5rem;
-    font-weight: 500;
+    margin: 0 auto 2rem auto;
 }
 
 /* search bar (main design in init.css) */
@@ -89,13 +48,23 @@
     display: none;
 }
 
-@media (max-width: 900px){
-    .guides-page-list {
-        grid-template-columns: repeat(2, minmax(220px, 1fr));
+@media (max-width: 900px) {
+    .guides-page-title {
+        font-weight: 700;
+        text-align: left;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: initial;
+    }
+
+    .guides-page-about {
+        text-align: left;
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 760px) {
+    #guides-page {
+        padding-block: 3rem;
+    }
 
     .search-and-filters form {
         flex-direction: column;
@@ -107,14 +76,8 @@
 
     .filters p.filters-text {
         display: block;
-        margin-right: .5rem;
+        margin-right: 0.5rem;
         font-size: 0.95rem;
         color: var(--neutral-700);
-    }
-}
-
-@media(max-width: 570px) {
-    .guides-page-list {
-        grid-template-columns: repeat(1, minmax(200px, 1fr));
     }
 }

@@ -45,12 +45,15 @@ export default function DietaryPreferencesSetup({ dietary_preferences, handleNex
 
                             <div className="icon-box">
                                 <img
-                                    src={preference.image}
+                                    src={preference.public_image}
                                     alt={preference.diet_name}
                                 />
                             </div>
 
-                            <p>{preference.diet_name}</p>
+                            <p className="pref-item-name">{preference.diet_name}</p>
+                            <div className="pref-item-desc">
+                                {preference.diet_desc}
+                            </div>
                         </div>
                     )
                 })}

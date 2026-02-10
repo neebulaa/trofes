@@ -21,6 +21,14 @@ class Guide extends Model
     }
 
     public function getExcerptAttribute(){
-        return mb_substr($this->content, 0, 50);
+        $text = trim(
+            html_entity_decode(
+                strip_tags($this->content)
+            )
+        );
+
+        return mb_strlen($text) > 50
+            ? mb_substr($text, 0, 50) . '…'
+            : $text;
     }
 }

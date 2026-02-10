@@ -23,12 +23,11 @@
     object-fit: contain;
     margin: 1.5rem 0;
     border-radius: 8px;
-    background: #f4f4f4;
+    background: var(--neutral-100);
 }
 
 .guide-content h1 {
     margin-top: 1rem;
-    font-size: 2.5rem;
     margin-bottom: 1rem;
     font-weight: 600;
 }
@@ -124,9 +123,14 @@
     margin-top: .15rem;
 }
 
+.guide-detail-content a {
+    color: var(--primary-700);
+    text-decoration: underline;
+}
+
 @media(max-width: 1020px){
     .guide-content h1 {
-        font-size: 2.1rem;
+        font-size: 1.9rem;
     }
 
     #guide-detail .guide-detail-container {
