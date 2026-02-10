@@ -17,16 +17,16 @@ export default function Footer() {
                 </p>
 
                 <div className="socials">
-                    <a href="#">
+                    <a href="https://www.facebook.com/" target="_blank" rel="noreferrer">
                         <i className="fab fa-facebook-f"></i>
                     </a>
-                    <a href="#">
+                    <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
                         <i className="fab fa-linkedin-in"></i>
                     </a>
-                    <a href="#">
+                    <a href="https://www.instagram.com/pptibca.22/" target="_blank" rel="noreferrer">
                         <i className="fab fa-instagram"></i>
                     </a>
-                    <a href="#">
+                    <a href="https://www.youtube.com/" target="_blank" rel="noreferrer">
                         <i className="fab fa-youtube"></i>
                     </a>
                 </div>

@@ -4,7 +4,10 @@ import "../../css/NutrientsCalculator.css";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import RecipeCard from "../Components/RecipeCard";
 
-export default function NutrientsCalculator({ recommended_recipes, user_age }) {
+export default function NutrientsCalculator({
+    recommended_recipes = [],
+    user_age,
+}) {
     const { data, setData, post, processing, errors } = useForm({
         activity_level: "MIDDLE", // LOW | MIDDLE | HIGH | VERY HIGH
         gender: "male",
@@ -156,10 +159,9 @@ export default function NutrientsCalculator({ recommended_recipes, user_age }) {
             }),
             onSuccess: () => {
                 setCalculated(true);
-            }
+            },
             // preserveState: true
         });
-
     }
 
     function resetForm() {
@@ -577,34 +579,38 @@ export default function NutrientsCalculator({ recommended_recipes, user_age }) {
                                 </div>
                             </div>
 
-                            <div className="recommended-recipes">
-                                <div className="subsection-split">
-                                    <h2 className="subsection-title">
-                                        Recommended Recipes
-                                    </h2>
-                                    <Link
-                                        href="/recipes"
-                                        className="color-primary medium"
-                                    >
-                                        See All
-                                    </Link>
-                                </div>
+                            {recommended_recipes.length > 0 && (
+                                <div className="recommended-recipes">
+                                    <div className="subsection-split">
+                                        <h2 className="subsection-title">
+                                            Recommended Recipes
+                                        </h2>
+                                        <Link
+                                            href="/recipes"
+                                            className="color-primary medium"
+                                        >
+                                            See All
+                                        </Link>
+                                    </div>
 
-                                <div className="recommended-recipes-list">
-                                    <div className="recommended-recipes-list-wrapper">
-                                        <div className="recipes-container">
-                                            {recommended_recipes.map(
-                                                (recipe) => (
-                                                    <RecipeCard
-                                                        key={recipe.recipe_id}
-                                                        recipe={recipe}
-                                                    />
-                                                ),
-                                            )}
+                                    <div className="recommended-recipes-list">
+                                        <div className="recommended-recipes-list-wrapper">
+                                            <div className="recipes-container">
+                                                {recommended_recipes.map(
+                                                    (recipe) => (
+                                                        <RecipeCard
+                                                            key={
+                                                                recipe.recipe_id
+                                                            }
+                                                            recipe={recipe}
+                                                        />
+                                                    ),
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>

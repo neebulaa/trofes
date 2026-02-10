@@ -20,7 +20,6 @@ class NutrientsCalculatorController extends Controller
         }
 
         return Inertia::render('NutrientsCalculator', [
-            'recommended_recipes' => Recipe::inRandomOrder()->limit(5)->get(),
             "user_age" => $user_age,
         ]);
     }
@@ -161,8 +160,16 @@ class NutrientsCalculatorController extends Controller
         );
 
         if (empty($recommended_recipes) || (is_object($recommended_recipes) && $recommended_recipes->isEmpty())) {
-            // dd("its wrong bro");
-            $recommended_recipes = Recipe::inRandomOrder()->limit(5)->get();
+            $recommended_recipes = Recipe::query()
+                ->withCount('likes')
+                ->when($is_login, function ($q) {
+                    $q->withExists([
+                        'likes as liked_by_me' => fn ($qq) => $qq->where('user_id', auth()->id()),
+                    ]);
+                })
+                ->inRandomOrder()
+                ->limit(5)
+                ->get();
         }
 
         // return the same page with the validated data

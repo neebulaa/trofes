@@ -12,7 +12,7 @@
 
 .crud-form {
     max-width: 600px;
-}
+}   
 
 .dash--sidebar-collapsed {
     grid-template-columns: var(--sidebar-w-collapsed) 1fr;
@@ -68,6 +68,12 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.dash-brand-logo:hover img {
+    transform: scale(1.05);
+    rotate: -3deg;
 }
 
 .dash-brand-text {
@@ -505,6 +511,25 @@
     overflow-x: auto;
 }
 
+.crud-card-table::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.crud-card-table::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.crud-card-table::-webkit-scrollbar-thumb {
+    background-color: var(--neutral-300);
+    border-radius: 999px;
+}
+
+/* Optional: subtle hover feedback */
+.crud-card-table::-webkit-scrollbar-thumb:hover {
+    background-color: var(--neutral-400);
+}
+
 .crud-table {
     width: 100%;
     border-collapse: collapse;
@@ -514,12 +539,32 @@
     background: var(--neutral-50);
 }
 
+.crud-table th.no-min-width,
+.crud-table td.no-min-width {
+    min-width: auto;
+}
+
 .crud-table th,
 .crud-table td {
     padding: 0.85rem 1rem;
     border-bottom: 1px solid var(--neutral-200);
     text-align: left;
     font-size: 0.9rem;
+    min-width: 150px;
+}
+
+.crud-table th.table-data-center, 
+.crud-table td.table-data-center {
+    text-align: center;
+}
+
+#user-roles .crud-table td:has(input[type="checkbox"]) {
+    text-align: center;
+}
+
+#user-roles .crud-table td input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
 }
 
 .crud-table th {
@@ -588,6 +633,10 @@
     object-fit: contain;
 }
 
+.crud-image.crud-image-circle {
+    border-radius: 50%;
+}
+
 .crud-image img {
     width: 100%;
     height: 100%;
@@ -610,6 +659,10 @@
 .crud-actions {
     display: inline-flex;
     gap: 0.4rem;
+}
+
+.table-column-seperator {
+    border-left: 1px solid var(--neutral-300);
 }
 
 /* rte */

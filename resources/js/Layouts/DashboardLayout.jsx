@@ -5,7 +5,7 @@ import NavbarDashboard from "../Components/Dashboard/NavbarDashboard";
 import "../../css/init.css";
 import "../../css/Dashboard/Dashboard.css";
 
-export default function DashboardLayout({ children, title = "Dashboard" }) {
+export default function DashboardLayout({ children, title = "Dashboard", id="" }) {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
     const { url, props } = usePage();
@@ -51,6 +51,9 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                     crossOrigin="anonymous"
                     referrerPolicy="no-referrer"
                 />
+
+                {/* umami analytics */}
+                <script defer src="https://cloud.umami.is/script.js" data-website-id="4172710c-69ae-4311-9821-8f3791260cbd"></script>
             </Head>
 
             <div className={layoutClass}>
@@ -68,7 +71,7 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                     onCloseMobile={() => setSidebarMobileOpen(false)}
                 />
 
-                <div className="dash-main">
+                <div className="dash-main" id={id}>
                     <NavbarDashboard
                         user={user}
                         title={title}

@@ -34,6 +34,18 @@
     gap: 0.75rem;
 }
 
+.dropdown-menu.camera-action-menu {
+    top: 5rem;
+    right: 0;
+    left: initial;
+    min-width: initial;
+    width: max-content;
+}
+
+.dropdown-menu.camera-action-menu .dropdown-item {
+    max-width: max-content;
+}
+
 @media (max-width: 900px) {
     #custom-search-recipes-page .custom-search-recipes-left h1 {
         line-height: 1.2;

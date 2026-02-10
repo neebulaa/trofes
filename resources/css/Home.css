@@ -445,6 +445,7 @@
     }
 
     #hero .hero-badge {
+        text-align: center;
         flex-direction: column;
         margin-bottom: .5rem;
     }

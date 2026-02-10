@@ -119,7 +119,7 @@ export default function UploadImageModal({ file, onSaved, onClose }) {
                 {error && <small className="error-text">{error}</small>}
                 <button
                     type="button"
-                    className="btn btn-sm btn-muted"
+                    className="btn btn-sm btn-muted reset-btn"
                     onClick={() => {
                         setCrop({ x: 0, y: 0 });
                         setZoom(1);

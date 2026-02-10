@@ -2,6 +2,7 @@ import Layout from "../Layouts/Layout";
 import "../../css/RecipeDetail.css";
 import { useState, useEffect } from "react";
 import FlashMessage from "../Components/FlashMessage";
+import CookingTimer from "../PagesComponent/RecipeDetail/CookingTimer";
 
 function csrfToken() {
     return document
@@ -240,6 +241,7 @@ export default function RecipeDetail({ recipe, user }) {
         <>
             <FlashMessage className="flash-screen" />
             <div className="recipe-detail-page">
+                <CookingTimer />
                 <div className="container">
                     <div className="recipe-detail-header">
                         <div className="logo-stamp">

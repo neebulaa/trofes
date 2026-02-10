@@ -55,7 +55,7 @@ export default function CameraCaptureModal({ onCapture, onClose }) {
     return (
         <div className="modal-container">
             <div className="modal-content">
-                <h2>Take a Photo</h2>
+                <h2 className="mb-1">Take a Photo</h2>
 
                 {error ? (
                     <small className="error-text">{error}</small>

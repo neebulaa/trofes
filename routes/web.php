@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\YoutubeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OnboardingController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\DashboardAllergyController;
 use App\Http\Controllers\NutrientsCalculatorController;
 use App\Http\Controllers\DashboardRoleManagementController;
 use App\Http\Controllers\DashboardDietaryPreferenceController;
+use App\Http\Controllers\DashboardMessageController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -31,9 +33,8 @@ Route::get('/', function(){
     ]);
 })->name('home');
 
-Route::get('/contact-us', function(){
-    return Inertia::render('ContactUs');
-});
+Route::get('/contact-us', [MessageController::class, 'index']);
+Route::post('/contact-us', [MessageController::class, 'store']);
 
 Route::get('/nutrients-calculator', [NutrientsCalculatorController::class, 'index'])->name('nutrients-calculator');
 Route::post('/nutrients-calculator', [NutrientsCalculatorController::class, 'findRecommendation']);
@@ -104,6 +105,10 @@ Route::middleware('auth')->group(function(){
         // role management
         Route::get('/dashboard/roles', [DashboardRoleManagementController::class, 'index']);
         Route::post('/dashboard/roles/assign', [DashboardRoleManagementController::class, 'assign']);
+
+        // messages
+        Route::get('/dashboard/messages', [DashboardMessageController::class, 'index']);
+        Route::delete('/dashboard/messages/{message}', [DashboardMessageController::class, 'destroy']);
     });
 
     // youtube search

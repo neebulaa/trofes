@@ -1,0 +1,16 @@
+#user-roles .crud-card-table {
+    max-height: 305px ;
+    overflow-y: auto;
+}
+
+#user-roles .crud-card-table thead {
+    position: sticky;
+    top: 0;
+} 
+
+#user-roles .crud-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}

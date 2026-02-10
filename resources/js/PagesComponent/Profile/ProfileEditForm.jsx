@@ -3,7 +3,7 @@ import { useState } from "react";
 import CustomDatalist from "../../Components/CustomDatalist";
 import EditProfileDropdown from "./EditProfileDropdown";
 import UploadImageModal from "./UploadImageModal";
-import CameraCaptureModal from "./CameraCaptureModal";
+import CameraCaptureModal from "../../Components/CameraCaptureModal";
 
 export default function ProfileEditForm({
     user,

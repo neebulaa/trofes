@@ -7,6 +7,12 @@ export default function CustomDatalist({
     onChange,
     placeholder = "Search...",
     className,
+    useCamera = false,
+    onCameraClick,
+    onCameraMenuClose,
+    cameraMenu,
+    cameraMenuOpen = false,
+    isLoading = false,
 }) {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
@@ -16,19 +22,26 @@ export default function CustomDatalist({
         function handleClickOutside(e) {
             if (ref.current && !ref.current.contains(e.target)) {
                 setOpen(false);
+                onCameraMenuClose?.();
             }
         }
 
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [onCameraMenuClose]);
+
+    useEffect(() => {
+        if (cameraMenuOpen) {
+            setOpen(false);
+        }
+    }, [cameraMenuOpen]);
 
     // Filter options & remove already selected
     const filteredOptions = options.filter(
         (opt) =>
             opt.label.toLowerCase().includes(query.toLowerCase()) &&
-            !value.some((v) => v.value === opt.value)
+            !value.some((v) => v.value === opt.value),
     );
 
     function handleSelect(option) {
@@ -55,7 +68,7 @@ export default function CustomDatalist({
 
     function handleRemoveAll() {
         const confirmation = confirm(
-            "Are you sure you want to remove all selected items?"
+            "Are you sure you want to remove all selected items?",
         );
         if (confirmation) {
             onChange([]);
@@ -70,17 +83,60 @@ export default function CustomDatalist({
             {label && <label>{label}</label>}
 
             <div className="datalist-input">
-                <input
-                    type="text"
-                    value={query}
-                    placeholder={placeholder}
-                    onFocus={() => setOpen(true)}
-                    onChange={(e) => {
-                        setQuery(e.target.value);
-                        setOpen(true);
-                    }}
-                    onKeyDown={handleKeyDown}
-                />
+                {!useCamera && (
+                    <input
+                        type="text"
+                        value={query}
+                        placeholder={placeholder}
+                        onFocus={() => setOpen(true)}
+                        onChange={(e) => {
+                            setQuery(e.target.value);
+                            setOpen(true);
+                        }}
+                        onKeyDown={handleKeyDown}
+                    />
+                )}
+
+                {useCamera && (
+                    <div className="input-group-identifier">
+                        <input
+                            type="text"
+                            value={query}
+                            placeholder={placeholder}
+                            onFocus={() => {
+                                onCameraMenuClose?.();
+                                setOpen(true)
+                            }}
+                            onChange={(e) => {
+                                setQuery(e.target.value);
+                                setOpen(true);
+                            }}
+                            onKeyDown={handleKeyDown}
+                        />
+                        <span
+                            className="identifier"
+                            role="button"
+                            tabIndex={0}
+                            onClick={onCameraClick}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    onCameraClick?.();
+                                }
+                            }}
+                            style={{
+                                cursor: "pointer",
+                            }}
+                        >
+                            <i className="fa-solid fa-camera"></i>
+                        </span>
+                    </div>
+                )}
+
+                {cameraMenu}
+
+                {isLoading && (
+                    <small className="loading-text">Inferencing...</small>
+                )}
 
                 {/* Selected items */}
                 {value.length > 0 && (
@@ -98,6 +154,7 @@ export default function CustomDatalist({
                         ))}
                     </div>
                 )}
+
                 {value.length > 0 && (
                     <p
                         className="remove-all-btn mt-1"

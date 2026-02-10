@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use App\Models\DietaryPreference;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class DashboardDietaryPreferenceController extends Controller
@@ -78,6 +80,14 @@ class DashboardDietaryPreferenceController extends Controller
             'image' => $imagePath,
         ]);
 
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'dietary.added',
+            'meta' => json_encode([
+                'dietary' => $dietaryPreference->diet_name,
+            ]),
+        ]);
+
         return redirect('/dashboard/dietary-preferences')->with('flash', [
             'type' => 'success',
             'message' => 'Dietary preference created successfully.'
@@ -131,6 +141,14 @@ class DashboardDietaryPreferenceController extends Controller
             'image' => $validated['image'] ?? $dietary_preference->image,
         ]);
 
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'dietary.updated',
+            'meta' => json_encode([
+                'dietary' => $dietary_preference->diet_name,
+            ]),
+        ]);
+
         return redirect('/dashboard/dietary-preferences')->with('flash', [
             'type' => 'success',
             'message' => 'Dietary preference updated successfully.'
@@ -139,6 +157,14 @@ class DashboardDietaryPreferenceController extends Controller
 
     public function destroy(DietaryPreference $dietary_preference)
     {
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'dietary.deleted',
+            'meta' => json_encode([
+                'dietary' => $dietary_preference->diet_name,
+            ]),
+        ]);
+
         $dietary_preference->delete();
 
         return redirect('/dashboard/dietary-preferences')->with('flash', [
