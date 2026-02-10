@@ -66,13 +66,13 @@ export default function ProfileDropdown({ user }) {
                         <p>Dashboard</p>
                     </Link>
                     :
+                    user.is_admin == 1 &&
                     <Link 
                     className={`dropdown-item ${isActive('/dashboard') ? 'active' : ''}`}
                     href="/">
                         <i className="fa-regular fa-house"></i>
                         <p>Home</p>
                     </Link>
-
                 }
 
                 <Link 
