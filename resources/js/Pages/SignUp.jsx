@@ -31,7 +31,7 @@ export default function SignUp() {
 
                 <h2>Trofes</h2>
                 <p className="subtitle">
-                    Buat akun anda dan temukan dunia penuh nutrisi
+                    Create your account and discover a world of nutrition
                 </p>
 
                 <div className="wrapper">
@@ -59,7 +59,7 @@ export default function SignUp() {
                                 type="email"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
-                                placeholder="emailanda@gmail.com"
+                                placeholder="youremail@gmail.com"
                             />
                             {errors.email && (
                                 <small className="error-text">{errors.email}</small>
@@ -133,7 +133,7 @@ export default function SignUp() {
                                     }
                                 />
                                 <label htmlFor="remember">
-                                    Ingat saya 30 hari kedepan
+                                    Remember me for 30 days
                                 </label>
                             </div>
                         </div>
@@ -157,7 +157,7 @@ export default function SignUp() {
                         </button>
 
                         <p className="signup-cta">
-                            Sudah mempunyai akun? <Link href="/login">Login</Link>
+                            Already have an account? <Link href="/login">Login</Link>
                         </p>
                     </form>
                 </div>
@@ -165,11 +165,9 @@ export default function SignUp() {
 
             <div className="auth-right">
                 <div className="right-text">
-                    <h1>Resep Enak, Pilihan Sehat. Kenali Gizinya</h1>
+                    <h1>Eat Well, Choose Healthy. Track Your Nutrition.</h1>
                     <p>
-                        Nikmati hidangan lezat sambil memahami nilai gizi di baliknya.
-                        Pelajari cara memilih bahan yang lebih sehat dan membangun
-                        kebiasaan makan yang lebih baik setiap hari.
+                        Enjoy delicious meals while understanding their nutritional value. Learn how to choose healthier ingredients and build better eating habits every day.
                     </p>
                 </div>
             </div>
