@@ -142,6 +142,7 @@ export default function CookingTimer() {
 
                     stopTicks(); // stop ticking at end
                     playAlarm(); // play alarm at end
+                    setOpen(true);
                     return 0;
                 }
                 return prev - 1;
