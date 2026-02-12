@@ -1,5 +1,5 @@
 import Layout from "../Layouts/Layout";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "../../css/NutrientsCalculator.css";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import RecipeCard from "../Components/RecipeCard";
@@ -76,6 +76,7 @@ export default function NutrientsCalculator({
         GAIN: { carbs: 0.5, protein: 0.2, fat: 0.3 },
         MUSCLE: { carbs: 0.4, protein: 0.3, fat: 0.3 },
     };
+
 
     function clampNumber(value, min, max) {
         const n = Number(value);
@@ -583,7 +584,11 @@ export default function NutrientsCalculator({
                                 <div className="recommended-recipes">
                                     <div className="subsection-split">
                                         <h2 className="subsection-title">
-                                            Recommended Recipes
+                                            Recommended Recipes <br /><span style={
+                                                {
+                                                    fontSize: ".85rem"
+                                                }
+                                            }>Per meal (3 meals/day)</span>
                                         </h2>
                                         <Link
                                             href="/recipes"

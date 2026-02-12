@@ -1,5 +1,5 @@
-import { Link } from "@inertiajs/react";
-import { useState } from "react";
+import { Link, usePage} from "@inertiajs/react";
+import { use, useState } from "react";
 
 function csrfToken() {
     return document
@@ -11,6 +11,7 @@ export default function Recipe({ recipe }) {
     const [liked, setLiked] = useState(!!recipe.liked_by_me);
     const [likesCount, setLikesCount] = useState(recipe.likes_count ?? 0);
     const [busy, setBusy] = useState(false);
+    const { auth} = usePage().props;
 
     async function likeRecipe(e) {
         e.preventDefault();
@@ -64,19 +65,23 @@ export default function Recipe({ recipe }) {
                 />
                 <div className="recipe-image-overlay" />
 
-                <button
-                    type="button"
-                    className="recipe-card-like-button"
-                    onClick={likeRecipe}
-                    disabled={busy}
-                    aria-label={liked ? "Unlike recipe" : "Like recipe"}
-                >
-                    {liked ? (
-                        <i className="fa-solid fa-heart" />
-                    ) : (
-                        <i className="fa-regular fa-heart" />
-                    )}
-                </button>
+                {
+                    auth.user && (
+                        <button
+                            type="button"
+                            className="recipe-card-like-button"
+                            onClick={likeRecipe}
+                            disabled={busy}
+                            aria-label={liked ? "Unlike recipe" : "Like recipe"}
+                        >
+                            {liked ? (
+                                <i className="fa-solid fa-heart" />
+                            ) : (
+                                <i className="fa-regular fa-heart" />
+                            )}
+                        </button>
+                    )
+                }
 
                 {recipe.is_favorite && (
                     <span className="recipe-card-badge favs">
