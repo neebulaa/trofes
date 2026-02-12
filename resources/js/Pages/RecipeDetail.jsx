@@ -352,6 +352,13 @@ export default function RecipeDetail({ recipe, user }) {
                             </div>
                             <div className="recipe-detail-nutrient-card">
                                 <div className="recipe-detail-nutrient-icon">
+                                    <i class="fa-solid fa-bowl-food"></i>
+                                </div>
+                                <h4>Carbohydrate</h4>
+                                <p>{recipe.carbohydrate} gr</p>
+                            </div>
+                            <div className="recipe-detail-nutrient-card">
+                                <div className="recipe-detail-nutrient-icon">
                                     <i className="fa-solid fa-drumstick-bite" />
                                 </div>
                                 <h4>Protein</h4>
@@ -363,13 +370,6 @@ export default function RecipeDetail({ recipe, user }) {
                                 </div>
                                 <h4>Fat</h4>
                                 <p>{recipe.fat} gr</p>
-                            </div>
-                            <div className="recipe-detail-nutrient-card">
-                                <div className="recipe-detail-nutrient-icon">
-                                    <i className="fa-solid fa-water"></i>
-                                </div>
-                                <h4>Sodium</h4>
-                                <p>{recipe.sodium} mg</p>
                             </div>
                         </div>
                     </div>

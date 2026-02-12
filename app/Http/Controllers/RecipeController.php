@@ -395,7 +395,7 @@ class RecipeController extends Controller
             'calories' => 'nullable|numeric|min:0',
             'protein'  => 'nullable|numeric|min:0',
             'fat'      => 'nullable|numeric|min:0',
-            'sodium'   => 'nullable|numeric|min:0',
+            'carbohydrate'   => 'nullable|numeric|min:0',
         ]);
 
         $query = Recipe::query()->withCount('likes');
@@ -435,10 +435,10 @@ class RecipeController extends Controller
             'calories' => 50,   // kcal
             'protein'  => 5,    // grams
             'fat'      => 5,    // grams
-            'sodium'   => 100,  // mg
+            'carbohydrate'   => 10,  // grams
         ];
 
-        foreach (['calories', 'protein', 'fat', 'sodium'] as $field) {
+        foreach (['calories', 'protein', 'fat', 'carbohydrate'] as $field) {
             if (!empty($validated[$field])) {
                 $value = (float) $validated[$field];
                 $delta = $tolerance[$field];

@@ -13,7 +13,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\YoutubeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OnboardingController;
-use App\Http\Controllers\Api\LikeRecipeController;
+use App\Http\Controllers\LikeRecipeController;
 use App\Http\Controllers\DashboardGuideController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\DashboardAllergyController;
@@ -39,12 +39,12 @@ Route::post('/contact-us', [MessageController::class, 'store']);
 Route::get('/nutrients-calculator', [NutrientsCalculatorController::class, 'index'])->name('nutrients-calculator');
 Route::post('/nutrients-calculator', [NutrientsCalculatorController::class, 'findRecommendation']);
 
+// guides
+Route::get('/guides', [GuideController::class, 'index']);
 Route::middleware('auth')->group(function(){
 
     Route::middleware('onboarded')->group(function(){
-        // guides
         Route::get('/guides/{guide}', [GuideController::class, 'show']);
-        Route::get('/guides', [GuideController::class, 'index']);
     
         // profile
         Route::get('/profile', [UserController::class, 'index']);

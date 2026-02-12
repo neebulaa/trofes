@@ -40,6 +40,7 @@ class RecipeSeeder extends Seeder
                 'slug' => $data['slug'],
                 'measured_ingredients' => $data['measured_ingredients'],
                 'calories' => $data['calories'],
+                'carbohydrate' => $data['carbohydrate'],
                 'protein' => $data['protein'],
                 'fat' => $data['fat'],
                 'sodium' => $data['sodium']

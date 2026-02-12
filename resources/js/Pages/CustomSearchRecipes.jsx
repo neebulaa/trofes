@@ -20,7 +20,7 @@ export default function CustomSearchRecipes({
         calories: "",
         protein: "",
         fat: "",
-        sodium: "",
+        carbohydrate: "",
     });
 
     const [selectedAllergies, setSelectedAllergies] = useState(
@@ -124,7 +124,7 @@ export default function CustomSearchRecipes({
             calories: "",
             protein: "",
             fat: "",
-            sodium: "",
+            carbohydrate: "",
         }));
     }
 
@@ -299,27 +299,27 @@ export default function CustomSearchRecipes({
                         </div>
 
                         <div className="input-group">
-                            <label htmlFor="sodium">Sodium (±)</label>
+                            <label htmlFor="carbohydrate">Carbohydrate (±)</label>
 
                             <div className="input-group-identifier">
                                 <input
                                     type="number"
-                                    inputMode="numeric"
+                                    inputMode="decimal"
                                     min="0"
                                     step="1"
-                                    id="sodium"
-                                    value={data.sodium}
+                                    id="carbohydrate"
+                                    value={data.carbohydrate}
                                     onChange={(e) =>
-                                        setData("sodium", e.target.value)
+                                        setData("carbohydrate", e.target.value)
                                     }
-                                    placeholder="Sodium"
+                                    placeholder="Carbohydrate"
                                 />
-                                <span className="identifier">mg</span>
+                                <span className="identifier">gr</span>
                             </div>
 
-                            {errors.sodium && (
+                            {errors.carbohydrate && (
                                 <small className="error-text">
-                                    {errors.sodium}
+                                    {errors.carbohydrate}
                                 </small>
                             )}
                         </div>

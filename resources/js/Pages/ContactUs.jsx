@@ -34,9 +34,11 @@ export default function ContactUs() {
                     <div className="contact-layout">
                         <div className="contact-info">
                             <p>
-                                If you’d like to discuss more or have any questions, 
-                                feel free to send us a message. We’re here to help you start your journey to smarter eating. 
-                                Our hours are 8:00 AM – 6:00 PM, Monday through Friday.
+                                If you’d like to discuss more or have any
+                                questions, feel free to send us a message. We’re
+                                here to help you start your journey to smarter
+                                eating. Our hours are 8:00 AM – 6:00 PM, Monday
+                                through Friday.
                             </p>
 
                             <div className="info-block">
@@ -56,16 +58,32 @@ export default function ContactUs() {
                             </div>
 
                             <div className="social-icons">
-                                <a href="#">
+                                <a
+                                    href="https://www.facebook.com/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <i className="fab fa-facebook-f"></i>
                                 </a>
-                                <a href="#">
+                                <a
+                                    href="https://www.linkedin.com/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <i className="fab fa-linkedin-in"></i>
                                 </a>
-                                <a href="#">
+                                <a
+                                    href="https://www.instagram.com/pptibca.22/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <i className="fab fa-instagram"></i>
                                 </a>
-                                <a href="#">
+                                <a
+                                    href="https://www.youtube.com/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <i className="fab fa-youtube"></i>
                                 </a>
                             </div>
@@ -137,9 +155,7 @@ export default function ContactUs() {
                                     type="submit"
                                     className="btn-submit btn btn-fill"
                                 >
-                                    {
-                                        processing ? "Sending..." : "Send"
-                                    }
+                                    {processing ? "Sending..." : "Send"}
                                 </button>
                             </form>
                         </div>

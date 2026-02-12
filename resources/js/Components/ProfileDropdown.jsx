@@ -82,11 +82,12 @@ export default function ProfileDropdown({ user }) {
                     <p>Profile</p>
                 </Link>
 
-                <div className="dropdown-item">
+                <div className="dropdown-item"
+                    onClick={handleSignOut}
+                >
                     <i className="fa-solid fa-arrow-right-from-bracket"></i>
                     <button
                         type="button"
-                        onClick={handleSignOut}
                         disabled={processing}
                         className="signout-btn"
                     >

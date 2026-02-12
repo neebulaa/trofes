@@ -20,7 +20,7 @@ class LikeRecipeController extends Controller
         $user = $request->user();
 
         // Check if already liked
-        $alreadyLiked = $user->likedRecipes()->where('recipe_id', $recipe->recipe_id)->exists();
+        $alreadyLiked = $user->likedRecipes()->where('recipes.recipe_id', $recipe->recipe_id)->exists();
 
         if ($alreadyLiked) {
             return response()->json([
@@ -57,7 +57,7 @@ class LikeRecipeController extends Controller
         $user = $request->user();
         
         // Check if liked
-        $isLiked = $user->likedRecipes()->where('recipe_id', $recipe->recipe_id)->exists();
+        $isLiked = $user->likedRecipes()->where('recipes.recipe_id', $recipe->recipe_id)->exists();
 
         if (!$isLiked) {
             return response()->json([

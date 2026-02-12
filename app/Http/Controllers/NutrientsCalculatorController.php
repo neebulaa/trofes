@@ -123,7 +123,7 @@ class NutrientsCalculatorController extends Controller
         $fat_pct = $request->fat_pct ?? null;
 
         // --- LOGIKA PEMBAGIAN PORSI ---
-        $meal_divider = 3;
+        $meal_divider = 3; // 3 meals per day
         
         $target_calories = $daily_calories / $meal_divider;
         $target_carbs = $daily_carbs / $meal_divider;
@@ -157,7 +157,7 @@ class NutrientsCalculatorController extends Controller
             $target_fat,
             $allergies,
             $dietary_preferences
-        );
+        )->take(5);
 
         if (empty($recommended_recipes) || (is_object($recommended_recipes) && $recommended_recipes->isEmpty())) {
             $recommended_recipes = Recipe::query()
