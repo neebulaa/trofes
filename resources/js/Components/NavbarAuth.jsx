@@ -105,7 +105,6 @@ export default function NavbarAuth({ user }) {
             category.route,
             { search: term },
             {
-                preserveScroll: true,
                 preserveState: true,
                 replace: true,
             }

@@ -115,7 +115,7 @@ export default function Recipes({
 
             case "oldest":
                 return items.sort(
-                    (a, b) => new Date(a.created_at) - new Date(b.created_at),
+                    (a, b) => new Date(a.created_at) - new Date(a.created_at),
                 );
 
             case "alphabetical":
@@ -136,6 +136,25 @@ export default function Recipes({
                 return items;
         }
     }, [recipes, category]);
+
+    // NEW: hide "Recommended For You" when ANY query string exists
+    // (searching, filtering, pagination, etc.)
+    const hasQuery = useMemo(() => {
+        const u = new URL(url, window.location.origin);
+        return u.searchParams.toString().length > 0;
+    }, [url]);
+
+    // If you only want to hide when search/filter is used (not page=2), use this instead:
+    // const hasQuery = useMemo(() => {
+    //     const u = new URL(url, window.location.origin);
+    //     return (
+    //         (u.searchParams.get("search") ?? "").trim() !== "" ||
+    //         u.searchParams.has("filter_type") ||
+    //         u.searchParams.has("filter_id")
+    //     );
+    // }, [url]);
+
+    const showRecommended = user && recommended_recipes?.length > 0 && !hasQuery;
 
     return (
         <section id="recipes-page" className="recipes-page">
@@ -240,7 +259,7 @@ export default function Recipes({
                     </div>
                 </form>
 
-                {user && recommended_recipes?.length > 0 && (
+                {showRecommended && (
                     <>
                         <h2 className="recipes-container-title mt-2">
                             Recommended For You
@@ -256,23 +275,28 @@ export default function Recipes({
                     </>
                 )}
 
-                <div className="custom-search-navigator mt-3">
-                    <Link
-                        href="/custom-search-recipes"
-                        type="button"
-                        className="btn btn-fill btn-rounded"
-                    >
-                        <i className="fa-brands fa-searchengin"></i>
-                        <p>Use Custom Search</p>
-                    </Link>
+                {
+                    showRecommended &&
+                    (
+                        <div className="custom-search-navigator mt-2">
+                            <Link
+                                href="/custom-search-recipes"
+                                type="button"
+                                className="btn btn-fill btn-rounded"
+                            >
+                                <i className="fa-brands fa-searchengin"></i>
+                                <p>Use Custom Search</p>
+                            </Link>
 
-                    <p className="text-muted">
-                        Search according to your own preferences and needs with
-                        'Custom Search'.
-                    </p>
-                </div>
+                            <p className="text-muted">
+                                Search according to your own preferences and needs with
+                                'Custom Search'.
+                            </p>
+                        </div>
+                    )
+                }
 
-                <div className="recipe-filters mt-3">
+                <div className="recipe-filters mt-2">
                     <div className="filters-sort">
                         <span className="filters-text">Filter by:</span>
                         <Dropdown
@@ -319,9 +343,14 @@ export default function Recipes({
                     <NotFoundSection message="No recipes found." />
                 ) : (
                     <>
-                        <h2 className="recipes-container-title mt-3">
-                            All Recipes
-                        </h2>
+                        {
+                            showRecommended &&
+                            (
+                                <h2 className="recipes-container-title mt-2">
+                                    All Recipes
+                                </h2>
+                            )
+                        }
                         <div className="recipes-container mt-1">
                             {displayRecipes.map((recipe) => (
                                 <RecipeCard

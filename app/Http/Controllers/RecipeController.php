@@ -303,6 +303,7 @@ class RecipeController extends Controller
 
         $hero_count = 5;
         $recommended_count = 12;
+        $recommended_count_to_share = 8;
         $userId = $request->user()->user_id;
         $ai = $this->getAIRecommendationCached($userLikedIds, $hero_count + $recommended_count, $userId);
         
@@ -310,13 +311,13 @@ class RecipeController extends Controller
         $warningMessage = $ai['warning'];
 
         $hero = $aiRecipe->take($hero_count)->values();
-        $recommended = $aiRecipe->slice($hero_count, $recommended_count)->values();
+        $recommended = $aiRecipe->slice($hero_count, $recommended_count)->values()->shuffle()->take($recommended_count_to_share)->values();
 
         // fallback if AI empty
         if ($hero->isEmpty()) {
             $fallback = Recipe::inRandomOrder()->limit($hero_count + $recommended_count)->get();
             $hero = $fallback->take($hero_count)->values();
-            $recommended = $fallback->slice($hero_count, $recommended_count)->values();
+            $recommended = $fallback->slice($hero_count, $recommended_count)->values()->shuffle()->take($recommended_count_to_share)->values();
         }
 
         return Inertia::render('Recipes', [
