@@ -10,8 +10,14 @@ const CENTER_BLOCK = Math.floor(REPEAT / 2);
 
 export default function CookingTimer() {
     const [open, setOpen] = useState(false);
-    const hoursList = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
-    const minutesList = useMemo(() => Array.from({ length: 60 }, (_, i) => i), []);
+    const hoursList = useMemo(
+        () => Array.from({ length: 24 }, (_, i) => i),
+        [],
+    );
+    const minutesList = useMemo(
+        () => Array.from({ length: 60 }, (_, i) => i),
+        [],
+    );
     const secondsList = minutesList;
 
     const [hours, setHours] = useState(0);
@@ -29,7 +35,6 @@ export default function CookingTimer() {
 
     const timerRef = useRef(null);
 
-    // Init both audios
     useEffect(() => {
         const alarm = new Audio(CookingAlarm);
         alarm.loop = true;
@@ -48,29 +53,13 @@ export default function CookingTimer() {
         };
     }, []);
 
-    const playTicks = async () => {
-        if (!ticksRef.current) return;
-        try {
-            // optional: don't reset currentTime so it sounds continuous on resume
-            await ticksRef.current.play();
-        } catch {
-            // Autoplay restrictions can block until user interaction; ignore silently
-        }
-    };
-
-    const stopTicks = () => {
-        if (!ticksRef.current) return;
-        ticksRef.current.pause();
-        ticksRef.current.currentTime = 0;
-    };
-
     const playAlarm = async () => {
         if (!alarmRef.current) return;
         alarmRef.current.currentTime = 0;
         try {
             await alarmRef.current.play();
         } catch {
-            // ignore autoplay restrictions
+            // autoplay restrictions ignore aja
         }
     };
 
@@ -80,6 +69,29 @@ export default function CookingTimer() {
         alarmRef.current.currentTime = 0;
     };
 
+    // seamless ticks
+    const playTicks = async () => {
+        if (!ticksRef.current) return;
+        try {
+            await ticksRef.current.play();
+        } catch {
+            // autoplay restrictions ignore aja
+        }
+    };
+
+    // pause ticks but keep currentTime so resume continues seamlessly
+    const pauseTicks = () => {
+        if (!ticksRef.current) return;
+        ticksRef.current.pause();
+    };
+
+    // fully stop + rewind ticks (saat reset / new start)
+    const stopTicks = () => {
+        if (!ticksRef.current) return;
+        ticksRef.current.pause();
+        ticksRef.current.currentTime = 0;
+    };
+
     const startTimer = () => {
         const total = hours * 3600 + minutes * 60 + seconds;
         if (total <= 0) return;
@@ -87,23 +99,23 @@ export default function CookingTimer() {
         setDuration(total);
         setRemaining(total);
         setMode("running");
+        setIsRunning(true);
         setIsCompleted(false);
 
-        stopAlarm();     // ensure alarm is not playing
-        stopTicks();     // reset ticks cleanly
-        playTicks();     // start ticks immediately
-        setIsRunning(true);
+        stopAlarm();
+        stopTicks();
+        playTicks();
     };
 
     const pauseTimer = () => {
         setIsRunning(false);
-        stopTicks(); // stop ticks when paused/stopped
+        pauseTicks(); // seamless pause
     };
 
     const resumeTimer = () => {
         if (remaining <= 0) return;
         stopAlarm();
-        playTicks();
+        playTicks(); // seamless resume
         setIsRunning(true);
     };
 
@@ -128,8 +140,8 @@ export default function CookingTimer() {
                     setIsRunning(false);
                     setIsCompleted(true);
 
-                    stopTicks(); // stop ticks at the end
-                    playAlarm(); // start alarm at the end
+                    stopTicks(); // stop ticking at end
+                    playAlarm(); // play alarm at end
                     return 0;
                 }
                 return prev - 1;
@@ -139,7 +151,6 @@ export default function CookingTimer() {
         return () => clearInterval(id);
     }, [isRunning]);
 
-    // close when click outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (timerRef.current && !timerRef.current.contains(event.target)) {
@@ -153,7 +164,10 @@ export default function CookingTimer() {
     }, []);
 
     const displayH = String(Math.floor(remaining / 3600)).padStart(2, "0");
-    const displayM = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
+    const displayM = String(Math.floor((remaining % 3600) / 60)).padStart(
+        2,
+        "0",
+    );
     const displayS = String(remaining % 60).padStart(2, "0");
 
     const progress = duration > 0 ? remaining / duration : 0;
@@ -163,7 +177,10 @@ export default function CookingTimer() {
 
     return (
         <div className={`cooking-timer ${open ? " open" : ""}`} ref={timerRef}>
-            <div className="cooking-timer-toggler" onClick={() => setOpen(!open)}>
+            <div
+                className="cooking-timer-toggler"
+                onClick={() => setOpen(!open)}
+            >
                 <i className="fa-solid fa-chevron-down"></i>
                 Open Cooking Timer
             </div>
@@ -202,8 +219,18 @@ export default function CookingTimer() {
                 </div>
             ) : (
                 <div className="clock-wrapper">
-                    <svg className="clock-ring" width="100%" height="100%" viewBox="0 0 280 280">
-                        <circle className="ring-bg" cx="140" cy="140" r={radius} />
+                    <svg
+                        className="clock-ring"
+                        width="100%"
+                        height="100%"
+                        viewBox="0 0 280 280"
+                    >
+                        <circle
+                            className="ring-bg"
+                            cx="140"
+                            cy="140"
+                            r={radius}
+                        />
                         <circle
                             className="ring-progress"
                             cx="140"
@@ -221,12 +248,18 @@ export default function CookingTimer() {
 
             <div className="controls">
                 {mode === "set" ? (
-                    <button className="btn btn-fill btn-sm" onClick={startTimer}>
+                    <button
+                        className="btn btn-fill btn-sm"
+                        onClick={startTimer}
+                    >
                         Start
                     </button>
                 ) : isCompleted ? (
                     <>
-                        <button className="btn btn-sm btn-fill" onClick={stopAlarm}>
+                        <button
+                            className="btn btn-sm btn-fill"
+                            onClick={stopAlarm}
+                        >
                             Snooze
                         </button>
                         <button className="btn btn-sm" onClick={resetTimer}>
@@ -240,7 +273,10 @@ export default function CookingTimer() {
                                 Stop
                             </button>
                         ) : (
-                            <button className="btn btn-sm btn-fill" onClick={resumeTimer}>
+                            <button
+                                className="btn btn-sm btn-fill"
+                                onClick={resumeTimer}
+                            >
                                 Resume
                             </button>
                         )}
