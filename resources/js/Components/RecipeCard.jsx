@@ -13,6 +13,13 @@ export default function Recipe({ recipe }) {
     const [busy, setBusy] = useState(false);
     const { auth} = usePage().props;
 
+    // Fungsi untuk menentukan warna badge secara dinamis
+    const getMatchColor = (percent) => {
+        if (percent >= 80) return "#2ecc71"; // Hijau
+        if (percent >= 50) return "#f39c12"; // Orange/Kuning
+        return "#e74c3c"; // Merah
+    };
+
     async function likeRecipe(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -64,6 +71,32 @@ export default function Recipe({ recipe }) {
                     className="profile-liked-recipe-image"
                 />
                 <div className="recipe-image-overlay" />
+
+                {recipe.match_percentage !== undefined && recipe.match_percentage !== null && (
+                    <div className="match-badge-container" style={{
+                        position: 'absolute',
+                        top: '10px',
+                        left: '10px',
+                        zIndex: 3,
+                        backgroundColor: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '5px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        border: `1px solid ${getMatchColor(recipe.match_percentage)}`
+                    }}>
+                        <i className="fa-solid fa-fire" style={{ color: getMatchColor(recipe.match_percentage), fontSize: '0.8rem' }}></i>
+                        <span style={{ 
+                            fontSize: '0.75rem', 
+                            fontWeight: 'bold', 
+                            color: '#333' 
+                        }}>
+                            {Math.round(recipe.match_percentage)}% Match
+                        </span>
+                    </div>
+                )}
 
                 {
                     auth.user && (
