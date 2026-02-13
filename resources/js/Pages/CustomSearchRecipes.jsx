@@ -21,6 +21,7 @@ export default function CustomSearchRecipes({
         protein: "",
         fat: "",
         carbohydrate: "",
+        custom_search: true,
     });
 
     const [selectedAllergies, setSelectedAllergies] = useState(
@@ -88,7 +89,7 @@ export default function CustomSearchRecipes({
         e.preventDefault();
 
         post("/custom-search-recipes", {
-            preserveScroll: true,
+            // preserveScroll: true,
             onSuccess: () => {
                 // reset();
             },
@@ -273,6 +274,34 @@ export default function CustomSearchRecipes({
                         </div>
 
                         <div className="input-group">
+                            <label htmlFor="carbohydrate">
+                                Carbohydrate (±)
+                            </label>
+
+                            <div className="input-group-identifier">
+                                <input
+                                    type="number"
+                                    inputMode="decimal"
+                                    min="0"
+                                    step="1"
+                                    id="carbohydrate"
+                                    value={data.carbohydrate}
+                                    onChange={(e) =>
+                                        setData("carbohydrate", e.target.value)
+                                    }
+                                    placeholder="Carbohydrate"
+                                />
+                                <span className="identifier">gr</span>
+                            </div>
+
+                            {errors.carbohydrate && (
+                                <small className="error-text">
+                                    {errors.carbohydrate}
+                                </small>
+                            )}
+                        </div>
+
+                        <div className="input-group">
                             <label htmlFor="protein">Protein (±)</label>
 
                             <div className="input-group-identifier">
@@ -294,32 +323,6 @@ export default function CustomSearchRecipes({
                             {errors.protein && (
                                 <small className="error-text">
                                     {errors.protein}
-                                </small>
-                            )}
-                        </div>
-
-                        <div className="input-group">
-                            <label htmlFor="carbohydrate">Carbohydrate (±)</label>
-
-                            <div className="input-group-identifier">
-                                <input
-                                    type="number"
-                                    inputMode="decimal"
-                                    min="0"
-                                    step="1"
-                                    id="carbohydrate"
-                                    value={data.carbohydrate}
-                                    onChange={(e) =>
-                                        setData("carbohydrate", e.target.value)
-                                    }
-                                    placeholder="Carbohydrate"
-                                />
-                                <span className="identifier">gr</span>
-                            </div>
-
-                            {errors.carbohydrate && (
-                                <small className="error-text">
-                                    {errors.carbohydrate}
                                 </small>
                             )}
                         </div>

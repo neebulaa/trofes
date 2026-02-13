@@ -1,7 +1,7 @@
 import Layout from "../Layouts/Layout";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import "../../css/GuidesPage.css";
-import { router, useForm } from "@inertiajs/react";
+import { router, useForm, usePage} from "@inertiajs/react";
 import Paginator from "../Components/Paginator";
 import Dropdown from "../Components/Dropdown";
 import GuideCard from "../Components/GuideCard";
@@ -12,6 +12,8 @@ export default function Guides({ guides, filters }) {
         search: "",
     });
 
+    const { url } = usePage();
+    
     const categoryOptions = [
         { label: "Latest", value: "latest" },
         { label: "Oldest", value: "oldest" },
@@ -30,6 +32,16 @@ export default function Guides({ guides, filters }) {
             data: { search: data.search },
         });
     }
+
+    useEffect(() => {
+            const u = new URL(url, window.location.origin);
+            const q = u.searchParams.get("search");
+    
+            setData((prev) => ({
+                ...prev,
+                search: q ? q : "",
+            }));
+        }, [url, setData]);
 
     const displayGuides = useMemo(() => {
         const items = Array.isArray(guides?.data) ? [...guides.data] : [];

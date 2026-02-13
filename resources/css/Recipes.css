@@ -89,6 +89,50 @@
     gap: 0.5rem;
 }
 
+/* custom search recipes banner start */
+/* Custom mode banner (replaces inline styles) */
+.custom-mode-banner {
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--neutral-300);
+}
+
+.banner-row-title {
+    margin: 0;
+    font-weight: 500;
+}
+
+.custom-mode-banner__inner {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.custom-mode-banner__content {
+    min-width: 260px;
+}
+
+.custom-mode-banner__title {
+    margin: 0;
+    font-weight: 600;
+}
+
+.custom-mode-banner__details {
+    margin-top: 8px;
+    opacity: 0.9;
+}
+
+.custom-mode-banner__row {
+    margin: 6px 0;
+    display: flex;
+    gap: 6px;
+}
+
+/* custom search recipes banner end */
+
 #recipes-page .recipe-filters {
     display: flex;
     align-items: center;

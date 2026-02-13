@@ -23,7 +23,7 @@ export default function ProfileInfo({user, handleEditProfile}){
             </div>
         </div>
         {user.bio && <p className="profile-bio">{user.bio.trim()}</p> }
-        <button type="button" className="btn-full btn btn-line" onClick={handleEditProfile}>
+        <button type="button" className="btn-full btn btn-line mt-1" onClick={handleEditProfile}>
             Edit Profile
         </button>
         

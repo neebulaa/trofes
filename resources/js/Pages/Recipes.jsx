@@ -1,7 +1,7 @@
 import Layout from "../Layouts/Layout";
 import "../../css/Recipes.css";
 import { useForm, router, Link, usePage } from "@inertiajs/react";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import RecipeCard from "../Components/RecipeCard";
 import Paginator from "../Components/Paginator";
 import Dropdown from "../Components/Dropdown";
@@ -13,6 +13,11 @@ export default function Recipes({
     recommended_recipes,
     recipe_filter_options = [],
     active_filter = null,
+    is_custom_mode = false,
+    custom_filters = null,
+    ingredient_options = [],
+    diet_options = [],
+    allergy_options = [],
 }) {
     const { url } = usePage();
     const { data, setData, errors } = useForm({ search: "" });
@@ -34,7 +39,7 @@ export default function Recipes({
             ...prev,
             search: q,
         }));
-    }, [url]);
+    }, [url, setData]);
 
     useEffect(() => {
         if (!hero_recipes?.length) return;
@@ -68,38 +73,53 @@ export default function Recipes({
 
     const [category, setCategory] = useState(categoryOptions[0]);
 
+    const navigateWithMergedQuery = useCallback(
+        (updates) => {
+            const u = new URL(url, window.location.origin);
+            const params = Object.fromEntries(u.searchParams.entries());
+
+            Object.entries(updates || {}).forEach(([key, value]) => {
+                if (value === undefined || value === null || value === "") {
+                    delete params[key];
+                } else {
+                    params[key] = String(value);
+                }
+            });
+
+            router.get("/recipes", params, {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            });
+        },
+        [url],
+    );
+
     function handleSubmit(e) {
         e.preventDefault();
-
-        // keep current filter when searching
-        router.get(
-            "/recipes",
-            {
-                search: data.search,
-                filter_type: active_filter?.type ?? undefined,
-                filter_id: active_filter?.id ?? undefined,
-            },
-            { preserveState: true, preserveScroll: true, replace: true },
-        );
+        navigateWithMergedQuery({ search: data.search, page: undefined });
     }
 
     function handlePillClick(pill) {
-        router.get(
-            "/recipes",
-            {
-                search: data.search,
-                filter_type: pill.type === "all" ? undefined : pill.type,
-                filter_id:
-                    pill.type === "all" ? undefined : (pill.id ?? undefined),
-            },
-            { preserveState: true, preserveScroll: true, replace: true },
-        );
+        navigateWithMergedQuery({
+            filter_type: pill.type === "all" ? undefined : pill.type,
+            filter_id: pill.type === "all" ? undefined : (pill.id ?? undefined),
+            page: undefined,
+        });
     }
 
     function clearFilter() {
+        navigateWithMergedQuery({
+            filter_type: undefined,
+            filter_id: undefined,
+            page: undefined,
+        });
+    }
+
+    function clearCustomMode() {
         router.get(
             "/recipes",
-            { search: data.search },
+            {},
             { preserveState: true, preserveScroll: true, replace: true },
         );
     }
@@ -112,49 +132,104 @@ export default function Recipes({
                 return items.sort(
                     (a, b) => new Date(b.created_at) - new Date(a.created_at),
                 );
-
             case "oldest":
                 return items.sort(
-                    (a, b) => new Date(a.created_at) - new Date(a.created_at),
+                    (a, b) => new Date(a.created_at) - new Date(b.created_at),
                 );
-
             case "alphabetical":
                 return items.sort((a, b) =>
                     String(a.title).localeCompare(String(b.title), "id", {
                         sensitivity: "base",
                     }),
                 );
-
             case "reverse-alphabetical":
                 return items.sort((a, b) =>
                     String(b.title).localeCompare(String(a.title), "id", {
                         sensitivity: "base",
                     }),
                 );
-
             default:
                 return items;
         }
     }, [recipes, category]);
 
-    // NEW: hide "Recommended For You" when ANY query string exists
-    // (searching, filtering, pagination, etc.)
     const hasQuery = useMemo(() => {
         const u = new URL(url, window.location.origin);
         return u.searchParams.toString().length > 0;
     }, [url]);
 
-    // If you only want to hide when search/filter is used (not page=2), use this instead:
-    // const hasQuery = useMemo(() => {
-    //     const u = new URL(url, window.location.origin);
-    //     return (
-    //         (u.searchParams.get("search") ?? "").trim() !== "" ||
-    //         u.searchParams.has("filter_type") ||
-    //         u.searchParams.has("filter_id")
-    //     );
-    // }, [url]);
+    const showRecommended =
+        user && recommended_recipes?.length > 0 && !hasQuery && !is_custom_mode;
 
-    const showRecommended = user && recommended_recipes?.length > 0 && !hasQuery;
+    // Lookup maps so we can show labels instead of raw IDs
+    const ingredientLabelById = useMemo(
+        () =>
+            new Map(
+                (ingredient_options || []).map((o) => [
+                    Number(o.value),
+                    o.label,
+                ]),
+            ),
+        [ingredient_options],
+    );
+    const dietLabelById = useMemo(
+        () =>
+            new Map(
+                (diet_options || []).map((o) => [Number(o.value), o.label]),
+            ),
+        [diet_options],
+    );
+    const allergyLabelById = useMemo(
+        () =>
+            new Map(
+                (allergy_options || []).map((o) => [Number(o.value), o.label]),
+            ),
+        [allergy_options],
+    );
+
+    const customModeDetails = useMemo(() => {
+        if (!is_custom_mode || !custom_filters) return null;
+
+        const ingIds = Array.isArray(custom_filters.ingredients)
+            ? custom_filters.ingredients
+            : [];
+        const dietIds = Array.isArray(custom_filters.dietary_preferences)
+            ? custom_filters.dietary_preferences
+            : [];
+        const allergyIds = Array.isArray(custom_filters.allergies)
+            ? custom_filters.allergies
+            : [];
+
+        const ingredients = ingIds
+            .map((id) => ingredientLabelById.get(Number(id)) ?? `#${id}`)
+            .filter(Boolean);
+
+        const diets = dietIds
+            .map((id) => dietLabelById.get(Number(id)) ?? `#${id}`)
+            .filter(Boolean);
+
+        const allergies = allergyIds
+            .map((id) => allergyLabelById.get(Number(id)) ?? `#${id}`)
+            .filter(Boolean);
+
+        return {
+            ingredients,
+            diets,
+            allergies,
+            macros: {
+                calories: custom_filters.calories || null,
+                carbohydrate: custom_filters.carbohydrate || null,
+                protein: custom_filters.protein || null,
+                fat: custom_filters.fat || null,
+            },
+        };
+    }, [
+        is_custom_mode,
+        custom_filters,
+        ingredientLabelById,
+        dietLabelById,
+        allergyLabelById,
+    ]);
 
     return (
         <section id="recipes-page" className="recipes-page">
@@ -210,19 +285,24 @@ export default function Recipes({
 
                     <div className="recipes-page-hero-right">
                         <div className="recipe-show">
-                            <Link
-                                href={`/recipes/${card.slug}`}
-                                style={{ display: "block" }}
-                                className={`recipe-show-card ${isVisible ? "in" : "out"}`}
-                                key={card.recipe_id}
-                            >
-                                <img src={card.public_image} alt={card.title} />
-                                <p className="recipe-card-badge for-name">
-                                    <span className="badge-text">
-                                        {card.title}
-                                    </span>
-                                </p>
-                            </Link>
+                            {card && (
+                                <Link
+                                    href={`/recipes/${card.slug}`}
+                                    style={{ display: "block" }}
+                                    className={`recipe-show-card ${isVisible ? "in" : "out"}`}
+                                    key={card.recipe_id}
+                                >
+                                    <img
+                                        src={card.public_image}
+                                        alt={card.title}
+                                    />
+                                    <p className="recipe-card-badge for-name">
+                                        <span className="badge-text">
+                                            {card.title}
+                                        </span>
+                                    </p>
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -259,6 +339,92 @@ export default function Recipes({
                     </div>
                 </form>
 
+                {/* Custom mode banner with listed items */}
+                {is_custom_mode && (
+                    <div className="mt-2 custom-mode-banner">
+                        <div className="custom-mode-banner__inner">
+                            <div className="custom-mode-banner__content">
+                                <p className="custom-mode-banner__title">
+                                    Custom Mode is active
+                                </p>
+
+                                {customModeDetails && (
+                                    <div className="custom-mode-banner__details">
+                                        {customModeDetails.ingredients.length >
+                                            0 && (
+                                            <p className="custom-mode-banner__row">
+                                                <p className="banner-row-title">Ingredients:</p>{" "}
+                                                {customModeDetails.ingredients.join(
+                                                    ", ",
+                                                )}
+                                            </p>
+                                        )}
+
+                                        {customModeDetails.diets.length > 0 && (
+                                            <p className="custom-mode-banner__row">
+                                                <p className="banner-row-title">Diets:</p>{" "}
+                                                {customModeDetails.diets.join(
+                                                    ", ",
+                                                )}
+                                            </p>
+                                        )}
+
+                                        {customModeDetails.allergies.length >
+                                            0 && (
+                                            <p className="custom-mode-banner__row">
+                                                <p className="banner-row-title">
+                                                    Excluded Allergies:
+                                                </p>{" "}
+                                                {customModeDetails.allergies.join(
+                                                    ", ",
+                                                )}
+                                            </p>
+                                        )}
+
+                                        {(customModeDetails.macros.calories ||
+                                            customModeDetails.macros
+                                                .carbohydrate ||
+                                            customModeDetails.macros.protein ||
+                                            customModeDetails.macros.fat) && (
+                                            <p className="custom-mode-banner__row">
+                                                <p className="banner-row-title">Macros:</p>{" "}
+                                                {[
+                                                    customModeDetails.macros
+                                                        .calories
+                                                        ? `Calories ± ${customModeDetails.macros.calories}`
+                                                        : null,
+                                                    customModeDetails.macros
+                                                        .carbohydrate
+                                                        ? `Carb ± ${customModeDetails.macros.carbohydrate}`
+                                                        : null,
+                                                    customModeDetails.macros
+                                                        .protein
+                                                        ? `Protein ± ${customModeDetails.macros.protein}`
+                                                        : null,
+                                                    customModeDetails.macros.fat
+                                                        ? `Fat ± ${customModeDetails.macros.fat}`
+                                                        : null,
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(" • ")}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <button
+                                type="button"
+                                className="btn btn-line-white btn-rounded"
+                                onClick={clearCustomMode}
+                                title="Exit custom mode"
+                            >
+                                Clear Custom Mode
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {showRecommended && (
                     <>
                         <h2 className="recipes-container-title mt-2">
@@ -275,26 +441,23 @@ export default function Recipes({
                     </>
                 )}
 
-                {
-                    showRecommended &&
-                    (
-                        <div className="custom-search-navigator mt-2">
-                            <Link
-                                href="/custom-search-recipes"
-                                type="button"
-                                className="btn btn-fill btn-rounded"
-                            >
-                                <i className="fa-brands fa-searchengin"></i>
-                                <p>Use Custom Search</p>
-                            </Link>
+                {showRecommended && (
+                    <div className="custom-search-navigator mt-2">
+                        <Link
+                            href="/custom-search-recipes"
+                            type="button"
+                            className="btn btn-fill btn-rounded"
+                        >
+                            <i className="fa-brands fa-searchengin"></i>
+                            <p>Use Custom Search</p>
+                        </Link>
 
-                            <p className="text-muted">
-                                Search according to your own preferences and needs with
-                                'Custom Search'.
-                            </p>
-                        </div>
-                    )
-                }
+                        <p className="text-muted">
+                            Search according to your own preferences and needs
+                            with 'Custom Search'.
+                        </p>
+                    </div>
+                )}
 
                 <div className="recipe-filters mt-2">
                     <div className="filters-sort">
@@ -318,6 +481,7 @@ export default function Recipes({
                                     return activeType === "popular";
                                 if (pill.id == null || activeId == null)
                                     return false;
+
                                 return (
                                     activeType === pill.type &&
                                     Number(activeId) === Number(pill.id)
@@ -336,6 +500,18 @@ export default function Recipes({
                                 </button>
                             );
                         })}
+
+                        {active_filter?.type &&
+                            active_filter.type !== "all" && (
+                                <button
+                                    type="button"
+                                    className="pill"
+                                    onClick={clearFilter}
+                                    title="Clear filter"
+                                >
+                                    Clear
+                                </button>
+                            )}
                     </div>
                 </div>
 
@@ -343,14 +519,18 @@ export default function Recipes({
                     <NotFoundSection message="No recipes found." />
                 ) : (
                     <>
-                        {
-                            showRecommended &&
-                            (
-                                <h2 className="recipes-container-title mt-2">
-                                    All Recipes
-                                </h2>
-                            )
-                        }
+                        {showRecommended && (
+                            <h2 className="recipes-container-title mt-2">
+                                All Recipes
+                            </h2>
+                        )}
+
+                        {is_custom_mode && (
+                            <h2 className="recipes-container-title mt-2">
+                                Custom Search Results
+                            </h2>
+                        )}
+
                         <div className="recipes-container mt-1">
                             {displayRecipes.map((recipe) => (
                                 <RecipeCard
@@ -364,7 +544,13 @@ export default function Recipes({
 
                 <Paginator
                     paginator={recipes}
-                    onNavigate={(url) => router.get(url)}
+                    onNavigate={(to) =>
+                        router.get(
+                            to,
+                            {},
+                            { preserveState: true, preserveScroll: true },
+                        )
+                    }
                 />
             </div>
         </section>

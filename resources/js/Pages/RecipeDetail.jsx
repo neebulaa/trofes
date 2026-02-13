@@ -15,6 +15,43 @@ export default function RecipeDetail({ recipe, user }) {
     const [likesCount, setLikesCount] = useState(recipe.likes_count ?? 0);
     const [busy, setBusy] = useState(false);
 
+    function formatCookingTime(totalMinutes) {
+        let mins = Math.max(0, Math.floor(Number(totalMinutes) || 0));
+
+        const MIN_PER_HOUR = 60;
+        const MIN_PER_DAY = 60 * 24;
+        const MIN_PER_WEEK = MIN_PER_DAY * 7;
+        const MIN_PER_MONTH = MIN_PER_DAY * 30;
+        const MIN_PER_YEAR = MIN_PER_DAY * 365;
+
+        const years = Math.floor(mins / MIN_PER_YEAR);
+        mins -= years * MIN_PER_YEAR;
+
+        const months = Math.floor(mins / MIN_PER_MONTH);
+        mins -= months * MIN_PER_MONTH;
+
+        const weeks = Math.floor(mins / MIN_PER_WEEK);
+        mins -= weeks * MIN_PER_WEEK;
+
+        const days = Math.floor(mins / MIN_PER_DAY);
+        mins -= days * MIN_PER_DAY;
+
+        const hours = Math.floor(mins / MIN_PER_HOUR);
+        mins -= hours * MIN_PER_HOUR;
+
+        const parts = [];
+        if (years) parts.push(`${years} yr`);
+        if (months) parts.push(`${months} mo`);
+        if (weeks) parts.push(`${weeks} wk`);
+        if (days) parts.push(`${days} d`);
+        if (hours) parts.push(`${hours} hrs`);
+
+        // include minutes if there are leftover minutes OR nothing else to show
+        if (mins || parts.length === 0) parts.push(`${mins} mins`);
+
+        return parts.join(" ");
+    }
+
     async function likeRecipe(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -318,7 +355,9 @@ export default function RecipeDetail({ recipe, user }) {
                                             Cooking Time
                                         </p>
                                         <p className="recipe-detail-info-value">
-                                            {recipe.cooking_time} mins
+                                            {formatCookingTime(
+                                                recipe.cooking_time,
+                                            )}
                                         </p>
                                     </div>
                                 </div>
