@@ -94,46 +94,57 @@ class RecipeController extends Controller
     private function applyCustomSearchFilters($query, array $filters)
     {
         if (!empty($filters['ingredients'])) {
-            foreach ($filters['ingredients'] as $ingredientId) {
-                $query->whereHas('ingredients', function ($q) use ($ingredientId) {
-                    $q->where('ingredients.ingredient_id', (int) $ingredientId);
-                });
-            }
+            $ingredientIds = $filters['ingredients'];
+            $query->withCount(['ingredients as matched_ingredients_count' => function($q) use ($ingredientIds) {
+                $q->whereIn('ingredients.ingredient_id', $ingredientIds);
+            }]);
+            
+            $query->orderByDesc('matched_ingredients_count');
         }
-
+        
+        // Filter Dietary & Allergy tetap sama (karena ini wajib/hard constraint)
         if (!empty($filters['dietary_preferences'])) {
             foreach ($filters['dietary_preferences'] as $dietId) {
-                $query->whereHas('dietaryPreferences', function ($q) use ($dietId) {
-                    $q->where('dietary_preferences.dietary_preference_id', (int) $dietId);
-                });
+                $query->whereHas('dietaryPreferences', fn($q) => $q->where('dietary_preferences.dietary_preference_id', (int) $dietId));
             }
         }
 
         if (!empty($filters['allergies'])) {
             foreach ($filters['allergies'] as $allergyId) {
-                $query->whereDoesntHave('allergies', function ($q) use ($allergyId) {
-                    $q->where('allergies.allergy_id', (int) $allergyId);
-                });
+                $query->whereDoesntHave('allergies', fn($q) => $q->where('allergies.allergy_id', (int) $allergyId));
             }
         }
 
-        $tolerance = [
-            'calories' => 50,
-            'protein'  => 5,
-            'fat'      => 5,
-            'carbohydrate' => 10,
-        ];
+        // Ambil nilai input nutrisi
+        $cal = (float) ($filters['calories'] ?? 0);
+        $pro = (float) ($filters['protein'] ?? 0);
+        $fat = (float) ($filters['fat'] ?? 0);
+        $carb = (float) ($filters['carbohydrate'] ?? 0);
 
-        foreach (['calories', 'protein', 'fat', 'carbohydrate'] as $field) {
-            if (!empty($filters[$field])) {
-                $value = (float) $filters[$field];
-                $delta = $tolerance[$field];
+        // Di dalam applyCustomSearchFilters, setelah bagian hitung score_distance
+        if ($cal > 0 || $pro > 0 || $fat > 0 || $carb > 0) {
+            $query->addSelect(\DB::raw("(
+                POWER(calories - $cal, 2) + 
+                POWER(protein - $pro, 2) * 5 + 
+                POWER(fat - $fat, 2) * 5 + 
+                POWER(carbohydrate - $carb, 2) * 2
+            ) AS score_distance"));
 
-                $query->whereBetween($field, [
-                    max(0, $value - $delta),
-                    $value + $delta,
-                ]);
-            }
+            // Tambahkan kalkulasi persentase (Sederhana: makin jauh dari 0, makin kecil %)
+            // Kita asumsikan jarak 10.000 adalah 0% match sebagai batas aman
+            $query->addSelect(\DB::raw("
+                ROUND(GREATEST(0, 100 - (SQRT(
+                    POWER(calories - $cal, 2) * 0.4 + 
+                    POWER(protein - $pro, 2) * 1.5 + 
+                    POWER(fat - $fat, 2) * 1.5 + 
+                    POWER(carbohydrate - $carb, 2) * 0.8
+                ) / 10)), 1) AS match_percentage
+            "));
+
+            $query->orderBy('score_distance', 'asc');
+        } else {
+            // Default jika tidak ada input nutrisi
+            $query->addSelect(\DB::raw("100 AS match_percentage"));
         }
 
         return $query;
@@ -160,7 +171,8 @@ class RecipeController extends Controller
         $filterId = $request->query('filter_id'); // integer for ingredient/diet/no_allergy
 
         $query = Recipe::query()
-            ->select(['recipe_id','title','slug','image','cooking_time'])
+        // PENTING: Gunakan tabel.* agar selectRaw nantinya tidak error
+            ->select(['recipes.recipe_id','recipes.title','recipes.slug','recipes.image','recipes.cooking_time'])
             ->withCount('likes')
             ->when($request->user(), function ($q) use ($request) {
                 $q->withExists([

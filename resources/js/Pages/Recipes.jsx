@@ -532,12 +532,17 @@ export default function Recipes({
                         )}
 
                         <div className="recipes-container mt-1">
-                            {displayRecipes.map((recipe) => (
-                                <RecipeCard
-                                    recipe={recipe}
-                                    key={recipe.recipe_id}
-                                />
-                            ))}
+                            {recipes.data
+                                .slice() // Copy array agar tidak merusak data asli
+                                .sort((a, b) => (b.match_percentage || 0) - (a.match_percentage || 0)) // Urutkan dari % terbesar
+                                .map((recipe) => (
+                                    <RecipeCard
+                                        recipe={recipe}
+                                        key={recipe.recipe_id}
+                                        isCustomMode={is_custom_mode} 
+                                    />
+                                ))
+                            }
                         </div>
                     </>
                 )}
