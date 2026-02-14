@@ -61,26 +61,36 @@ export default function Recipes({
         setData((prev) => ({ ...prev, search: q }));
     }, [url, setData]);
 
-    const categoryOptions = useMemo(
-        () => [
+    const categoryOptions = useMemo(() => {
+        const options = [
             { label: "Latest", value: "latest" },
             { label: "Oldest", value: "oldest" },
             { label: "A - Z", value: "alphabetical" },
             { label: "Z - A", value: "reverse-alphabetical" },
-        ],
-        [],
-    );
+        ];
+
+        // Tambahkan opsi Best Match HANYA jika is_custom_mode aktif
+        if (is_custom_mode) {
+            options.unshift({ label: "Best Match", value: "best-match" });
+        }
+
+        return options;
+    }, [is_custom_mode]);
 
     const [category, setCategory] = useState(categoryOptions[0]);
 
-    // keep dropdown synced with URL ?sort=
+   // Update useEffect untuk sync dropdown dengan URL
     useEffect(() => {
         const u = new URL(url, window.location.origin);
-        const sort = u.searchParams.get("sort") ?? "none";
-        const found =
-            categoryOptions.find((o) => o.value === sort) ?? categoryOptions[0];
+        const sort = u.searchParams.get("sort");
+        
+        // Jika custom mode dan tidak ada sort di URL, default ke best-match
+        const defaultSort = is_custom_mode ? "best-match" : "latest";
+        const currentSort = sort ?? defaultSort;
+
+        const found = categoryOptions.find((o) => o.value === currentSort) ?? categoryOptions[0];
         setCategory(found);
-    }, [url, categoryOptions]);
+    }, [url, categoryOptions, is_custom_mode]);
 
     // navigation helper (merge query params)
     const navigateWithMergedQuery = useCallback(

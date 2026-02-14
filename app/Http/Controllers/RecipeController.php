@@ -121,29 +121,41 @@ class RecipeController extends Controller
             }
         }
 
-        $cal  = (float) ($filters['calories'] ?? 0);
-        $pro  = (float) ($filters['protein'] ?? 0);
-        $fat  = (float) ($filters['fat'] ?? 0);
-        $carb = (float) ($filters['carbohydrate'] ?? 0);
+        // Ambil nilai, tapi pastikan kita tahu mana yang benar-benar diisi (bukan sekadar 0)
+        $inputs = [
+            'calories'     => ['val' => (float)($filters['calories'] ?? 0), 'weight' => 1, 'p_weight' => 0.4],
+            'protein'      => ['val' => (float)($filters['protein'] ?? 0),  'weight' => 5, 'p_weight' => 1.5],
+            'fat'          => ['val' => (float)($filters['fat'] ?? 0),      'weight' => 5, 'p_weight' => 1.5],
+            'carbohydrate' => ['val' => (float)($filters['carbohydrate'] ?? 0), 'weight' => 8, 'p_weight' => 2.0],
+        ];
 
-        if ($cal > 0 || $pro > 0 || $fat > 0 || $carb > 0) {
-            $query->addSelect(\DB::raw("(
-                POWER(calories - $cal, 2) +
-                POWER(protein - $pro, 2) * 5 +
-                POWER(fat - $fat, 2) * 5 +
-                POWER(carbohydrate - $carb, 2) * 2
-            ) AS score_distance"));
+        $scoreParts = [];
+        $percParts = [];
+        $hasFilter = false;
+
+        foreach ($inputs as $key => $config) {
+            if ($config['val'] > 0) {
+                $hasFilter = true;
+                $val = $config['val'];
+                $w = $config['weight'];
+                $pw = $config['p_weight'];
+                
+                // Hanya masukkan ke rumus jika user mengisi field tersebut
+                $scoreParts[] = "POWER($key - $val, 2) * $w";
+                $percParts[]  = "POWER($key - $val, 2) * $pw";
+            }
+        }
+
+        if ($hasFilter) {
+            $rawScore = implode(' + ', $scoreParts);
+            $rawPerc  = implode(' + ', $percParts);
+
+            $query->addSelect(\DB::raw("($rawScore) AS score_distance"));
 
             $query->addSelect(\DB::raw("
-                ROUND(GREATEST(0, 100 - (SQRT(
-                    POWER(calories - $cal, 2) * 0.4 +
-                    POWER(protein - $pro, 2) * 1.5 +
-                    POWER(fat - $fat, 2) * 1.5 +
-                    POWER(carbohydrate - $carb, 2) * 0.8
-                ) / 10)), 1) AS match_percentage
+                ROUND(GREATEST(0, 100 - (SQRT($rawPerc) / 5)), 1) AS match_percentage
             "));
 
-            // smaller distance = better match
             $query->orderBy('score_distance', 'asc');
         } else {
             $query->addSelect(\DB::raw("100 AS match_percentage"));
@@ -171,7 +183,7 @@ class RecipeController extends Controller
         $filterType = $request->query('filter_type');
         $filterId   = $request->query('filter_id');
 
-        $sort = $request->query('sort', 'latest');
+        $sort = $request->query('sort', $isCustomMode ? 'best-match':'latest');
 
         $query = Recipe::query()
             ->select([
@@ -221,7 +233,8 @@ class RecipeController extends Controller
             );
         }
 
-        if ($sort) {
+        if ($sort && $sort != 'best-match') {
+            $query->reorder();
             switch ($sort) {
                 case 'latest':
                     $query->orderByDesc('recipes.created_at');
