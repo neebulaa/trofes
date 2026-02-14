@@ -1,12 +1,11 @@
 import { Link, usePage} from "@inertiajs/react";
 import { use, useState } from "react";
+import axios from 'axios';
 
-function csrfToken() {
-    return document
-        .querySelector('meta[name="csrf-token"]')
-        ?.getAttribute("content");
-}
-
+// Perbaikan fungsi pengambilan token agar lebih stabil
+// function csrfToken() {
+//     return document.head.querySelector('meta[name="csrf-token"]')?.content;
+// }
 export default function Recipe({ recipe }) {
     const [liked, setLiked] = useState(!!recipe.liked_by_me);
     const [likesCount, setLikesCount] = useState(recipe.likes_count ?? 0);
@@ -23,39 +22,30 @@ export default function Recipe({ recipe }) {
     async function likeRecipe(e) {
         e.preventDefault();
         e.stopPropagation();
-
         if (busy) return;
 
         const nextLiked = !liked;
-
         setLiked(nextLiked);
-        setLikesCount((c) => c + (nextLiked ? 1 : -1));
         setBusy(true);
 
         try {
-            const res = await fetch(`/recipes/${recipe.slug}/like`, {
-                method: nextLiked ? "POST" : "DELETE",
+            // Axios otomatis menangani CSRF jika Laravel diset dengan benar
+            const res = await axios({
+                method: nextLiked ? 'post' : 'delete',
+                url: `/recipes/${recipe.slug}/like`,
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": csrfToken(),
-                },
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
 
-            if (res.status === 401) {
-                throw new Error("Unauthenticated");
-            }
-
-            if (!res.ok) {
-                throw new Error("Request failed");
-            }
-
-            const json = await res.json();
-            setLiked(!!json.is_liked);
-            setLikesCount(json.likes_count ?? likesCount);
+            setLiked(!!res.data.is_liked);
+            setLikesCount(res.data.likes_count);
         } catch (err) {
+            if (err.response?.status === 419) {
+                // Jika masih kena 419, berarti session memang sudah expired total
+                window.location.reload(); 
+            }
             setLiked(!nextLiked);
-            setLikesCount((c) => c + (nextLiked ? -1 : 1));
             console.error(err);
         } finally {
             setBusy(false);
