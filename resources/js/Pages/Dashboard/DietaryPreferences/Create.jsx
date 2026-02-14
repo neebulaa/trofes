@@ -105,7 +105,7 @@ export default function CreateDietaryPreference() {
                         </div>
                     )}
 
-                    {errors.image && !data.image && (
+                    {errors.image && (
                         <>
                             <br />
                             <small className="error-text">{errors.image}</small>
