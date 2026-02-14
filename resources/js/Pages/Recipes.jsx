@@ -33,13 +33,8 @@ export default function Recipes({
     const FADE_MS = 450;
 
     useEffect(() => {
-        const u = new URL(url, window.location.origin);
-        const q = u.searchParams.get("search") ?? "";
-        setData((prev) => ({ ...prev, search: q }));
-    }, [url, setData]);
-
-    useEffect(() => {
         if (!hero_recipes?.length) return;
+
         const firstIn = setTimeout(() => setIsVisible(true), 0);
 
         timersRef.current.intervalId = setInterval(() => {
@@ -60,16 +55,35 @@ export default function Recipes({
 
     const card = hero_recipes?.[activeIndex];
 
-    const categoryOptions = [
-        { label: "None", value: "none" },
-        { label: "Latest", value: "latest" },
-        { label: "Oldest", value: "oldest" },
-        { label: "A - Z", value: "alphabetical" },
-        { label: "Z - A", value: "reverse-alphabetical" },
-    ];
+    useEffect(() => {
+        const u = new URL(url, window.location.origin);
+        const q = u.searchParams.get("search") ?? "";
+        setData((prev) => ({ ...prev, search: q }));
+    }, [url, setData]);
+
+    const categoryOptions = useMemo(
+        () => [
+            { label: "None", value: "none" },
+            { label: "Latest", value: "latest" },
+            { label: "Oldest", value: "oldest" },
+            { label: "A - Z", value: "alphabetical" },
+            { label: "Z - A", value: "reverse-alphabetical" },
+        ],
+        [],
+    );
 
     const [category, setCategory] = useState(categoryOptions[0]);
 
+    // keep dropdown synced with URL ?sort=
+    useEffect(() => {
+        const u = new URL(url, window.location.origin);
+        const sort = u.searchParams.get("sort") ?? "none";
+        const found =
+            categoryOptions.find((o) => o.value === sort) ?? categoryOptions[0];
+        setCategory(found);
+    }, [url, categoryOptions]);
+
+    // navigation helper (merge query params)
     const navigateWithMergedQuery = useCallback(
         (updates) => {
             const u = new URL(url, window.location.origin);
@@ -94,7 +108,10 @@ export default function Recipes({
 
     function handleSubmit(e) {
         e.preventDefault();
-        navigateWithMergedQuery({ search: data.search, page: undefined });
+        navigateWithMergedQuery({
+            search: data.search,
+            page: undefined,
+        });
     }
 
     function handlePillClick(pill) {
@@ -131,49 +148,8 @@ export default function Recipes({
     }
 
     const displayRecipes = useMemo(() => {
-        const items = Array.isArray(recipes?.data) ? [...recipes.data] : [];
-
-        // if custom mode to default to best match,
-        // only do it when category is "none" so user sorting still works.
-        if (is_custom_mode && category.value === "none") {
-            return items.sort(
-                (a, b) => (b.match_percentage || 0) - (a.match_percentage || 0),
-            );
-        }
-
-        switch (category.value) {
-            case "latest":
-                return items.sort(
-                    (a, b) =>
-                        new Date(b.created_at).getTime() -
-                        new Date(a.created_at).getTime(),
-                );
-
-            case "oldest":
-                return items.sort(
-                    (a, b) =>
-                        new Date(a.created_at).getTime() -
-                        new Date(b.created_at).getTime(),
-                );
-
-            case "alphabetical":
-                return items.sort((a, b) =>
-                    String(a.title).localeCompare(String(b.title), "id", {
-                        sensitivity: "base",
-                    }),
-                );
-
-            case "reverse-alphabetical":
-                return items.sort((a, b) =>
-                    String(b.title).localeCompare(String(a.title), "id", {
-                        sensitivity: "base",
-                    }),
-                );
-
-            default:
-                return items;
-        }
-    }, [recipes, category, is_custom_mode]);
+        return Array.isArray(recipes?.data) ? recipes.data : [];
+    }, [recipes]);
 
     const hasQuery = useMemo(() => {
         const u = new URL(url, window.location.origin);
@@ -183,6 +159,7 @@ export default function Recipes({
     const showRecommended =
         user && recommended_recipes?.length > 0 && !hasQuery && !is_custom_mode;
 
+    // lookup maps for custom filters banner
     const ingredientLabelById = useMemo(
         () =>
             new Map(
@@ -360,6 +337,7 @@ export default function Recipes({
                     </div>
                 </form>
 
+                {/* Custom mode banner */}
                 {is_custom_mode && (
                     <div className="mt-2 custom-mode-banner">
                         <div className="custom-mode-banner__inner">
@@ -491,7 +469,16 @@ export default function Recipes({
                         <Dropdown
                             options={categoryOptions}
                             value={category}
-                            onChange={setCategory}
+                            onChange={(next) => {
+                                setCategory(next);
+                                navigateWithMergedQuery({
+                                    sort:
+                                        next.value === "none"
+                                            ? undefined
+                                            : next.value,
+                                    page: undefined,
+                                });
+                            }}
                         />
                     </div>
 
@@ -575,7 +562,7 @@ export default function Recipes({
                         router.get(
                             to,
                             {},
-                            { preserveState: true, preserveScroll: true },
+                            { preserveState: true },
                         )
                     }
                 />
