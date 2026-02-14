@@ -250,7 +250,7 @@ export default function CookingTimer() {
             <div className="controls">
                 {mode === "set" ? (
                     <button
-                        className="btn btn-fill btn-sm"
+                        className="btn btn-fill btn-sm btn-fill-white"
                         onClick={startTimer}
                     >
                         Start

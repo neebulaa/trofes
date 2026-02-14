@@ -24,7 +24,7 @@ export default function GuideDetail({guide, next_guide, prev_guide, other_guides
 
                     <div className="guide-detail-navigation">
                         <h2>Great job! Time to keep <span className="green-block">Learning!</span></h2>
-                        <p>You’ve completed an important step. Now, let’s continue your journey toward a more nutritious lifestyle.</p>
+                        <p>You've completed an important step. Now, let's continue your journey toward a more nutritious lifestyle.</p>
 
                         <div className="guide-navigators">
                             {prev_guide && (
