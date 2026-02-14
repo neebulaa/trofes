@@ -35,10 +35,7 @@ export default function Recipes({
     useEffect(() => {
         const u = new URL(url, window.location.origin);
         const q = u.searchParams.get("search") ?? "";
-        setData((prev) => ({
-            ...prev,
-            search: q,
-        }));
+        setData((prev) => ({ ...prev, search: q }));
     }, [url, setData]);
 
     useEffect(() => {
@@ -101,9 +98,18 @@ export default function Recipes({
     }
 
     function handlePillClick(pill) {
+        if (pill.type === "all") {
+            navigateWithMergedQuery({
+                filter_type: undefined,
+                filter_id: undefined,
+                page: undefined,
+            });
+            return;
+        }
+
         navigateWithMergedQuery({
-            filter_type: pill.type === "all" ? undefined : pill.type,
-            filter_id: pill.type === "all" ? undefined : (pill.id ?? undefined),
+            filter_type: pill.type,
+            filter_id: pill.id ?? undefined,
             page: undefined,
         });
     }
@@ -127,31 +133,47 @@ export default function Recipes({
     const displayRecipes = useMemo(() => {
         const items = Array.isArray(recipes?.data) ? [...recipes.data] : [];
 
+        // if custom mode to default to best match,
+        // only do it when category is "none" so user sorting still works.
+        if (is_custom_mode && category.value === "none") {
+            return items.sort(
+                (a, b) => (b.match_percentage || 0) - (a.match_percentage || 0),
+            );
+        }
+
         switch (category.value) {
             case "latest":
                 return items.sort(
-                    (a, b) => new Date(b.created_at) - new Date(a.created_at),
+                    (a, b) =>
+                        new Date(b.created_at).getTime() -
+                        new Date(a.created_at).getTime(),
                 );
+
             case "oldest":
                 return items.sort(
-                    (a, b) => new Date(a.created_at) - new Date(b.created_at),
+                    (a, b) =>
+                        new Date(a.created_at).getTime() -
+                        new Date(b.created_at).getTime(),
                 );
+
             case "alphabetical":
                 return items.sort((a, b) =>
                     String(a.title).localeCompare(String(b.title), "id", {
                         sensitivity: "base",
                     }),
                 );
+
             case "reverse-alphabetical":
                 return items.sort((a, b) =>
                     String(b.title).localeCompare(String(a.title), "id", {
                         sensitivity: "base",
                     }),
                 );
+
             default:
                 return items;
         }
-    }, [recipes, category]);
+    }, [recipes, category, is_custom_mode]);
 
     const hasQuery = useMemo(() => {
         const u = new URL(url, window.location.origin);
@@ -161,7 +183,6 @@ export default function Recipes({
     const showRecommended =
         user && recommended_recipes?.length > 0 && !hasQuery && !is_custom_mode;
 
-    // Lookup maps so we can show labels instead of raw IDs
     const ingredientLabelById = useMemo(
         () =>
             new Map(
@@ -339,7 +360,6 @@ export default function Recipes({
                     </div>
                 </form>
 
-                {/* Custom mode banner with listed items */}
                 {is_custom_mode && (
                     <div className="mt-2 custom-mode-banner">
                         <div className="custom-mode-banner__inner">
@@ -353,7 +373,9 @@ export default function Recipes({
                                         {customModeDetails.ingredients.length >
                                             0 && (
                                             <p className="custom-mode-banner__row">
-                                                <p className="banner-row-title">Ingredients:</p>{" "}
+                                                <span className="banner-row-title">
+                                                    Ingredients:
+                                                </span>{" "}
                                                 {customModeDetails.ingredients.join(
                                                     ", ",
                                                 )}
@@ -362,7 +384,9 @@ export default function Recipes({
 
                                         {customModeDetails.diets.length > 0 && (
                                             <p className="custom-mode-banner__row">
-                                                <p className="banner-row-title">Diets:</p>{" "}
+                                                <span className="banner-row-title">
+                                                    Diets:
+                                                </span>{" "}
                                                 {customModeDetails.diets.join(
                                                     ", ",
                                                 )}
@@ -372,9 +396,9 @@ export default function Recipes({
                                         {customModeDetails.allergies.length >
                                             0 && (
                                             <p className="custom-mode-banner__row">
-                                                <p className="banner-row-title">
+                                                <span className="banner-row-title">
                                                     Excluded Allergies:
-                                                </p>{" "}
+                                                </span>{" "}
                                                 {customModeDetails.allergies.join(
                                                     ", ",
                                                 )}
@@ -387,7 +411,9 @@ export default function Recipes({
                                             customModeDetails.macros.protein ||
                                             customModeDetails.macros.fat) && (
                                             <p className="custom-mode-banner__row">
-                                                <p className="banner-row-title">Macros:</p>{" "}
+                                                <span className="banner-row-title">
+                                                    Macros:
+                                                </span>{" "}
                                                 {[
                                                     customModeDetails.macros
                                                         .calories
@@ -532,17 +558,13 @@ export default function Recipes({
                         )}
 
                         <div className="recipes-container mt-1">
-                            {recipes.data
-                                .slice() // Copy array agar tidak merusak data asli
-                                .sort((a, b) => (b.match_percentage || 0) - (a.match_percentage || 0)) // Urutkan dari % terbesar
-                                .map((recipe) => (
-                                    <RecipeCard
-                                        recipe={recipe}
-                                        key={recipe.recipe_id}
-                                        isCustomMode={is_custom_mode} 
-                                    />
-                                ))
-                            }
+                            {displayRecipes.map((recipe) => (
+                                <RecipeCard
+                                    recipe={recipe}
+                                    key={recipe.recipe_id}
+                                    isCustomMode={is_custom_mode}
+                                />
+                            ))}
                         </div>
                     </>
                 )}

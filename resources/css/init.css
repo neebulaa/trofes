@@ -507,11 +507,6 @@ select:focus,
         rgba(47, 178, 72, 0.25); */
 }
 
-.btn-fill.btn-fill-white {
-    background: var(--white) !important;
-    color: var(--neutral-700) !important;
-}
-
 .btn-rounded {
     border-radius: 10000px;
 }
