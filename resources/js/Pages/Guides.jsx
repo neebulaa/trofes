@@ -1,80 +1,82 @@
 import Layout from "../Layouts/Layout";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import "../../css/GuidesPage.css";
-import { router, useForm, usePage} from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import Paginator from "../Components/Paginator";
 import Dropdown from "../Components/Dropdown";
 import GuideCard from "../Components/GuideCard";
 import NotFoundSection from "../Components/NotFoundSection";
 
-export default function Guides({ guides, filters }) {
-    const { data, setData, get, errors } = useForm({
+export default function Guides({ guides }) {
+    const { url } = usePage();
+
+    const { data, setData, errors } = useForm({
         search: "",
     });
 
-    const { url } = usePage();
-    
-    const categoryOptions = [
-        { label: "Latest", value: "latest" },
-        { label: "Oldest", value: "oldest" },
-        { label: "A - Z", value: "alphabetical" },
-        { label: "Z - A", value: "reverse-alphabetical" },
-    ];
+    const categoryOptions = useMemo(
+        () => [
+            { label: "Latest", value: "latest" },
+            { label: "Oldest", value: "oldest" },
+            { label: "A - Z", value: "alphabetical" },
+            { label: "Z - A", value: "reverse-alphabetical" },
+        ],
+        [],
+    );
 
     const [category, setCategory] = useState(categoryOptions[0]);
 
+    // Merge URL query params instead of replacing them
+    const navigateWithMergedQuery = useCallback(
+        (updates) => {
+            const u = new URL(url, window.location.origin);
+            const params = Object.fromEntries(u.searchParams.entries());
+
+            Object.entries(updates || {}).forEach(([key, value]) => {
+                if (value === undefined || value === null || value === "") {
+                    delete params[key];
+                } else {
+                    params[key] = String(value);
+                }
+            });
+
+            router.get("/guides", params, {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            });
+        },
+        [url],
+    );
+
+    // Sync search input with URL
+    useEffect(() => {
+        const u = new URL(url, window.location.origin);
+        const q = u.searchParams.get("search") ?? "";
+        setData((prev) => ({ ...prev, search: q }));
+    }, [url, setData]);
+
+    // Sync dropdown with URL (?sort=...)
+    useEffect(() => {
+        const u = new URL(url, window.location.origin);
+        const sort = u.searchParams.get("sort") ?? "latest"; // default latest
+        const found =
+            categoryOptions.find((o) => o.value === sort) ?? categoryOptions[0];
+        setCategory(found);
+    }, [url, categoryOptions]);
+
     function handleSubmit(e) {
         e.preventDefault();
-        get("/guides", {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-            data: { search: data.search },
+        navigateWithMergedQuery({
+            search: data.search,
+            page: undefined, // reset page on search
         });
     }
 
-    useEffect(() => {
-            const u = new URL(url, window.location.origin);
-            const q = u.searchParams.get("search");
-    
-            setData((prev) => ({
-                ...prev,
-                search: q ? q : "",
-            }));
-        }, [url, setData]);
-
+    // Backend-sorted guides (no frontend sorting)
     const displayGuides = useMemo(() => {
-        const items = Array.isArray(guides?.data) ? [...guides.data] : [];
-
-        switch (category.value) {
-            case "latest":
-                return items.sort(
-                    (a, b) => new Date(b.published_at) - new Date(a.published_at)
-                );
-
-            case "oldest":
-                return items.sort(
-                    (a, b) => new Date(a.published_at) - new Date(b.published_at)
-                );
-
-            case "alphabetical":
-                return items.sort((a, b) =>
-                    String(a.title).localeCompare(String(b.title), "id", {
-                        sensitivity: "base",
-                    })
-                );
-
-            case "reverse-alphabetical":
-                return items.sort((a, b) =>
-                    String(b.title).localeCompare(String(a.title), "id", {
-                        sensitivity: "base",
-                    })
-                );
-
-            default:
-                return items;
-        }
-    }, [guides, category]);
+        return Array.isArray(guides?.data) ? guides.data : [];
+    }, [guides]);
 
     return (
         <section className="guides-page" id="guides-page">
@@ -84,7 +86,8 @@ export default function Guides({ guides, filters }) {
                 </h1>
 
                 <p className="guides-page-about">
-                    Discover various tutorials prepared to assist you in understanding each step more effectively.
+                    Discover various tutorials prepared to assist you in
+                    understanding each step more effectively.
                 </p>
 
                 <div className="search-and-filters">
@@ -94,7 +97,13 @@ export default function Guides({ guides, filters }) {
                             <Dropdown
                                 options={categoryOptions}
                                 value={category}
-                                onChange={setCategory}
+                                onChange={(next) => {
+                                    setCategory(next);
+                                    navigateWithMergedQuery({
+                                        sort: next.value,
+                                        page: undefined,
+                                    });
+                                }}
                             />
                         </div>
 
@@ -107,7 +116,9 @@ export default function Guides({ guides, filters }) {
                                 <input
                                     type="text"
                                     value={data.search}
-                                    onChange={(e) => setData("search", e.target.value)}
+                                    onChange={(e) =>
+                                        setData("search", e.target.value)
+                                    }
                                     placeholder="Search guides..."
                                 />
 
@@ -116,23 +127,35 @@ export default function Guides({ guides, filters }) {
                                 </button>
                             </div>
 
-                            {errors.search && <small className="error-text">{errors.search}</small>}
+                            {errors.search && (
+                                <small className="error-text">
+                                    {errors.search}
+                                </small>
+                            )}
                         </div>
                     </form>
                 </div>
 
-                {
-                    displayGuides.length === 0 ? (
-                        <NotFoundSection message="No guides found." />
-                    ) : 
+                {displayGuides.length === 0 ? (
+                    <NotFoundSection message="No guides found." />
+                ) : (
                     <div className="guides-page-list">
                         {displayGuides.map((guide) => (
-                            <GuideCard guide={guide}/>
+                            <GuideCard guide={guide} key={guide.guide_id} />
                         ))}
                     </div>
-                }
+                )}
 
-                <Paginator paginator={guides} onNavigate={(url) => router.get(url)} />
+                <Paginator
+                    paginator={guides}
+                    onNavigate={(to) =>
+                        router.get(
+                            to,
+                            {},
+                            { preserveState: true },
+                        )
+                    }
+                />
             </div>
         </section>
     );

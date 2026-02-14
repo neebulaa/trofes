@@ -8,38 +8,62 @@ use Inertia\Inertia;
 
 class GuideController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $search = $request->query('search');
-        $perPage = $request->query('per_page', 9);
+        $perPage = (int) $request->query('per_page', 9);
 
-        $query = Guide::query()->latest();
+        // NEW
+        $sort = $request->query('sort', 'latest');
+
+        $query = Guide::query();
 
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                ->orWhere('content', 'like', "%{$search}%");
+                    ->orWhere('content', 'like', "%{$search}%");
             });
         }
 
-        $guides = $query->paginate($perPage)->appends($request->only(['search', 'per_page']));
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('published_at', 'asc')->orderBy('guide_id', 'asc');
+                break;
 
-        // using guide resource
+            case 'alphabetical':
+                $query->orderBy('title', 'asc')->orderBy('guide_id', 'asc');
+                break;
+
+            case 'reverse-alphabetical':
+                $query->orderBy('title', 'desc')->orderBy('guide_id', 'desc');
+                break;
+
+            case 'latest':
+            default:
+                $query->orderBy('published_at', 'desc')->orderBy('guide_id', 'desc');
+                break;
+        }
+
+        $guides = $query
+            ->paginate($perPage)
+            ->appends($request->only(['search', 'per_page', 'sort']));
+
         return Inertia::render('Guides', [
             'guides' => $guides,
         ]);
     }
 
-
-    public function show(Request $request, Guide $guide){
+    public function show(Request $request, Guide $guide)
+    {
         $publishedAt = $guide->published_at;
 
         $nextGuide = Guide::query()
             ->where(function ($q) use ($publishedAt, $guide) {
                 $q->where('published_at', '>', $publishedAt)
-                ->orWhere(function ($q2) use ($publishedAt, $guide) {
-                    $q2->where('published_at', '=', $publishedAt)
-                        ->where('guide_id', '>', $guide->guide_id);
-                });
+                    ->orWhere(function ($q2) use ($publishedAt, $guide) {
+                        $q2->where('published_at', '=', $publishedAt)
+                            ->where('guide_id', '>', $guide->guide_id);
+                    });
             })
             ->orderBy('published_at', 'asc')
             ->orderBy('guide_id', 'asc')
@@ -48,10 +72,10 @@ class GuideController extends Controller
         $prevGuide = Guide::query()
             ->where(function ($q) use ($publishedAt, $guide) {
                 $q->where('published_at', '<', $publishedAt)
-                ->orWhere(function ($q2) use ($publishedAt, $guide) {
-                    $q2->where('published_at', '=', $publishedAt)
-                        ->where('guide_id', '<', $guide->guide_id);
-                });
+                    ->orWhere(function ($q2) use ($publishedAt, $guide) {
+                        $q2->where('published_at', '=', $publishedAt)
+                            ->where('guide_id', '<', $guide->guide_id);
+                    });
             })
             ->orderBy('published_at', 'desc')
             ->orderBy('guide_id', 'desc')

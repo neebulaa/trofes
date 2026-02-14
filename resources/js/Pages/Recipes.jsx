@@ -63,7 +63,6 @@ export default function Recipes({
 
     const categoryOptions = useMemo(
         () => [
-            { label: "None", value: "none" },
             { label: "Latest", value: "latest" },
             { label: "Oldest", value: "oldest" },
             { label: "A - Z", value: "alphabetical" },

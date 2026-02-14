@@ -171,7 +171,7 @@ class RecipeController extends Controller
         $filterType = $request->query('filter_type');
         $filterId   = $request->query('filter_id');
 
-        $sort = $request->query('sort', 'none');
+        $sort = $request->query('sort', 'latest');
 
         $query = Recipe::query()
             ->select([
@@ -221,11 +221,7 @@ class RecipeController extends Controller
             );
         }
 
-        // if user chose an explicit sort, override ANY existing orderBy
-        // (including best-match orderBy from custom mode and popular orderBy).
-        if ($sort && $sort !== 'none') {
-            $query->reorder();
-
+        if ($sort) {
             switch ($sort) {
                 case 'latest':
                     $query->orderByDesc('recipes.created_at');
@@ -236,11 +232,15 @@ class RecipeController extends Controller
                     break;
 
                 case 'alphabetical':
-                    $query->orderBy('recipes.title');
+                    $query
+                    ->orderByRaw('TRIM(LEADING \'"\' FROM TRIM(LEADING \'\\\'\' FROM recipes.title)) ASC')
+                    ->orderBy('recipes.title', 'asc');
                     break;
 
                 case 'reverse-alphabetical':
-                    $query->orderByDesc('recipes.title');
+                    $query
+                    ->orderByRaw('TRIM(LEADING \'"\' FROM TRIM(LEADING \'\\\'\' FROM recipes.title)) DESC')
+                    ->orderBy('recipes.title', 'desc');
                     break;
             }
         }
