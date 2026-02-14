@@ -348,17 +348,36 @@ class RecipeController extends Controller
     public function performCustomSearchRecipes(Request $request)
     {
         $validated = $request->validate([
-            'ingredients' => 'array',
+            'ingredients' => 'nullable|array',
             'ingredients.*' => 'integer|exists:ingredients,ingredient_id',
-            'dietary_preferences' => 'array',
+
+            'dietary_preferences' => 'nullable|array',
             'dietary_preferences.*' => 'integer|exists:dietary_preferences,dietary_preference_id',
-            'allergies' => 'array',
+
+            'allergies' => 'nullable|array',
             'allergies.*' => 'integer|exists:allergies,allergy_id',
+
             'calories' => 'nullable|numeric|min:0',
             'protein'  => 'nullable|numeric|min:0',
             'fat'      => 'nullable|numeric|min:0',
-            'carbohydrate'   => 'nullable|numeric|min:0',
+            'carbohydrate' => 'nullable|numeric|min:0',
         ]);
+
+        $hasAtLeastOne =
+            !empty($validated['ingredients']) ||
+            !empty($validated['dietary_preferences']) ||
+            !empty($validated['allergies']) ||
+            !empty($validated['calories']) ||
+            !empty($validated['protein']) ||
+            !empty($validated['fat']) ||
+            !empty($validated['carbohydrate']);
+
+        if (!$hasAtLeastOne) {
+            return back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Please fill at least one filter before searching.',
+            ]);
+        }
 
         session()->put('recipes.custom_search_filters_v1', $validated);
 
