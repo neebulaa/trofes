@@ -45,7 +45,11 @@ Route::prefix('v1')->group(function () {
             'success' => true,
             'data' => [
                 'guides' => \App\Models\Guide::latest()->take(3)->get(),
-                'recipes' => \App\Models\Recipe::inRandomOrder()->limit(5)->get(),
+                'recommended_recipes' => \App\Models\Recipe::with(['dietaryPreferences'])->inRandomOrder()->limit(5)->get(),
+                "popular_recipes" => \App\Models\Recipe::withCount('likes')
+                    ->orderBy('likes_count', 'desc')
+                    ->take(20)
+                    ->get(),
             ]
         ]);
     });
@@ -113,7 +117,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // ------------------------------------------------------------------------
     // Routes that require completed onboarding
     // ------------------------------------------------------------------------
-    Route::middleware('onboarded')->group(function() {
+    // Route::middleware('onboarded')->group(function() {
         
         // --------------------------------------------------------------------
         // Guides Routes
@@ -153,7 +157,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('/ingredients/{ingredient}', [IngredientController::class, 'show']);
         Route::get('/allergies/{allergy}', [AllergyController::class, 'show']);
         Route::get('/dietary-preferences/{dietary_preference}', [DietaryPreferenceController::class, 'show']);
-    });
+    // });
 
     // ========================================================================
     // ADMIN ROUTES (Requires Admin Role)

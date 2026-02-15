@@ -148,7 +148,7 @@ class RecipeController extends Controller
 
     /**
      * Get all recipes with AI recommendations
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -187,6 +187,7 @@ class RecipeController extends Controller
         $query = Recipe::query()
             ->select(['recipe_id', 'title', 'slug', 'image', 'cooking_time'])
             ->withCount('likes')
+            ->with(['dietaryPreferences'])
             ->when($request->user(), function ($q) use ($request) {
                 $q->withExists([
                     'likes as liked_by_me' => fn($qq) => $qq->where('user_id', $request->user()->user_id),
@@ -257,7 +258,7 @@ class RecipeController extends Controller
 
     /**
      * Get single recipe detail
-     * 
+     *
      * @param Request $request
      * @param Recipe $recipe
      * @return \Illuminate\Http\JsonResponse
@@ -294,7 +295,7 @@ class RecipeController extends Controller
 
     /**
      * Custom search recipes
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -399,3 +400,4 @@ class RecipeController extends Controller
         ]);
     }
 }
+
