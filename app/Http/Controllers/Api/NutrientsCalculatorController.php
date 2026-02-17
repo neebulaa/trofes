@@ -12,8 +12,7 @@ class NutrientsCalculatorController extends Controller
 {
     /**
      * Get calculator initial data
-     * 
-     * @param Request $request
+     * * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
@@ -118,8 +117,7 @@ class NutrientsCalculatorController extends Controller
 
     /**
      * Find recipe recommendations based on nutrients
-     * 
-     * @param Request $request
+     * * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function findRecommendation(Request $request)
@@ -194,31 +192,35 @@ class NutrientsCalculatorController extends Controller
                 max(0, $caloriesPerMeal - $tolerance),
                 $caloriesPerMeal + $tolerance
             ])
+            ->with(['dietaryPreferences'])
             ->withCount('likes')
             ->when($is_login, function ($q) {
                 $q->withExists([
-                    'likes as liked_by_me' => fn($qq) => $qq->where('user_id', auth()->id()),
+                    'likes as liked_by_me' => fn($qq) => $qq->where('user_id', auth('sanctum')->id()),
                 ]);
             });
 
         // Filter by user's dietary preferences and allergies if logged in
         if ($is_login) {
-            $user = auth()->user();
+            $user = auth('sanctum')->user();
             
-            // Exclude allergies
-            $userAllergyIds = $user->allergies->pluck('allergy_id')->toArray();
-            if (!empty($userAllergyIds)) {
-                $recipesQuery->whereDoesntHave('allergies', function ($q) use ($userAllergyIds) {
-                    $q->whereIn('allergies.allergy_id', $userAllergyIds);
-                });
-            }
+            // TAMBAHAN VALIDASI: Cek apakah objek user tersedia
+            if ($user) {
+                // Exclude allergies
+                $userAllergyIds = $user->allergies->pluck('allergy_id')->toArray();
+                if (!empty($userAllergyIds)) {
+                    $recipesQuery->whereDoesntHave('allergies', function ($q) use ($userAllergyIds) {
+                        $q->whereIn('allergies.allergy_id', $userAllergyIds);
+                    });
+                }
 
-            // Match dietary preferences
-            $userDietIds = $user->dietaryPreferences->pluck('dietary_preference_id')->toArray();
-            if (!empty($userDietIds)) {
-                $recipesQuery->whereHas('dietaryPreferences', function ($q) use ($userDietIds) {
-                    $q->whereIn('dietary_preferences.dietary_preference_id', $userDietIds);
-                });
+                // Match dietary preferences
+                $userDietIds = $user->dietaryPreferences->pluck('dietary_preference_id')->toArray();
+                if (!empty($userDietIds)) {
+                    $recipesQuery->whereHas('dietaryPreferences', function ($q) use ($userDietIds) {
+                        $q->whereIn('dietary_preferences.dietary_preference_id', $userDietIds);
+                    });
+                }
             }
         }
 
