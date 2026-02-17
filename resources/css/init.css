@@ -96,7 +96,7 @@ html {
 body {
     color: var(--text);
     margin: 0;
-    background: var(--primary-700);
+    background: var(--neutral-50);
     line-height: 1.5;
     overflow-x: hidden;
 }

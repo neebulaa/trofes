@@ -538,7 +538,20 @@ export default function Recipes({
                 </div>
 
                 {displayRecipes.length === 0 ? (
-                    <NotFoundSection message="No recipes found." />
+                    <>
+                        <NotFoundSection message="No recipes found." />
+                        <h2 className="recipes-container-title mt-2">
+                            Recommended For You
+                        </h2>
+                        <div className="recipes-container mt-1">
+                            {recommended_recipes.map((recipe) => (
+                                <RecipeCard
+                                    recipe={recipe}
+                                    key={recipe.recipe_id}
+                                />
+                            ))}
+                        </div>
+                    </>
                 ) : (
                     <>
                         {showRecommended && (

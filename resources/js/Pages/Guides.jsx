@@ -7,7 +7,7 @@ import Dropdown from "../Components/Dropdown";
 import GuideCard from "../Components/GuideCard";
 import NotFoundSection from "../Components/NotFoundSection";
 
-export default function Guides({ guides }) {
+export default function Guides({ guides, random_guides }) {
     const { url } = usePage();
 
     const { data, setData, errors } = useForm({
@@ -137,7 +137,15 @@ export default function Guides({ guides }) {
                 </div>
 
                 {displayGuides.length === 0 ? (
-                    <NotFoundSection message="No guides found." />
+                    <>
+                        <NotFoundSection message="No guides found." />
+                        <h2 className="mt-2">Other Guides</h2>
+                        <div className="guides-page-list" style={{ marginTop: '1rem' }}>
+                            {random_guides.map((guide) => (
+                                <GuideCard guide={guide} key={guide.guide_id} />
+                            ))}
+                        </div>
+                    </>
                 ) : (
                     <div className="guides-page-list">
                         {displayGuides.map((guide) => (

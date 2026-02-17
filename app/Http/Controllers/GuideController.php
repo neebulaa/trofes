@@ -50,6 +50,7 @@ class GuideController extends Controller
 
         return Inertia::render('Guides', [
             'guides' => $guides,
+            'random_guides' => Guide::inRandomOrder()->take(3)->get(),
         ]);
     }
 
