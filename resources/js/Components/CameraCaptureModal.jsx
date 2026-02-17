@@ -9,7 +9,7 @@ export default function CameraCaptureModal({ onCapture, onClose }) {
         async function startCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "user" },
+                    video: { facingMode: "environment" },
                 });
                 streamRef.current = stream;
                 if (videoRef.current) videoRef.current.srcObject = stream;

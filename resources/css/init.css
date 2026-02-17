@@ -96,7 +96,7 @@ html {
 body {
     color: var(--text);
     margin: 0;
-    background: var(--neutral-50);
+    background: var(--primary-700);
     line-height: 1.5;
     overflow-x: hidden;
 }
@@ -525,7 +525,7 @@ select:focus,
 }
 
 .btn-pill {
-    background: var(--green);
+    background: var(--primary-600);
     color: var(--white);
 
     border-radius: calc(42px * var(--ui-scale));

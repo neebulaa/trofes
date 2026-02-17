@@ -1,5 +1,5 @@
 import Layout from "../Layouts/Layout";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "../../css/NutrientsCalculator.css";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import RecipeCard from "../Components/RecipeCard";
@@ -146,10 +146,10 @@ export default function NutrientsCalculator({
         const t = calcTargets(data);
         if (!t) return;
 
-        setData({
-            ...data,
+        setData((prev) => ({
+            ...prev,
             ...t,
-        });
+        }));
 
         post("/nutrients-calculator", {
             preserveScroll: true,
@@ -160,11 +160,36 @@ export default function NutrientsCalculator({
             onSuccess: () => {
                 setCalculated(true);
             },
-            // preserveState: true
+        });
+    }
+
+    function handleGoalChange(nextGoal) {
+        setData("goal", nextGoal);
+
+        const t = calcTargets({ ...data, goal: nextGoal });
+        if (!t) return;
+
+        setData((prev) => ({
+            ...prev,
+            goal: nextGoal,
+            ...t,
+        }));
+
+        post("/nutrients-calculator", {
+            preserveScroll: true,
+            transform: (formData) => ({
+                ...formData,
+                goal: nextGoal,
+                ...t,
+            }),
+            onSuccess: () => {
+                setCalculated(true);
+            },
         });
     }
 
     function resetForm() {
+        setCalculated(false);
         setData({
             activity_level: "MIDDLE",
             gender: "male",
@@ -276,7 +301,7 @@ export default function NutrientsCalculator({
                                                 onChange={(e) => {
                                                     setData(
                                                         "age",
-                                                        e.target.value,
+                                                        e.target.value
                                                     );
                                                 }}
                                             />
@@ -300,7 +325,7 @@ export default function NutrientsCalculator({
                                                     onChange={(e) => {
                                                         setData(
                                                             "weight",
-                                                            e.target.value,
+                                                            e.target.value
                                                         );
                                                     }}
                                                 />
@@ -328,7 +353,7 @@ export default function NutrientsCalculator({
                                                     onChange={(e) => {
                                                         setData(
                                                             "height",
-                                                            e.target.value,
+                                                            e.target.value
                                                         );
                                                     }}
                                                 />
@@ -360,7 +385,7 @@ export default function NutrientsCalculator({
                                                 activityLevels.find(
                                                     (level) =>
                                                         level.value ===
-                                                        data.activity_level,
+                                                        data.activity_level
                                                 )?.label
                                             }
                                         </span>
@@ -369,7 +394,7 @@ export default function NutrientsCalculator({
                                             activityLevels.find(
                                                 (level) =>
                                                     level.value ===
-                                                    data.activity_level,
+                                                    data.activity_level
                                             )?.description
                                         }
                                     </p>
@@ -383,7 +408,7 @@ export default function NutrientsCalculator({
                                                         activityLevels.findIndex(
                                                             (level) =>
                                                                 level.value ===
-                                                                data.activity_level,
+                                                                data.activity_level
                                                         ) *
                                                         (100 /
                                                             (activityLevels.length -
@@ -409,7 +434,7 @@ export default function NutrientsCalculator({
                                                         onClick={() =>
                                                             setData(
                                                                 "activity_level",
-                                                                level.value,
+                                                                level.value
                                                             )
                                                         }
                                                         style={{
@@ -425,7 +450,7 @@ export default function NutrientsCalculator({
                                                             {level.label}
                                                         </span>
                                                     </div>
-                                                ),
+                                                )
                                             )}
                                         </div>
                                     </div>
@@ -535,7 +560,8 @@ export default function NutrientsCalculator({
                                                 ? "selected"
                                                 : ""
                                         }
-                                        onClick={() => setData("goal", "LOSE")}
+                                        onClick={() => handleGoalChange("LOSE")}
+                                        disabled={processing}
                                     >
                                         Lose Weight
                                     </button>
@@ -547,8 +573,9 @@ export default function NutrientsCalculator({
                                                 : ""
                                         }
                                         onClick={() =>
-                                            setData("goal", "MAINTAIN")
+                                            handleGoalChange("MAINTAIN")
                                         }
+                                        disabled={processing}
                                     >
                                         Maintain Weight
                                     </button>
@@ -559,7 +586,8 @@ export default function NutrientsCalculator({
                                                 ? "selected"
                                                 : ""
                                         }
-                                        onClick={() => setData("goal", "GAIN")}
+                                        onClick={() => handleGoalChange("GAIN")}
+                                        disabled={processing}
                                     >
                                         Gain Weight
                                     </button>
@@ -571,8 +599,9 @@ export default function NutrientsCalculator({
                                                 : ""
                                         }
                                         onClick={() =>
-                                            setData("goal", "MUSCLE")
+                                            handleGoalChange("MUSCLE")
                                         }
+                                        disabled={processing}
                                     >
                                         Gain Muscle
                                     </button>
@@ -583,7 +612,14 @@ export default function NutrientsCalculator({
                                 <div className="recommended-recipes">
                                     <div className="subsection-split">
                                         <h2 className="subsection-title">
-                                            Recommended Recipes
+                                            Recommended Recipes <br />
+                                            <span
+                                                style={{
+                                                    fontSize: ".85rem",
+                                                }}
+                                            >
+                                                Per meal (3 meals/day)
+                                            </span>
                                         </h2>
                                         <Link
                                             href="/recipes"
@@ -604,7 +640,7 @@ export default function NutrientsCalculator({
                                                             }
                                                             recipe={recipe}
                                                         />
-                                                    ),
+                                                    )
                                                 )}
                                             </div>
                                         </div>

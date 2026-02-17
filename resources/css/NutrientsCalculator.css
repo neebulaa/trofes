@@ -130,14 +130,15 @@
     background: rgba(0, 0, 0, 0.2);
     opacity: 0.7;
     color: var(--white);
+    /* border: 1px solid var(--neutral-700); */
 }
 
 .calculator-input
     .gender-choice:has(input[type="radio"]:checked)
     .gender-selection {
     opacity: 1;
-    background: var(--white);
-    color: var(--neutral-700);
+    background: var(--neutral-700);
+    color: var(--white);
 }
 
 .body-parameters-inputs {

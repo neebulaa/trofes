@@ -31,7 +31,7 @@ export default function Login() {
                 </Link>
 
                 <h2>Trofes</h2>
-                <p className="subtitle">Selamat datang di dunia penuh gizi</p>
+                <p className="subtitle">Welcome back to a world of nutrition!</p>
 
                 <div className="wrapper">
                     <form onSubmit={handleSubmit}>
@@ -101,12 +101,12 @@ export default function Login() {
                                     }
                                 />
                                 <label htmlFor="remember">
-                                    Ingat saya 30 hari kedepan
+                                    Remember me for 30 days
                                 </label>
                             </div>
 
                             <Link href="/forgot-password" className="forgot">
-                                Lupa password?
+                                Forgot password?
                             </Link>
                         </div>
 
@@ -135,7 +135,7 @@ export default function Login() {
                         </button>
 
                         <p className="signup-cta">
-                            Belum mempunyai akun?{" "}
+                            Don't have an account?{" "}
                             <Link href="/sign-up">Sign Up</Link>
                         </p>
                     </form>
@@ -145,12 +145,11 @@ export default function Login() {
             <div className="auth-right">
                 <div className="right-text">
                     <h1>
-                        Buka Wawasan Gizi. <br />
-                        Jadi Lebih Sehat Setiap Hari.
+                        Expand Your Nutritional Insight. <br />
+                        Be Healthier Every Day
                     </h1>
                     <p>
-                        Tingkatkan kesehatanmu melalui pemahaman gizi dan
-                        pilihan makanan cerdas setiap hari.
+                        Boost your health through a deeper understanding of nutrition and making smarter food choices every day
                     </p>
                 </div>
             </div>

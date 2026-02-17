@@ -4,6 +4,7 @@ import CustomDatalist from "../Components/CustomDatalist";
 import { useState, useMemo, useRef } from "react";
 import { useForm } from "@inertiajs/react";
 import CameraCaptureModal from "../Components/CameraCaptureModal";
+import FlashMessage from "../Components/FlashMessage";
 
 export default function CustomSearchRecipes({
     allergies,
@@ -20,7 +21,8 @@ export default function CustomSearchRecipes({
         calories: "",
         protein: "",
         fat: "",
-        sodium: "",
+        carbohydrate: "",
+        custom_search: true,
     });
 
     const [selectedAllergies, setSelectedAllergies] = useState(
@@ -88,7 +90,7 @@ export default function CustomSearchRecipes({
         e.preventDefault();
 
         post("/custom-search-recipes", {
-            preserveScroll: true,
+            // preserveScroll: true,
             onSuccess: () => {
                 // reset();
             },
@@ -124,7 +126,7 @@ export default function CustomSearchRecipes({
             calories: "",
             protein: "",
             fat: "",
-            sodium: "",
+            carbohydrate: "",
         }));
     }
 
@@ -228,236 +230,254 @@ export default function CustomSearchRecipes({
     }
 
     return (
-        <section
-            id="custom-search-recipes-page"
-            className="custom-search-recipes-page"
-        >
-            <div className="container">
-                <div className="custom-search-recipes-left">
-                    <h1>
-                        <span className="green-block">Custom</span>
-                        <span> Search Recipes</span>
-                    </h1>
-                    <p>
-                        The custom search feature helps users find menu options
-                        that truly match their needs.
-                    </p>
-                </div>
+        <>
+            <FlashMessage className="mb-1 flash-screen" />
+            <section
+                id="custom-search-recipes-page"
+                className="custom-search-recipes-page"
+            >
+                <div className="container">
+                    <div className="custom-search-recipes-left">
+                        <h1>
+                            <span className="green-block">Custom</span>
+                            <span> Search Recipes</span>
+                        </h1>
+                        <p>
+                            The custom search feature helps users find menu
+                            options that truly match their needs.
+                        </p>
+                    </div>
 
-                <div className="custom-search-recipes-right">
-                    <form onSubmit={handleSubmit}>
-                        <div className="input-group">
-                            <label htmlFor="calories">Calories (±)</label>
+                    <div className="custom-search-recipes-right">
+                        <form onSubmit={handleSubmit}>
+                            <div className="input-group">
+                                <label htmlFor="calories">Calories (±)</label>
 
-                            <div className="input-group-identifier">
-                                <input
-                                    type="number"
-                                    inputMode="numeric"
-                                    min="0"
-                                    step="1"
-                                    id="calories"
-                                    value={data.calories}
-                                    onChange={(e) =>
-                                        setData("calories", e.target.value)
-                                    }
-                                    placeholder="Calories"
-                                />
-                                <span className="identifier">kcal</span>
-                            </div>
-
-                            {errors.calories && (
-                                <small className="error-text">
-                                    {errors.calories}
-                                </small>
-                            )}
-                        </div>
-
-                        <div className="input-group">
-                            <label htmlFor="protein">Protein (±)</label>
-
-                            <div className="input-group-identifier">
-                                <input
-                                    id="protein"
-                                    type="number"
-                                    inputMode="decimal"
-                                    min="0"
-                                    step="0.1"
-                                    value={data.protein}
-                                    onChange={(e) =>
-                                        setData("protein", e.target.value)
-                                    }
-                                    placeholder="Protein"
-                                />
-                                <span className="identifier">gr</span>
-                            </div>
-
-                            {errors.protein && (
-                                <small className="error-text">
-                                    {errors.protein}
-                                </small>
-                            )}
-                        </div>
-
-                        <div className="input-group">
-                            <label htmlFor="sodium">Sodium (±)</label>
-
-                            <div className="input-group-identifier">
-                                <input
-                                    type="number"
-                                    inputMode="numeric"
-                                    min="0"
-                                    step="1"
-                                    id="sodium"
-                                    value={data.sodium}
-                                    onChange={(e) =>
-                                        setData("sodium", e.target.value)
-                                    }
-                                    placeholder="Sodium"
-                                />
-                                <span className="identifier">mg</span>
-                            </div>
-
-                            {errors.sodium && (
-                                <small className="error-text">
-                                    {errors.sodium}
-                                </small>
-                            )}
-                        </div>
-
-                        <div className="input-group">
-                            <label htmlFor="fat">Fat (±)</label>
-
-                            <div className="input-group-identifier">
-                                <input
-                                    type="number"
-                                    inputMode="decimal"
-                                    min="0"
-                                    step="0.1"
-                                    id="fat"
-                                    value={data.fat}
-                                    onChange={(e) =>
-                                        setData("fat", e.target.value)
-                                    }
-                                    placeholder="Fat"
-                                />
-                                <span className="identifier">gr</span>
-                            </div>
-
-                            {errors.fat && (
-                                <small className="error-text">
-                                    {errors.fat}
-                                </small>
-                            )}
-                        </div>
-
-                        <CustomDatalist
-                            label="Select Allergies"
-                            options={(allergies || []).map((a) => ({
-                                value: a.allergy_id,
-                                label: a.allergy_name,
-                            }))}
-                            value={selectedAllergies}
-                            onChange={handleAllergyChange}
-                            placeholder="Type allergy..."
-                        />
-
-                        <CustomDatalist
-                            label="Select Dietary Preferences"
-                            options={(dietary_preferences || []).map((dp) => ({
-                                value: dp.dietary_preference_id,
-                                label: dp.diet_name,
-                            }))}
-                            value={selectedDietaryPreferences}
-                            onChange={handleDietaryPreferencesChange}
-                            placeholder="Type dietary preference..."
-                        />
-
-                        <CustomDatalist
-                            useCamera={true}
-                            label="Select Ingredients"
-                            options={(ingredients || []).map((i) => ({
-                                value: i.ingredient_id,
-                                label:
-                                    i.ingredient_name[0].toUpperCase() +
-                                    i.ingredient_name.slice(1),
-                            }))}
-                            value={selectedIngredients}
-                            onChange={handleIngredientsChange}
-                            placeholder="Type ingredients you have..."
-                            cameraMenuOpen={cameraMenuOpen}
-                            onCameraClick={() =>
-                                setCameraMenuOpen((prev) => !prev)
-                            }
-                            onCameraMenuClose={() => setCameraMenuOpen(false)}
-                            cameraMenu={
-                                <div
-                                    className={`dropdown-menu camera-action-menu ${
-                                        cameraMenuOpen ? "open" : ""
-                                    }`}
-                                >
-                                    <div
-                                        className="dropdown-item"
-                                        onClick={handleTakePhotoClick}
-                                    >
-                                        Take a Photo
-                                    </div>
-                                    <div
-                                        className="dropdown-item"
-                                        onClick={handleUploadFromDeviceClick}
-                                    >
-                                        Upload from Device
-                                    </div>
+                                <div className="input-group-identifier">
+                                    <input
+                                        type="number"
+                                        inputMode="numeric"
+                                        min="0"
+                                        step="1"
+                                        id="calories"
+                                        value={data.calories}
+                                        onChange={(e) =>
+                                            setData("calories", e.target.value)
+                                        }
+                                        placeholder="Calories"
+                                    />
+                                    <span className="identifier">kcal</span>
                                 </div>
-                            }
-                            isLoading={isInferencing}
-                        />
 
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            hidden
-                            onChange={handleUploadFileChange}
-                        />
+                                {errors.calories && (
+                                    <small className="error-text">
+                                        {errors.calories}
+                                    </small>
+                                )}
+                            </div>
 
-                        <input
-                            ref={cameraInputRef}
-                            type="file"
-                            accept="image/*"
-                            capture="environment"
-                            hidden
-                            onChange={handleCameraFileChange}
-                        />
+                            <div className="input-group">
+                                <label htmlFor="carbohydrate">
+                                    Carbohydrate (±)
+                                </label>
 
-                        {showIngredientsCamera && (
-                            <CameraCaptureModal
-                                onCapture={handleCameraCapture}
-                                onClose={() => setShowIngredientsCamera(false)}
+                                <div className="input-group-identifier">
+                                    <input
+                                        type="number"
+                                        inputMode="decimal"
+                                        min="0"
+                                        step="1"
+                                        id="carbohydrate"
+                                        value={data.carbohydrate}
+                                        onChange={(e) =>
+                                            setData(
+                                                "carbohydrate",
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="Carbohydrate"
+                                    />
+                                    <span className="identifier">gr</span>
+                                </div>
+
+                                {errors.carbohydrate && (
+                                    <small className="error-text">
+                                        {errors.carbohydrate}
+                                    </small>
+                                )}
+                            </div>
+
+                            <div className="input-group">
+                                <label htmlFor="protein">Protein (±)</label>
+
+                                <div className="input-group-identifier">
+                                    <input
+                                        id="protein"
+                                        type="number"
+                                        inputMode="decimal"
+                                        min="0"
+                                        step="0.1"
+                                        value={data.protein}
+                                        onChange={(e) =>
+                                            setData("protein", e.target.value)
+                                        }
+                                        placeholder="Protein"
+                                    />
+                                    <span className="identifier">gr</span>
+                                </div>
+
+                                {errors.protein && (
+                                    <small className="error-text">
+                                        {errors.protein}
+                                    </small>
+                                )}
+                            </div>
+
+                            <div className="input-group">
+                                <label htmlFor="fat">Fat (±)</label>
+
+                                <div className="input-group-identifier">
+                                    <input
+                                        type="number"
+                                        inputMode="decimal"
+                                        min="0"
+                                        step="0.1"
+                                        id="fat"
+                                        value={data.fat}
+                                        onChange={(e) =>
+                                            setData("fat", e.target.value)
+                                        }
+                                        placeholder="Fat"
+                                    />
+                                    <span className="identifier">gr</span>
+                                </div>
+
+                                {errors.fat && (
+                                    <small className="error-text">
+                                        {errors.fat}
+                                    </small>
+                                )}
+                            </div>
+
+                            <CustomDatalist
+                                label="Select Allergies"
+                                options={(allergies || []).map((a) => ({
+                                    value: a.allergy_id,
+                                    label: a.allergy_name,
+                                }))}
+                                value={selectedAllergies}
+                                onChange={handleAllergyChange}
+                                placeholder="Type allergy..."
                             />
-                        )}
 
-                        <div className="mt-1 custom-search-form-btns">
-                            <button
-                                type="submit"
-                                className="btn btn-fill btn-full"
-                                disabled={processing}
-                            >
-                                {processing ? "Searching..." : "Search Recipes"}
-                            </button>
+                            <CustomDatalist
+                                label="Select Dietary Preferences"
+                                options={(dietary_preferences || []).map(
+                                    (dp) => ({
+                                        value: dp.dietary_preference_id,
+                                        label: dp.diet_name,
+                                    }),
+                                )}
+                                value={selectedDietaryPreferences}
+                                onChange={handleDietaryPreferencesChange}
+                                placeholder="Type dietary preference..."
+                            />
 
-                            <button
-                                type="button"
-                                className="btn btn-line-white btn-full"
-                                onClick={handleReset}
-                                disabled={processing}
-                            >
-                                Reset
-                            </button>
-                        </div>
-                    </form>
+                            <CustomDatalist
+                                useCamera={true}
+                                label="Select Ingredients"
+                                options={(ingredients || []).map((i) => ({
+                                    value: i.ingredient_id,
+                                    label:
+                                        i.ingredient_name[0].toUpperCase() +
+                                        i.ingredient_name.slice(1),
+                                }))}
+                                value={selectedIngredients}
+                                onChange={handleIngredientsChange}
+                                placeholder="Type ingredients you have..."
+                                cameraMenuOpen={cameraMenuOpen}
+                                onCameraClick={() =>
+                                    setCameraMenuOpen((prev) => !prev)
+                                }
+                                onCameraMenuClose={() =>
+                                    setCameraMenuOpen(false)
+                                }
+                                cameraMenu={
+                                    <div
+                                        className={`dropdown-menu camera-action-menu ${
+                                            cameraMenuOpen ? "open" : ""
+                                        }`}
+                                    >
+                                        <div
+                                            className="dropdown-item"
+                                            onClick={handleTakePhotoClick}
+                                        >
+                                            Take a Photo
+                                        </div>
+                                        <div
+                                            className="dropdown-item"
+                                            onClick={
+                                                handleUploadFromDeviceClick
+                                            }
+                                        >
+                                            Upload from Device
+                                        </div>
+                                    </div>
+                                }
+                                isLoading={isInferencing}
+                            />
+
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                hidden
+                                onChange={handleUploadFileChange}
+                            />
+
+                            <input
+                                ref={cameraInputRef}
+                                type="file"
+                                accept="image/*"
+                                capture="environment"
+                                hidden
+                                onChange={handleCameraFileChange}
+                            />
+
+                            {showIngredientsCamera && (
+                                <CameraCaptureModal
+                                    onCapture={handleCameraCapture}
+                                    onClose={() =>
+                                        setShowIngredientsCamera(false)
+                                    }
+                                />
+                            )}
+
+                            <div className="mt-1 custom-search-form-btns">
+                                <button
+                                    type="submit"
+                                    className="btn btn-fill btn-full"
+                                    disabled={processing}
+                                >
+                                    {processing
+                                        ? "Searching..."
+                                        : "Search Recipes"}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-line-white btn-full"
+                                    onClick={handleReset}
+                                    disabled={processing}
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </>
     );
 }
 

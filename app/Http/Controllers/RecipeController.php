@@ -9,14 +9,8 @@ use App\Models\Ingredient;
 use App\Models\LikeRecipe;
 use Illuminate\Http\Request;
 use App\Models\DietaryPreference;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
-use Symfony\Component\Process\Process;
-use Illuminate\Cache\RateLimiting\Limit;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+use App\Services\AIRecipeRecommender;
 
 class RecipeController extends Controller
 {
@@ -52,7 +46,7 @@ class RecipeController extends Controller
             'id' => null,
         ];
 
-        $ingredientPills =$this->randomRows(
+        $ingredientPills = $this->randomRows(
             Ingredient::query()->select(['ingredient_id','ingredient_name']),
             6
         )->map(fn ($i) => [
@@ -97,177 +91,172 @@ class RecipeController extends Controller
         return $pillOptions;
     }
 
-    private function getAIRecommendationCached(array $likedRecipeIds, int $limit, ?int $userId)
+    private function applyCustomSearchFilters($query, array $filters)
     {
-        if (empty($likedRecipeIds)) {
-            return [
-                'data' => Recipe::inRandomOrder()->limit($limit)->get(),
-                'warning' => null
-            ];
+        if (!empty($filters['ingredients'])) {
+            $ingredientIds = $filters['ingredients'];
+
+            $query->whereHas('ingredients', function ($q) use ($ingredientIds) {
+                $q->whereIn('ingredients.ingredient_id', $ingredientIds);
+            });
+            
+            $query->withCount(['ingredients as matched_ingredients_count' => function ($q) use ($ingredientIds) {
+                $q->whereIn('ingredients.ingredient_id', $ingredientIds);
+            }]);
+
+            $query->orderByDesc('matched_ingredients_count');
         }
-        $user = Auth::user();
-        // Ambil ID alergi dan diet untuk dijadikan bagian dari Key Cache
-        $allergyHash = $user ? md5(json_encode($user->allergies->pluck('allergy_id')->sort()->toArray())): 'no-allergy';
-        $dietHash = $user ? md5(json_encode($user->dietaryPreferences->pluck('dietary_preference_id')->sort()->toArray())) : 'no-diet';
-        
-        $likeHash = md5(json_encode($likedRecipeIds));
-        $cacheKey = "ai_rec_v6:u={$userId}:l={$likeHash}:a={$allergyHash}:d={$dietHash}:lim={$limit}";
 
-        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($likedRecipeIds, $limit, $user) {
-            try {
-                $response = Http::withoutVerifying()->timeout(5)
-                    ->post('https://arnight-trofes-api.hf.space/recommend', [
-                        'liked_ids' => $likedRecipeIds,
-                        'top_k' => max(100, $limit * 2),
-                        'is_start_from_zero' => false,
-                    ]);
-
-                if (!$response->successful()) {
-                    Log::warning('AI recommend failed', ['status' => $response->status()]);
-                    throw new \Exception("AI API Down"); // Agar cache gak diisi random dan bakal coba lagi di refresh berikutnya
-                    // return collect(); // no cache of error response body
-                }
-
-                if($response->successful()){
-                    $recommendedIds = $response->json('recommended_ids') ?? [];
-                    $filterStatus = 'none'; 
-                    // dd($recommendedIds);
-                    if (empty($recommendedIds)) {
-                        return ['data' => Recipe::inRandomOrder()->limit($limit)->get(), 'warning' => null];
-                    }
-
-                    // 3. Mulai Hard Filtering (Logika Kode Awalmu)
-                    $baseQuery = Recipe::query()->whereIn('recipe_id', $recommendedIds);
-
-                    if ($user) {
-                        // Filter Alergi
-                        $userAllergyIds = $user->allergies->pluck('allergy_id')->toArray();
-                        if (!empty($userAllergyIds)) {
-                            $baseQuery->whereDoesntHave('allergies', function ($q) use ($userAllergyIds) {
-                                $q->whereIn('allergies.allergy_id', $userAllergyIds);
-                            });
-                        }
-                    }
-
-                    // Filter Diet
-                    $warningMessage = null;
-                    $userDietIds = $user ? $user->dietaryPreferences->pluck('dietary_preference_id')->toArray(): [];
-                    if (!empty($userDietIds)) {
-                        $perfectQuery = (clone $baseQuery);
-                        foreach($userDietIds as $dietId){
-                            $perfectQuery->whereHas('dietaryPreferences', fn($q) => $q->where('dietary_preferences.dietary_preference_id', $dietId));
-                        }
-                        if ($perfectQuery->count() > 0) {
-                            // dd("Perfect bre $perfectQuery");
-                            $query = $perfectQuery;
-                            $filterStatus = 'Perfect';
-                        } else {
-                            $partialQuery = (clone $baseQuery)->whereHas('dietaryPreferences', function ($q) use ($userDietIds) {
-                                $q->whereIn('dietary_preferences.dietary_preference_id', $userDietIds);
-                            });
-
-                            if ($partialQuery->count() > 0) {
-                                $query = $partialQuery;
-                                $warningMessage = "We couldn't find recipes matching ALL your diets, so we're showing some that match at least one.";
-                                $filterStatus = 'Partial';
-                            } else {
-                                $query = $baseQuery;
-                                $filterStatus = 'Random';
-                            }
-                        }
-                    }else{
-                        $query = $baseQuery;
-                        $filterStatus = 'Gak set diet';
-                        // dd("else bre $query");
-                    }
-                        
-                    // $afterFilterCount = (clone $query)->count();
-                    // dd("DEBUG FILTER $filterStatus: Dari " . count($recommendedIds) . " resep AI, hanya $afterFilterCount yang lolos filter Diet/Alergi.");
-
-                    // Ambil hasil sesuai urutan rekomendasi AI
-                    $idsString = implode(',', $recommendedIds);
-                    $recommended = $query->orderByRaw("FIELD(recipe_id, $idsString)")
-                        ->take($limit)
-                        ->get();
-
-                    // 4. Fallback jika setelah difilter hasilnya kurang dari limit
-                    if ($recommended->count() < $limit) {
-                        $needed = $limit - $recommended->count();
-                        // Buat query dasar untuk fallback yang tetap aman
-                        $fallbackQuery = Recipe::whereNotIn('recipe_id', $recommended->pluck('recipe_id'));
-                        if ($user) {
-                            // Tetap buang alergi di hasil random
-                            if (!empty($userAllergyIds)) {
-                                $fallbackQuery->whereDoesntHave('allergies', function ($q) use ($userAllergyIds) {
-                                    $q->whereIn('allergies.allergy_id', $userAllergyIds);
-                                });
-                            }
-                            // Tetap pastikan sesuai diet di hasil random
-                            if (!empty($userDietIds)) {
-                                foreach ($userDietIds as $dietId) {
-                                    $fallbackQuery->whereHas('dietaryPreferences', fn($q) => $q->where('dietary_preferences.dietary_preference_id', $dietId));
-                                }
-                            }
-                        }
-                        $extra = $fallbackQuery->inRandomOrder()->limit($needed)->get();
-                        $recommended = $recommended->concat($extra);
-                    }
-
-                    return [
-                        'data' => $recommended,
-                        'warning' => $warningMessage
-                    ];
-                }
-            } catch (\Throwable $e) {
-                Log::warning('AI recommend exception', ['msg' => $e->getMessage()]);
-                return [
-                    'data' => Recipe::inRandomOrder()->limit($limit)->get(),
-                    'warning' => null
-                ];
+        if (!empty($filters['dietary_preferences'])) {
+            foreach ($filters['dietary_preferences'] as $dietId) {
+                $query->whereHas('dietaryPreferences', fn ($q) =>
+                    $q->where('dietary_preferences.dietary_preference_id', (int) $dietId)
+                );
             }
-            return [
-                'data' => Recipe::inRandomOrder()->limit($limit)->get(),
-                'warning' => null
-            ];
-        });
+        }
+
+        if (!empty($filters['allergies'])) {
+            foreach ($filters['allergies'] as $allergyId) {
+                $query->whereDoesntHave('allergies', fn ($q) =>
+                    $q->where('allergies.allergy_id', (int) $allergyId)
+                );
+            }
+        }
+
+        $inputs = [
+            'calories'     => ['val' => (float)($filters['calories'] ?? 0), 'weight' => 1, 'p_weight' => 0.4],
+            'protein'      => ['val' => (float)($filters['protein'] ?? 0),  'weight' => 5, 'p_weight' => 1.5],
+            'fat'          => ['val' => (float)($filters['fat'] ?? 0),      'weight' => 5, 'p_weight' => 1.5],
+            'carbohydrate' => ['val' => (float)($filters['carbohydrate'] ?? 0), 'weight' => 8, 'p_weight' => 2.0],
+        ];
+
+        $scoreParts = [];
+        $percParts = [];
+        $hasFilter = false;
+
+        foreach ($inputs as $key => $config) {
+            if ($config['val'] > 0) {
+                $hasFilter = true;
+                $val = $config['val'];
+                $w = $config['weight'];
+                $pw = $config['p_weight'];
+                
+                $scoreParts[] = "POWER($key - $val, 2) * $w";
+                $percParts[]  = "POWER($key - $val, 2) * $pw";
+            }
+        }
+
+        if ($hasFilter) {
+            $rawScore = implode(' + ', $scoreParts);
+            $rawPerc  = implode(' + ', $percParts);
+
+            $query->addSelect(\DB::raw("($rawScore) AS score_distance"));
+
+            $query->addSelect(\DB::raw("
+                ROUND(GREATEST(0, 100 - (SQRT($rawPerc) / 5)), 1) AS match_percentage
+            "));
+            $query->having('match_percentage', '>', 10);
+
+            $query->orderBy('score_distance', 'asc');
+        } else {
+            $query->addSelect(\DB::raw("100 AS match_percentage"));
+        }
+
+        return $query;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, AIRecipeRecommender $ai)
     {
-        $search = $request->query('search');
+        $mode = $request->query('mode'); // 'custom' or null
+        $isCustomMode = ($mode === 'custom');
+
+        if (!$isCustomMode) {
+            session()->forget('recipes.custom_search_filters_v1');
+        }
+
+        $customFilters = $isCustomMode
+            ? session()->get('recipes.custom_search_filters_v1')
+            : null;
+
+        $search  = $request->query('search');
         $perPage = (int) $request->query('per_page', 16);
 
-        $filterType = $request->query('filter_type'); // popular/{ingredient}/{diet}/{no_allergy}
-        $filterId = $request->query('filter_id'); // integer for ingredient/diet/no_allergy
+        $filterType = $request->query('filter_type');
+        $filterId   = $request->query('filter_id');
+
+        $sort = $request->query('sort', $isCustomMode ? 'best-match':'latest');
 
         $query = Recipe::query()
-            ->select(['recipe_id','title','slug','image','cooking_time'])
+            ->select([
+                'recipes.recipe_id',
+                'recipes.title',
+                'recipes.slug',
+                'recipes.image',
+                'recipes.cooking_time',
+                'recipes.created_at',
+            ])
             ->withCount('likes')
             ->when($request->user(), function ($q) use ($request) {
                 $q->withExists([
-                    'likes as liked_by_me' => fn ($qq) => $qq->where('user_id', $request->user()->user_id),
+                    'likes as liked_by_me' => fn ($qq) =>
+                        $qq->where('user_id', $request->user()->user_id),
                 ]);
             });
+
+        // apply custom search filters + default best-match ordering (if custom mode)
+        if ($isCustomMode && is_array($customFilters)) {
+            $this->applyCustomSearchFilters($query, $customFilters);
+        }
 
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                ->orWhere('measured_ingredients', 'like', "%{$search}%")
-                ->orWhere('instructions', 'like', "%{$search}%")
-                ->orWhere('slug', 'like', "%{$search}%");
+                    ->orWhere('measured_ingredients', 'like', "%{$search}%")
+                    ->orWhere('instructions', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
             });
         }
 
-        // apply pill filters
+        // pill filters
         if ($filterType === 'popular') {
             $query->orderByDesc('likes_count');
         } elseif ($filterType === 'ingredient' && $filterId) {
-            $query->whereHas('ingredients', fn ($q) => $q->where('ingredients.ingredient_id', (int) $filterId));
+            $query->whereHas('ingredients', fn ($q) =>
+                $q->where('ingredients.ingredient_id', (int) $filterId)
+            );
         } elseif ($filterType === 'diet' && $filterId) {
-            $query->whereHas('dietaryPreferences', fn ($q) => $q->where('dietary_preferences.dietary_preference_id', (int) $filterId));
+            $query->whereHas('dietaryPreferences', fn ($q) =>
+                $q->where('dietary_preferences.dietary_preference_id', (int) $filterId)
+            );
         } elseif ($filterType === 'no_allergy' && $filterId) {
-            // "no X" means exclude recipes that contain that allergy
-            $query->whereDoesntHave('allergies', fn ($q) => $q->where('allergies.allergy_id', (int) $filterId));
+            $query->whereDoesntHave('allergies', fn ($q) =>
+                $q->where('allergies.allergy_id', (int) $filterId)
+            );
+        }
+
+        if ($sort && $sort != 'best-match') {
+            $query->reorder();
+            switch ($sort) {
+                case 'latest':
+                    $query->orderByDesc('recipes.created_at');
+                    break;
+
+                case 'oldest':
+                    $query->orderBy('recipes.created_at');
+                    break;
+
+                case 'alphabetical':
+                    $query
+                    ->orderByRaw('TRIM(LEADING \'"\' FROM TRIM(LEADING \'\\\'\' FROM recipes.title)) ASC')
+                    ->orderBy('recipes.title', 'asc');
+                    break;
+
+                case 'reverse-alphabetical':
+                    $query
+                    ->orderByRaw('TRIM(LEADING \'"\' FROM TRIM(LEADING \'\\\'\' FROM recipes.title)) DESC')
+                    ->orderBy('recipes.title', 'desc');
+                    break;
+            }
         }
 
         $maxLikes = Recipe::query()
@@ -277,7 +266,14 @@ class RecipeController extends Controller
 
         $recipes = $query
             ->paginate($perPage)
-            ->appends($request->only(['search', 'per_page', 'filter_type', 'filter_id']));
+            ->appends($request->only([
+                'search',
+                'per_page',
+                'filter_type',
+                'filter_id',
+                'mode',
+                'sort',
+            ]));
 
         $recipes->getCollection()->transform(function ($recipe) use ($maxLikes) {
             $recipe->is_favorite = ($maxLikes > 0) && ((int) $recipe->likes_count === (int) $maxLikes);
@@ -289,28 +285,68 @@ class RecipeController extends Controller
         }
 
         $pillOptions = $this->getFilterPillsFromSession();
+
         $userLikedIds = [];
-        if(Auth::check()){
+        if (Auth::check()) {
             $userLikedIds = LikeRecipe::where('user_id', Auth::id())->pluck('recipe_id')->toArray();
         }
 
         $hero_count = 5;
         $recommended_count = 12;
-        $userId = $request->user()->user_id;
-        $ai = $this->getAIRecommendationCached($userLikedIds, $hero_count + $recommended_count, $userId);
-        
-        $aiRecipe = $ai['data'];
-        $warningMessage = $ai['warning'];
+        $recommended_count_to_share = 8;
+
+        $userId = $request->user()?->user_id;
+        $aiResult = $ai->byLikeRecommendCached($userLikedIds, $hero_count + $recommended_count, $userId);
+
+        $aiRecipe = $aiResult['data'];
+        $warningMessage = $aiResult['warning'];
 
         $hero = $aiRecipe->take($hero_count)->values();
-        $recommended = $aiRecipe->slice($hero_count, $recommended_count)->values();
+        $recommended = $aiRecipe
+            ->slice($hero_count, $recommended_count)
+            ->values()
+            ->shuffle()
+            ->take($recommended_count_to_share)
+            ->values();
 
-        // fallback if AI empty
         if ($hero->isEmpty()) {
             $fallback = Recipe::inRandomOrder()->limit($hero_count + $recommended_count)->get();
             $hero = $fallback->take($hero_count)->values();
-            $recommended = $fallback->slice($hero_count, $recommended_count)->values();
+            $recommended = $fallback
+                ->slice($hero_count, $recommended_count)
+                ->values()
+                ->shuffle()
+                ->take($recommended_count_to_share)
+                ->values();
         }
+
+        // for custom mode banner label lookups
+        $ingredientOptions = Ingredient::query()
+            ->select(['ingredient_id', 'ingredient_name'])
+            ->orderBy('ingredient_name')
+            ->get()
+            ->map(fn ($i) => [
+                'value' => (int) $i->ingredient_id,
+                'label' => ucfirst($i->ingredient_name),
+            ]);
+
+        $dietOptions = DietaryPreference::query()
+            ->select(['dietary_preference_id', 'diet_name'])
+            ->orderBy('diet_name')
+            ->get()
+            ->map(fn ($d) => [
+                'value' => (int) $d->dietary_preference_id,
+                'label' => $d->diet_name,
+            ]);
+
+        $allergyOptions = Allergy::query()
+            ->select(['allergy_id', 'allergy_name'])
+            ->orderBy('allergy_name')
+            ->get()
+            ->map(fn ($a) => [
+                'value' => (int) $a->allergy_id,
+                'label' => $a->allergy_name,
+            ]);
 
         return Inertia::render('Recipes', [
             'recipes' => $recipes,
@@ -321,6 +357,11 @@ class RecipeController extends Controller
                 'type' => $filterType,
                 'id' => $filterId ? (int) $filterId : null,
             ],
+            'is_custom_mode' => $isCustomMode,
+            'custom_filters' => $isCustomMode ? $customFilters : null,
+            'ingredient_options' => $ingredientOptions,
+            'diet_options' => $dietOptions,
+            'allergy_options' => $allergyOptions,
         ])->with('flash', $warningMessage ? [
             'type' => 'warning',
             'message' => $warningMessage
@@ -342,13 +383,8 @@ class RecipeController extends Controller
                     $q->where('user_id', $request->user()->user_id),
             ]);
 
-            // LOGIKA CEK ALERGI:
-            // Ambil ID alergi yang ada di resep ini
             $recipeAllergyIds = $recipe->allergies->pluck('allergy_id')->toArray();
-            // Ambil ID alergi yang dimiliki user
             $userAllergyIds = $user->allergies->pluck('allergy_id')->toArray();
-
-            // Cek apakah ada ID yang beririsan (match)
             $intersect = array_intersect($recipeAllergyIds, $userAllergyIds);
             
             if (!empty($intersect)) {
@@ -379,80 +415,41 @@ class RecipeController extends Controller
     public function performCustomSearchRecipes(Request $request)
     {
         $validated = $request->validate([
-            'ingredients' => 'array',
+            'ingredients' => 'nullable|array',
             'ingredients.*' => 'integer|exists:ingredients,ingredient_id',
-            'dietary_preferences' => 'array',
+
+            'dietary_preferences' => 'nullable|array',
             'dietary_preferences.*' => 'integer|exists:dietary_preferences,dietary_preference_id',
-            'allergies' => 'array',
+
+            'allergies' => 'nullable|array',
             'allergies.*' => 'integer|exists:allergies,allergy_id',
+
             'calories' => 'nullable|numeric|min:0',
             'protein'  => 'nullable|numeric|min:0',
             'fat'      => 'nullable|numeric|min:0',
-            'sodium'   => 'nullable|numeric|min:0',
+            'carbohydrate' => 'nullable|numeric|min:0',
         ]);
 
-        $query = Recipe::query()->withCount('likes');
+        $hasAtLeastOne =
+            !empty($validated['ingredients']) ||
+            !empty($validated['dietary_preferences']) ||
+            !empty($validated['allergies']) ||
+            !empty($validated['calories']) ||
+            !empty($validated['protein']) ||
+            !empty($validated['fat']) ||
+            !empty($validated['carbohydrate']);
 
-        // recipe contains all selected ingredients huh
-        if (!empty($validated['ingredients'])) {
-            foreach ($validated['ingredients'] as $ingredientId) {
-                $query->whereHas('ingredients', function ($q) use ($ingredientId) {
-                    $q->where('ingredients.ingredient_id', $ingredientId);
-                });
-            }
+        if (!$hasAtLeastOne) {
+            return back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Please fill at least one filter before searching.',
+            ]);
         }
 
-        // recipe matches all selected dietary preferences
-        if (!empty($validated['dietary_preferences'])) {
-            foreach ($validated['dietary_preferences'] as $dietId) {
-                $query->whereHas('dietaryPreferences', function ($q) use ($dietId) {
-                    $q->where(
-                        'dietary_preferences.dietary_preference_id',
-                        $dietId
-                    );
-                });
-            }
-        }
+        session()->put('recipes.custom_search_filters_v1', $validated);
 
-        // recipe must not contains all selected allergies
-        if (!empty($validated['allergies'])) {
-            foreach ($validated['allergies'] as $allergyId) {
-                $query->whereDoesntHave('allergies', function ($q) use ($allergyId) {
-                    $q->where('allergies.allergy_id', $allergyId);
-                });
-            }
-        }
-
-        // ± tolerance makes search usable
-        $tolerance = [
-            'calories' => 50,   // kcal
-            'protein'  => 5,    // grams
-            'fat'      => 5,    // grams
-            'sodium'   => 100,  // mg
-        ];
-
-        foreach (['calories', 'protein', 'fat', 'sodium'] as $field) {
-            if (!empty($validated[$field])) {
-                $value = (float) $validated[$field];
-                $delta = $tolerance[$field];
-
-                $query->whereBetween($field, [
-                    max(0, $value - $delta),
-                    $value + $delta,
-                ]);
-            }
-        }
-
-        // sorting but optional nanti lah diskusi
-        // $query->orderByDesc('likes_count');
-
-        $recipes = $query->paginate(16)->withQueryString();
-        return Inertia::render('Recipes', [
-            'recipes' => $recipes,
-            'hero_recipes' => Recipe::inRandomOrder()->limit(5)->get(),
-            'recommended_recipes' => Recipe::inRandomOrder()->limit(4)->get(),
-            'recipe_filter_options' => $this->getFilterPillsFromSession(),
-            'active_filter' => null,
+        return redirect()->route('recipes.index', [
+            'mode' => 'custom',
         ]);
     }
 

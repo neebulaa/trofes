@@ -112,7 +112,7 @@ export default function EditGuide({ guide }) {
                         </div>
                     )}
 
-                    {errors.image && !data.image && (
+                    {errors.image && (
                         <>
                             <br />
                             <small className="error-text">{errors.image}</small>

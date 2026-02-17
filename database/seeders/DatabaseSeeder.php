@@ -25,10 +25,11 @@ class DatabaseSeeder extends Seeder
             "phone" => "+6289694636303",
             "bio" => "There is no mercy for light",
             "birth_date" => "2006-03-18",
-            "is_admin" => true
-        ]);
-
-        User::create([
+            "is_admin" => true,
+            'onboarding_completed' => true,
+            ]);
+            
+            User::create([
             "full_name" => "Guest 7DS",
             "password" => "trofesguest",
             "username" => "trofesguest",
@@ -36,7 +37,8 @@ class DatabaseSeeder extends Seeder
             "phone" => "+6289694636302",
             "bio" => "There is no mercy for light",
             "birth_date" => "2006-03-18",
-            "is_admin" => false
+            "is_admin" => false,
+            'onboarding_completed' => true,
         ]);
 
         $this->call([

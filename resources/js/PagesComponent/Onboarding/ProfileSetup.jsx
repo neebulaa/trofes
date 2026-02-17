@@ -53,13 +53,13 @@ export default function ProfileSetup({ user, handleNextScreen }) {
             </div>
 
             <div className="input-group">
-                <label htmlFor="gender">Jenis Kelamin</label>
+                <label htmlFor="gender">Gender</label>
                 <select
                     id="gender"
                     value={data.gender}
                     onChange={(e) => setData('gender', e.target.value)}
                 >
-                    <option value="">Pilih Jenis Kelamin</option>
+                    <option value="">Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="silent">Prefer not to say</option>

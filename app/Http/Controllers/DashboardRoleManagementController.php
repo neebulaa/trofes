@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardRoleManagementController extends Controller
 {
@@ -43,6 +45,16 @@ class DashboardRoleManagementController extends Controller
                 continue; // skip self
             }
             $user = User::find($userData['user_id']);
+            if($user->is_admin != $userData['is_admin']){
+                ActivityLog::create([
+                    'user_id' => Auth::user()->user_id,
+                    'action' => 'user.role_changed',
+                    'meta' => json_encode([
+                        'username' => $user->username,
+                        'is_admin' => $userData['is_admin'],
+                    ]),
+                ]);
+            }
             $user->is_admin = $userData['is_admin'];
             $user->save();
         }

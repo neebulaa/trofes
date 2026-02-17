@@ -1,7 +1,7 @@
 import { Link, useForm, usePage, router } from "@inertiajs/react";
 import Dropdown from "./Dropdown";
 import ProfileDropdown from "./ProfileDropdown";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import NavLinks from "./NavLinks";
 
 export default function NavbarAuth({ user }) {
@@ -95,21 +95,55 @@ export default function NavbarAuth({ user }) {
         }
     }
 
+    useEffect(() => {
+        const u = new URL(url, window.location.origin);
+        const q = u.searchParams.get("search");
+
+        setData((prev) => ({
+            ...prev,
+            search: q ? q : "",
+        }));
+    }, [url, setData]);
+
+    // Merge query params for /recipes searches so it does NOT override mode/custom/pills/per_page/etc.
+    const navigateRecipesWithMergedQuery = useCallback(
+        (term) => {
+            const u = new URL(url, window.location.origin);
+            const params = Object.fromEntries(u.searchParams.entries());
+
+            // Set/replace search, and reset page when doing a new search
+            params.search = term;
+            delete params.page;
+
+            router.get("/recipes", params, {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            });
+        },
+        [url],
+    );
+
     function handleSearchSubmit(e) {
         e.preventDefault();
 
         const term = data.search?.trim();
-        if (!term) return;
+        // if (!term) return;
 
-        router.get(
-            category.route,
-            { search: term },
-            {
-                preserveScroll: true,
-                preserveState: true,
-                replace: true,
-            }
-        );
+        if (category.value === "recipes") {
+            // If searching recipes: keep existing query params (mode=custom, pills, etc.)
+            navigateRecipesWithMergedQuery(term);
+        } else {
+            // If searching guides: replace params with only `search`
+            router.get(
+                category.route,
+                { search: term },
+                {
+                    preserveState: true,
+                    replace: true,
+                },
+            );
+        }
 
         setOpenSearch(false);
     }

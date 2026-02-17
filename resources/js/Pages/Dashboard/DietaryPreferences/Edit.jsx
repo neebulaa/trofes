@@ -115,7 +115,7 @@ export default function EditDietaryPreference({ dietary_preference }) {
                         </div>
                     )}
 
-                    {errors.image && !data.image && (
+                    {errors.image && (
                         <>
                             <br />
                             <small className="error-text">{errors.image}</small>

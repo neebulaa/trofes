@@ -24,51 +24,66 @@ export default function ContactUs() {
                 <div className="container">
                     <h1 className="hero-title">
                         <div className="hero-title-top">
-                            Ayo <span className="green-block">tumbuh</span>
+                            Let's <span className="green-block">Grow</span>
                         </div>
                         <div className="hero-title-bottom">
-                            <span className="hide">Ayo</span> bersama.
+                            <span className="hide">Ayo</span> Together.
                         </div>
                     </h1>
 
                     <div className="contact-layout">
                         <div className="contact-info">
                             <p>
-                                Jika Anda ingin berdiskusi lebih lanjut atau
-                                memiliki pertanyaan, jangan ragu untuk
-                                mengirimkan pesan ke kami. Kami siap membantu
-                                Anda memulai perjalanan menuju pilihan makan
-                                yang lebih cerdas. Kami terbuka dari jam 08.00 -
-                                18.00, hari Sen - Jum.
+                                If you’d like to discuss more or have any
+                                questions, feel free to send us a message. We’re
+                                here to help you start your journey to smarter
+                                eating. Our hours are 8:00 AM – 6:00 PM, Monday
+                                through Friday.
                             </p>
 
                             <div className="info-block">
                                 <p>
-                                    <strong>Hubungi kami:</strong> +62
+                                    <strong>Contact Us:</strong> +62
                                     898946353003
                                 </p>
                                 <p>
-                                    <strong>Sapa kami:</strong>{" "}
+                                    <strong>Get in Touch:</strong>{" "}
                                     sevendeadlysins@gmail.com
                                 </p>
                                 <p>
-                                    <strong>Alamat:</strong> Sentul City, Jl.
+                                    <strong>Address:</strong> Sentul City, Jl.
                                     Pakuan No.3, Sumur Batu, Babakan Madang,
                                     Bogor Regency, West Java 16810
                                 </p>
                             </div>
 
                             <div className="social-icons">
-                                <a href="#">
+                                <a
+                                    href="https://www.facebook.com/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <i className="fab fa-facebook-f"></i>
                                 </a>
-                                <a href="#">
+                                <a
+                                    href="https://www.linkedin.com/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <i className="fab fa-linkedin-in"></i>
                                 </a>
-                                <a href="#">
+                                <a
+                                    href="https://www.instagram.com/pptibca.22/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <i className="fab fa-instagram"></i>
                                 </a>
-                                <a href="#">
+                                <a
+                                    href="https://www.youtube.com/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <i className="fab fa-youtube"></i>
                                 </a>
                             </div>
@@ -78,12 +93,12 @@ export default function ContactUs() {
                             <form id="contactForm" onSubmit={handleSubmit}>
                                 <div className="form-row">
                                     <div className="input-group">
-                                        <label for="name">Nama</label>
+                                        <label for="name">Name</label>
                                         <input
                                             type="text"
                                             id="name"
                                             name="name"
-                                            placeholder="seven deadly sins"
+                                            placeholder="Full Name"
                                             required
                                             value={data.name}
                                             onChange={(e) =>
@@ -102,7 +117,7 @@ export default function ContactUs() {
                                             type="email"
                                             id="email"
                                             name="email"
-                                            placeholder="emailanda@gmail.com"
+                                            placeholder="youremail@gmail.com"
                                             required
                                             value={data.email}
                                             onChange={(e) =>
@@ -118,11 +133,11 @@ export default function ContactUs() {
                                 </div>
 
                                 <div className="input-group">
-                                    <label for="message">Pesan</label>
+                                    <label for="message">Message</label>
                                     <textarea
                                         id="message"
                                         name="message"
-                                        placeholder="Pesan Anda"
+                                        placeholder="Write your message here..."
                                         required
                                         value={data.message}
                                         onChange={(e) =>
@@ -140,9 +155,7 @@ export default function ContactUs() {
                                     type="submit"
                                     className="btn-submit btn btn-fill"
                                 >
-                                    {
-                                        processing ? "Mengirim..." : "Kirim Pesan"
-                                    }
+                                    {processing ? "Sending..." : "Send"}
                                 </button>
                             </form>
                         </div>

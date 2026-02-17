@@ -3,17 +3,55 @@ import "../../css/RecipeDetail.css";
 import { useState, useEffect } from "react";
 import FlashMessage from "../Components/FlashMessage";
 import CookingTimer from "../PagesComponent/RecipeDetail/CookingTimer";
+import axios from "axios";
 
-function csrfToken() {
-    return document
-        .querySelector('meta[name="csrf-token"]')
-        ?.getAttribute("content");
-}
+// function csrfToken() {
+//     return document
+//         .querySelector('meta[name="csrf-token"]')
+//         ?.getAttribute("content");
+// }
 
 export default function RecipeDetail({ recipe, user }) {
     const [liked, setLiked] = useState(!!recipe.liked_by_me);
     const [likesCount, setLikesCount] = useState(recipe.likes_count ?? 0);
     const [busy, setBusy] = useState(false);
+
+    function formatCookingTime(totalMinutes) {
+        let mins = Math.max(0, Math.floor(Number(totalMinutes) || 0));
+
+        const MIN_PER_HOUR = 60;
+        const MIN_PER_DAY = 60 * 24;
+        const MIN_PER_WEEK = MIN_PER_DAY * 7;
+        const MIN_PER_MONTH = MIN_PER_DAY * 30;
+        const MIN_PER_YEAR = MIN_PER_DAY * 365;
+
+        const years = Math.floor(mins / MIN_PER_YEAR);
+        mins -= years * MIN_PER_YEAR;
+
+        const months = Math.floor(mins / MIN_PER_MONTH);
+        mins -= months * MIN_PER_MONTH;
+
+        const weeks = Math.floor(mins / MIN_PER_WEEK);
+        mins -= weeks * MIN_PER_WEEK;
+
+        const days = Math.floor(mins / MIN_PER_DAY);
+        mins -= days * MIN_PER_DAY;
+
+        const hours = Math.floor(mins / MIN_PER_HOUR);
+        mins -= hours * MIN_PER_HOUR;
+
+        const parts = [];
+        if (years) parts.push(`${years} yr`);
+        if (months) parts.push(`${months} mo`);
+        if (weeks) parts.push(`${weeks} wk`);
+        if (days) parts.push(`${days} d`);
+        if (hours) parts.push(`${hours} hrs`);
+
+        // include minutes if there are leftover minutes OR nothing else to show
+        if (mins || parts.length === 0) parts.push(`${mins} mins`);
+
+        return parts.join(" ");
+    }
 
     async function likeRecipe(e) {
         e.preventDefault();
@@ -28,31 +66,28 @@ export default function RecipeDetail({ recipe, user }) {
         setBusy(true);
 
         try {
-            const res = await fetch(`/recipes/${recipe.slug}/like`, {
-                method: nextLiked ? "POST" : "DELETE",
+            // GANTI KE AXIOS
+            const response = await axios({
+                method: nextLiked ? "post" : "delete",
+                url: `/recipes/${recipe.slug}/like`,
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": csrfToken(),
                 },
             });
 
-            if (res.status === 401) {
-                throw new Error("Unauthenticated");
-            }
-
-            if (!res.ok) {
-                throw new Error("Request failed");
-            }
-
-            const json = await res.json();
-            setLiked(!!json.is_liked);
-            setLikesCount(json.likes_count ?? likesCount);
+            // Axios otomatis melempar error jika status bukan 2xx
+            const data = response.data;
+            setLiked(!!data.is_liked);
+            setLikesCount(data.likes_count ?? likesCount);
         } catch (err) {
-            // rollback
+            // Rollback jika gagal
             setLiked(!nextLiked);
             setLikesCount((c) => c + (nextLiked ? -1 : 1));
-            console.error(err);
+            
+            if (err.response?.status === 401) {
+                alert("Please login to like this recipe");
+            }
+            console.error("Like error:", err);
         } finally {
             setBusy(false);
         }
@@ -71,40 +106,34 @@ export default function RecipeDetail({ recipe, user }) {
             try {
                 setYt({ loading: true, embedUrl: null, error: null });
 
-                // just tweak the query to improve results
                 const query = `how to make ${recipe.title} recipe`;
 
-                const res = await fetch(
-                    `/youtube/search?q=${encodeURIComponent(query)}`,
-                );
-                const data = await res.json();
+                // GANTI KE AXIOS
+                const response = await axios.get('/youtube/search', {
+                    params: { q: query },
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
+                });
 
                 if (cancelled) return;
 
-                if (!res.ok) {
-                    setYt({
-                        loading: false,
-                        embedUrl: null,
-                        error: data?.error || "Failed to load video",
-                    });
-                    return;
-                }
-
-                setYt({ loading: false, embedUrl: data.embedUrl, error: null });
+                setYt({ 
+                    loading: false, 
+                    embedUrl: response.data.embedUrl, 
+                    error: null 
+                });
             } catch (e) {
-                if (!cancelled)
-                    setYt({
-                        loading: false,
-                        embedUrl: null,
-                        error: "Failed to load video",
-                    });
+                if (cancelled) return;
+                
+                setYt({
+                    loading: false,
+                    embedUrl: null,
+                    error: e.response?.data?.error || "Failed to load video",
+                });
             }
         }
 
         loadYoutube();
-        return () => {
-            cancelled = true;
-        };
+        return () => { cancelled = true; };
     }, [recipe.title]);
 
     function splitIngredientsSmart(text) {
@@ -318,7 +347,9 @@ export default function RecipeDetail({ recipe, user }) {
                                             Cooking Time
                                         </p>
                                         <p className="recipe-detail-info-value">
-                                            {recipe.cooking_time} mins
+                                            {formatCookingTime(
+                                                recipe.cooking_time,
+                                            )}
                                         </p>
                                     </div>
                                 </div>
@@ -352,6 +383,13 @@ export default function RecipeDetail({ recipe, user }) {
                             </div>
                             <div className="recipe-detail-nutrient-card">
                                 <div className="recipe-detail-nutrient-icon">
+                                    <i class="fa-solid fa-bowl-food"></i>
+                                </div>
+                                <h4>Carbohydrate</h4>
+                                <p>{recipe.carbohydrate} gr</p>
+                            </div>
+                            <div className="recipe-detail-nutrient-card">
+                                <div className="recipe-detail-nutrient-icon">
                                     <i className="fa-solid fa-drumstick-bite" />
                                 </div>
                                 <h4>Protein</h4>
@@ -363,13 +401,6 @@ export default function RecipeDetail({ recipe, user }) {
                                 </div>
                                 <h4>Fat</h4>
                                 <p>{recipe.fat} gr</p>
-                            </div>
-                            <div className="recipe-detail-nutrient-card">
-                                <div className="recipe-detail-nutrient-icon">
-                                    <i className="fa-solid fa-water"></i>
-                                </div>
-                                <h4>Sodium</h4>
-                                <p>{recipe.sodium} mg</p>
                             </div>
                         </div>
                     </div>

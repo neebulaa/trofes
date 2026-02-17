@@ -1,32 +1,46 @@
 <?php
 
-use Inertia\Inertia;
-use App\Models\Guide;
-use App\Models\Recipe;
-use App\Models\LikeRecipe;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\GuideController;
-use App\Http\Controllers\RecipeController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\YoutubeController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\OnboardingController;
-use App\Http\Controllers\Api\LikeRecipeController;
-use App\Http\Controllers\DashboardGuideController;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardAllergyController;
-use App\Http\Controllers\NutrientsCalculatorController;
-use App\Http\Controllers\DashboardRoleManagementController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardDietaryPreferenceController;
+use App\Http\Controllers\DashboardGuideController;
 use App\Http\Controllers\DashboardMessageController;
+use App\Http\Controllers\DashboardRoleManagementController;
+use App\Http\Controllers\GuideController;
+use App\Http\Controllers\LikeRecipeController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NutrientsCalculatorController;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\YoutubeController;
+use App\Models\Guide;
+use App\Models\LikeRecipe;
+use App\Models\Recipe;
+use App\Services\AIRecipeRecommender;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
-Route::get('/', function(){
+Route::get('/', function(AIRecipeRecommender $ai){
+    if(Auth::check()){
+        $userLikedIds = LikeRecipe::where('user_id', Auth::id())->pluck('recipe_id')->toArray();
+        $recommended_count = 8;
+        $userId = Auth::id();
+        $ai = $ai->byLikeRecommendCached($userLikedIds, $recommended_count, $userId);
+
+        return Inertia::render('Home', [
+            'guides' => Guide::all()->take(3),
+            "recommended_recipes" => $ai['data'],
+            'recipes' => Recipe::inRandomOrder()->limit(5)->get(),
+        ]);
+    }
     return Inertia::render('Home', [
         'guides' => Guide::all()->take(3),
         'recipes' => Recipe::inRandomOrder()->limit(5)->get(),
@@ -39,12 +53,12 @@ Route::post('/contact-us', [MessageController::class, 'store']);
 Route::get('/nutrients-calculator', [NutrientsCalculatorController::class, 'index'])->name('nutrients-calculator');
 Route::post('/nutrients-calculator', [NutrientsCalculatorController::class, 'findRecommendation']);
 
+// guides
+Route::get('/guides', [GuideController::class, 'index']);
 Route::middleware('auth')->group(function(){
 
     Route::middleware('onboarded')->group(function(){
-        // guides
         Route::get('/guides/{guide}', [GuideController::class, 'show']);
-        Route::get('/guides', [GuideController::class, 'index']);
     
         // profile
         Route::get('/profile', [UserController::class, 'index']);
@@ -53,7 +67,7 @@ Route::middleware('auth')->group(function(){
         Route::delete('/profile/remove-profile-image', [UserController::class, 'removeProfileImage']);
 
         // recipes
-        Route::get('/recipes', [RecipeController::class, 'index']);
+        Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
         Route::get('/recipes/{recipe}', [RecipeController::class, 'show']);
         Route::get('/custom-search-recipes', [RecipeController::class, 'customSearchRecipes']);
         Route::post('/custom-search-recipes', [RecipeController::class, 'performCustomSearchRecipes']);

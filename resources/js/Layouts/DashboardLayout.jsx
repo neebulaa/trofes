@@ -51,6 +51,9 @@ export default function DashboardLayout({ children, title = "Dashboard", id="" }
                     crossOrigin="anonymous"
                     referrerPolicy="no-referrer"
                 />
+
+                {/* umami analytics */}
+                <script defer src="https://cloud.umami.is/script.js" data-website-id="4172710c-69ae-4311-9821-8f3791260cbd"></script>
             </Head>
 
             <div className={layoutClass}>

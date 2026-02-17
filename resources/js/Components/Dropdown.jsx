@@ -6,7 +6,6 @@ export default function Dropdown({ options, value, onChange }) {
 
     useEffect(() => {
         function handleClickOutside(e) {
-            console.log(e.target);
             if (
                 dropdownRef.current &&
                 !dropdownRef.current.contains(e.target)

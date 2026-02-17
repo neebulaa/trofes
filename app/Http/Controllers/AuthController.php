@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Rules\StrongPassword;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -60,6 +61,14 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
         Auth::login($user, $remember);
 
+        ActivityLog::create([
+            'user_id' => $user->user_id,
+            'action' => 'user.registered',
+            'meta' => json_encode([
+                'username' => $user->username,
+            ]),
+        ]);
+
         return redirect('/onboarding');
     }
 
@@ -87,10 +96,24 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'user.login',
+            'meta' => json_encode([
+                'username' => Auth::user()->username,
+            ]),
+        ]);
         return redirect()->intended('/');
     }
 
     public function signOut(Request $request){
+        ActivityLog::create([
+            'user_id' => Auth::user()->user_id,
+            'action' => 'user.logout',
+            'meta' => json_encode([
+                'username' => Auth::user()->username,
+            ]),
+        ]);
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

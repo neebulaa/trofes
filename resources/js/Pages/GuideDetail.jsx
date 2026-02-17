@@ -23,17 +23,17 @@ export default function GuideDetail({guide, next_guide, prev_guide, other_guides
                     />
 
                     <div className="guide-detail-navigation">
-                        <h2>Selesai. Ayo lanjut <span className="green-block">Belajar!</span></h2>
-                        <p>Anda telah menyelesaikan satu langkah penting, sekarang saatnya melanjutkan arah perjalanan belajar Anda yang penuh nutrisi.</p>
+                        <h2>Great job! Time to keep <span className="green-block">Learning!</span></h2>
+                        <p>You've completed an important step. Now, let's continue your journey toward a more nutritious lifestyle.</p>
 
                         <div className="guide-navigators">
                             {prev_guide && (
                                 <Link href={`/guides/${prev_guide.slug}`} className="btn btn-line-white"> 
-                                    <i className="fa-solid fa-chevron-left"></i>Sebelumnya
+                                    <i className="fa-solid fa-chevron-left"></i>Previous
                                 </Link>
                             )}
                             {next_guide && (
-                                <Link href={`/guides/${next_guide.slug}`} className="btn btn-line-white">Selanjutnya <i className="fa-solid fa-chevron-right"></i>
+                                <Link href={`/guides/${next_guide.slug}`} className="btn btn-line-white">Next  <i className="fa-solid fa-chevron-right"></i>
                                 </Link>
                             )}
                         </div>
@@ -41,7 +41,7 @@ export default function GuideDetail({guide, next_guide, prev_guide, other_guides
                 </div>
                 
                 <div className="guide-other">
-                    <h2 className="guide-other-title">Panduan Lainnya</h2>
+                    <h2 className="guide-other-title">Other Guides</h2>
                     <div className="guide-other-list">
                         {other_guides.map((other_guide) => (
                             <Link href={`/guides/${other_guide.slug}`} className="guide-other-item" key={other_guide.guide_id}>

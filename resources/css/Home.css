@@ -191,6 +191,19 @@
 }
 /* hero section end */
 
+/* recommended recipes section start */
+.hero-recommended-split {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.home-recommended-title {
+    font-size: clamp(1.5rem, 4vw, 1.8rem);
+    font-weight: 600;
+}
+
+/* recommended recipes section end */
 
 /* about section start */
 .about#about {
@@ -428,6 +441,12 @@
 
     .guides-title {
         max-width: 100%;
+    }
+
+    .hero-recommended-split {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
     }
 }
 

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text("instructions");
             $table->text("measured_ingredients");
             $table->float('calories')->default(0);
+            $table->float('carbohydrate')->default(0);
             $table->float("protein")->default(0);
             $table->float("fat")->default(0);
             $table->float('sodium')->default(0);
