@@ -39,23 +39,25 @@ jobs:
       - name: Composer + Artisan (server)
         shell: bash
         run: |
-          ssh -p "${{ secrets.PORT }}" "${{ secrets.USER }}@${{ secrets.HOST }}" << 'EOF'
+          ssh -p "${{ secrets.PORT }}" "${{ secrets.USER }}@${{ secrets.HOST }}" << EOF
             set -e
-            cd "${APP_DIR}"
+            cd "${{ secrets.APP_DIR }}"
 
             echo "Now in: $(pwd)"
+            echo "Checking .env..."
             ls -la .env
-            test -f .env || (echo "ERROR: .env not found in ${APP_DIR}" && exit 1)
 
+            # Ensure writable dirs exist
             mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache
 
+            # Install PHP dependencies
             composer install --no-dev --prefer-dist --optimize-autoloader
 
-            "${PHP_BIN}" artisan migrate --force
-            "${PHP_BIN}" artisan config:cache || true
-            "${PHP_BIN}" artisan route:cache || true
-            "${PHP_BIN}" artisan view:cache || true
+            # Laravel deploy commands (using Hostinger PHP CLI path)
+            "${{ secrets.PHP_BIN }}" artisan migrate --force
+            "${{ secrets.PHP_BIN }}" artisan config:cache || true
+            "${{ secrets.PHP_BIN }}" artisan route:cache || true
+            "${{ secrets.PHP_BIN }}" artisan view:cache || true
+
+            echo "Deploy finished."
           EOF
-        env:
-          APP_DIR: ${{ secrets.APP_DIR }}
-          PHP_BIN: ${{ secrets.PHP_BIN }}
