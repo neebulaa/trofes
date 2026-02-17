@@ -45,8 +45,14 @@ Route::prefix('v1')->group(function () {
             'success' => true,
             'data' => [
                 'guides' => \App\Models\Guide::latest()->take(3)->get(),
-                'recommended_recipes' => \App\Models\Recipe::with(['dietaryPreferences'])->inRandomOrder()->limit(5)->get(),
-                "popular_recipes" => \App\Models\Recipe::withCount('likes')
+                'recommended_recipes' => \App\Models\Recipe::with(['dietaryPreferences', 'likes'])
+                    ->withCount('likes') // Wajib ada agar likes_count bisa dibaca
+                    ->inRandomOrder() 
+                    ->limit(5)
+                    ->get(),
+
+                'popular_recipes' => \App\Models\Recipe::with(['dietaryPreferences', 'likes'])
+                    ->withCount('likes') // Menghitung jumlah likes untuk kolom likes_count
                     ->orderBy('likes_count', 'desc')
                     ->take(20)
                     ->get(),
@@ -117,7 +123,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // ------------------------------------------------------------------------
     // Routes that require completed onboarding
     // ------------------------------------------------------------------------
-    // Route::middleware('onboarded')->group(function() {
+    Route::middleware('onboarded')->group(function() {
         
         // --------------------------------------------------------------------
         // Guides Routes
@@ -157,13 +163,14 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('/ingredients/{ingredient}', [IngredientController::class, 'show']);
         Route::get('/allergies/{allergy}', [AllergyController::class, 'show']);
         Route::get('/dietary-preferences/{dietary_preference}', [DietaryPreferenceController::class, 'show']);
-    // });
+    });
 
     // ========================================================================
     // ADMIN ROUTES (Requires Admin Role)
     // ========================================================================
     
     Route::middleware('is_admin')->prefix('admin')->group(function() {
+        
         
         // --------------------------------------------------------------------
         // Dashboard
@@ -201,6 +208,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         // --------------------------------------------------------------------
         // Dashboard - Ingredients Management
         // --------------------------------------------------------------------
+
         Route::post('/ingredients', [IngredientController::class, 'store']);
         Route::put('/ingredients/{ingredient}', [IngredientController::class, 'update']);
         Route::delete('/ingredients/{ingredient}', [IngredientController::class, 'destroy']);
