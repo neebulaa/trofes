@@ -1,4 +1,4 @@
-name: Deploy to Hostinger (Laravel)
+name: Deploy to Hostinger (Laravel + React)
 
 on:
   push:
@@ -15,6 +15,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
 
       - name: Setup SSH
         shell: bash
@@ -43,21 +55,12 @@ jobs:
             set -e
             cd "${{ secrets.APP_DIR }}"
 
-            echo "Now in: $(pwd)"
-            echo "Checking .env..."
             ls -la .env
 
-            # Ensure writable dirs exist
-            mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache
-
-            # Install PHP dependencies
             composer install --no-dev --prefer-dist --optimize-autoloader
 
-            # Laravel deploy commands (using Hostinger PHP CLI path)
             "${{ secrets.PHP_BIN }}" artisan migrate --force
             "${{ secrets.PHP_BIN }}" artisan config:cache || true
             "${{ secrets.PHP_BIN }}" artisan route:cache || true
             "${{ secrets.PHP_BIN }}" artisan view:cache || true
-
-            echo "Deploy finished."
           EOF
