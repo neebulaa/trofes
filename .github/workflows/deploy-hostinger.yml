@@ -11,6 +11,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,15 +24,15 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p "${{ secrets.PORT }}" -H "${{ secrets.HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Upload project (rsync)
+      - name: Upload project to server (rsync)
         shell: bash
         run: |
           rsync -az --delete \
+            --filter='P .env' \
+            --filter='P storage/***' \
             --exclude ".git/" \
             --exclude ".github/" \
             --exclude "node_modules/" \
-            --exclude ".env" \
-            --exclude "storage/**" \
             -e "ssh -p ${{ secrets.PORT }}" \
             ./ "${{ secrets.USER }}@${{ secrets.HOST }}:${{ secrets.APP_DIR }}/"
 
@@ -40,18 +41,32 @@ jobs:
         run: |
           ssh -p "${{ secrets.PORT }}" "${{ secrets.USER }}@${{ secrets.HOST }}" << 'EOF'
             set -e
-            cd "${APP_DIR}"
 
+            echo "APP_DIR is: ${APP_DIR}"
+            cd "${APP_DIR}"
+            echo "Now in:"
+            pwd
+
+            echo "Listing project root:"
+            ls -la
+
+            echo "Checking .env:"
+            ls -la .env || true
             test -f .env || (echo "ERROR: .env not found in ${APP_DIR}" && exit 1)
 
+            echo "Ensuring writable Laravel dirs exist:"
             mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache
 
+            echo "Installing composer dependencies:"
             composer install --no-dev --prefer-dist --optimize-autoloader
 
+            echo "Running migrations + caches:"
             "${PHP_BIN}" artisan migrate --force
             "${PHP_BIN}" artisan config:cache || true
             "${PHP_BIN}" artisan route:cache || true
             "${PHP_BIN}" artisan view:cache || true
+
+            echo "Done."
           EOF
         env:
           APP_DIR: ${{ secrets.APP_DIR }}
