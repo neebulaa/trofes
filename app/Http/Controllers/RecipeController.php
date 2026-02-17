@@ -96,7 +96,10 @@ class RecipeController extends Controller
         if (!empty($filters['ingredients'])) {
             $ingredientIds = $filters['ingredients'];
 
-            // count how many selected ingredients are matched (higher is better)
+            $query->whereHas('ingredients', function ($q) use ($ingredientIds) {
+                $q->whereIn('ingredients.ingredient_id', $ingredientIds);
+            });
+            
             $query->withCount(['ingredients as matched_ingredients_count' => function ($q) use ($ingredientIds) {
                 $q->whereIn('ingredients.ingredient_id', $ingredientIds);
             }]);
@@ -104,7 +107,6 @@ class RecipeController extends Controller
             $query->orderByDesc('matched_ingredients_count');
         }
 
-        // hard constraints
         if (!empty($filters['dietary_preferences'])) {
             foreach ($filters['dietary_preferences'] as $dietId) {
                 $query->whereHas('dietaryPreferences', fn ($q) =>
@@ -121,7 +123,6 @@ class RecipeController extends Controller
             }
         }
 
-        // Ambil nilai, tapi pastikan kita tahu mana yang benar-benar diisi (bukan sekadar 0)
         $inputs = [
             'calories'     => ['val' => (float)($filters['calories'] ?? 0), 'weight' => 1, 'p_weight' => 0.4],
             'protein'      => ['val' => (float)($filters['protein'] ?? 0),  'weight' => 5, 'p_weight' => 1.5],
@@ -140,7 +141,6 @@ class RecipeController extends Controller
                 $w = $config['weight'];
                 $pw = $config['p_weight'];
                 
-                // Hanya masukkan ke rumus jika user mengisi field tersebut
                 $scoreParts[] = "POWER($key - $val, 2) * $w";
                 $percParts[]  = "POWER($key - $val, 2) * $pw";
             }
@@ -155,6 +155,7 @@ class RecipeController extends Controller
             $query->addSelect(\DB::raw("
                 ROUND(GREATEST(0, 100 - (SQRT($rawPerc) / 5)), 1) AS match_percentage
             "));
+            $query->having('match_percentage', '>', 10);
 
             $query->orderBy('score_distance', 'asc');
         } else {
