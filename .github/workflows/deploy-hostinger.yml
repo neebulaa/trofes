@@ -1,0 +1,58 @@
+name: Deploy to Hostinger (Laravel)
+
+on:
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ secrets.PORT }}" -H "${{ secrets.HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload project (rsync)
+        shell: bash
+        run: |
+          rsync -az --delete \
+            --exclude ".git/" \
+            --exclude ".github/" \
+            --exclude "node_modules/" \
+            --exclude ".env" \
+            --exclude "storage/**" \
+            -e "ssh -p ${{ secrets.PORT }}" \
+            ./ "${{ secrets.USER }}@${{ secrets.HOST }}:${{ secrets.APP_DIR }}/"
+
+      - name: Composer + Artisan (server)
+        shell: bash
+        run: |
+          ssh -p "${{ secrets.PORT }}" "${{ secrets.USER }}@${{ secrets.HOST }}" << 'EOF'
+            set -e
+            cd "${APP_DIR}"
+
+            test -f .env || (echo "ERROR: .env not found in ${APP_DIR}" && exit 1)
+
+            mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache
+
+            composer install --no-dev --prefer-dist --optimize-autoloader
+
+            "${PHP_BIN}" artisan migrate --force
+            "${PHP_BIN}" artisan config:cache || true
+            "${PHP_BIN}" artisan route:cache || true
+            "${PHP_BIN}" artisan view:cache || true
+          EOF
+        env:
+          APP_DIR: ${{ secrets.APP_DIR }}
+          PHP_BIN: ${{ secrets.PHP_BIN }}
