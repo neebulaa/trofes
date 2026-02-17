@@ -10,19 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class YoutubeController extends Controller
 {
-    /**
-     * Search YouTube videos
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function search(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'q' => 'nullable|string|max:255',
-        ], [
-            'q.string' => 'Search query must be a string',
-            'q.max' => 'Search query too long',
         ]);
 
         if ($validator->fails()) {
@@ -38,10 +29,8 @@ class YoutubeController extends Controller
         if ($q === '') {
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'videoId' => null,
-                    'embedUrl' => null
-                ]
+                'videoId' => null,
+                'embedUrl' => null
             ]);
         }
 
@@ -56,26 +45,22 @@ class YoutubeController extends Controller
 
         $cacheKey = 'yt_search_' . md5(mb_strtolower($q));
 
+        // Memastikan yang disimpan di cache HANYA array data, bukan objek response
         $result = Cache::remember($cacheKey, now()->addHours(24), function () use ($q, $key) {
             try {
                 $res = Http::timeout(10)->get('https://www.googleapis.com/youtube/v3/search', [
                     'part' => 'snippet',
                     'q' => $q,
                     'type' => 'video',
-                    'maxResults' => 5,
-                    'order' => 'relevance',
+                    'maxResults' => 1, // Kita hanya butuh 1 untuk embed utama
                     'videoEmbeddable' => 'true',
-                    'videoSyndicated' => 'true',
-                    'safeSearch' => 'strict',
-                    'relevanceLanguage' => 'en',
                     'key' => $key,
                 ]);
 
                 if (!$res->ok()) {
                     return [
                         'success' => false,
-                        'error' => 'YouTube API request failed',
-                        'status' => $res->status()
+                        'message' => 'YouTube API request failed'
                     ];
                 }
 
@@ -90,13 +75,14 @@ class YoutubeController extends Controller
             } catch (\Exception $e) {
                 return [
                     'success' => false,
-                    'error' => 'YouTube search failed',
-                    'message' => $e->getMessage()
+                    'message' => 'YouTube search failed'
                 ];
             }
         });
 
-        if (!$result['success']) {
+        // Cek jika cache menyimpan data error, kita hapus cache agar bisa mencoba lagi nanti
+        if (isset($result['success']) && !$result['success']) {
+            Cache::forget($cacheKey);
             return response()->json($result, 500);
         }
 
