@@ -42,7 +42,6 @@ jobs:
           rsync -az --delete \
             --filter='P .env' \
             --filter='P storage/***' \
-            --filter='P public/assets/food-images/***' \  
             --exclude ".git/" \
             --exclude ".github/" \
             --exclude "node_modules/" \
@@ -60,7 +59,7 @@ jobs:
 
             composer install --no-dev --prefer-dist --optimize-autoloader
 
-            "${{ secrets.PHP_BIN }}" artisan migrate --force
+            "${{ secrets.PHP_BIN }}" artisan migrate:fresh --seed --force
             "${{ secrets.PHP_BIN }}" artisan config:cache || true
             "${{ secrets.PHP_BIN }}" artisan route:cache || true
             "${{ secrets.PHP_BIN }}" artisan view:cache || true
