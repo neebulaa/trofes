@@ -61,7 +61,7 @@ jobs:
 
             # Recreate storage symlink (Hostinger often disables PHP exec(), so don't use artisan storage:link)
             rm -rf public/storage
-            ln -s ../storage/app/public public/storage
+            ln -s ${{ secrets.APP_DIR }}/storage/app/public ${{ secrets.APP_DIR }}/public/storage
 
             "${{ secrets.PHP_BIN }}" artisan migrate --force
             "${{ secrets.PHP_BIN }}" artisan config:cache || true
