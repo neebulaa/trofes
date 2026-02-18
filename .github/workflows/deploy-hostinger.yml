@@ -42,6 +42,7 @@ jobs:
           rsync -az --delete \
             --filter='P .env' \
             --filter='P storage/***' \
+            --filter='P public/assets/food-images/***' \  
             --exclude ".git/" \
             --exclude ".github/" \
             --exclude "node_modules/" \

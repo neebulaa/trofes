@@ -36,13 +36,6 @@ use App\Http\Controllers\Api\RoleManagementController;
 // ============================================================================
 
 Route::prefix('v1')->group(function () {
-    Route::get('/try', function() {
-        return response()->json([
-            'success' => true,
-            'message' => 'API is working!'
-        ]);
-    }); 
-    
     // ------------------------------------------------------------------------
     // Home / Landing
     // ------------------------------------------------------------------------
