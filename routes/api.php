@@ -41,7 +41,7 @@ Route::prefix('v1')->group(function () {
     //         'success' => true,
     //         'message' => 'API is working!'
     //     ]);
-    // });
+    // }); 
     
     // ------------------------------------------------------------------------
     // Home / Landing
