@@ -2,7 +2,7 @@
   <img src="./public/assets/logo/logo-transparent.png" alt="Trofes logo" width="160" />
 </p>
 
-<h1 align="center">Trofes</h1>
+<h1 align="center">Trofes Web Application</h1>
 
 <p align="center">
   <strong>Smart food choices</strong> — recipe recommendations, ingredient detection, and health guides.
