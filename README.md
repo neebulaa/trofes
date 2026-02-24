@@ -1,12 +1,29 @@
 <p align="center">
-  <img src="./public/assets/logo/logo-transparent.png" alt="Trofes logo" width="160" style="background: white; border-radius: 50%" />
+  <img src="./public/assets/logo/logo-transparent.png" alt="Trofes logo" width="160" />
 </p>
 
-# Trofes
+<h1 align="center">Trofes</h1>
 
-**Trofes** is an application that helps users choose food intelligently and personally through recipe recommendations tailored to their preferences, allergies, and nutritional needs. It is complemented with easy-to-understand health articles to support healthy and sustainable meal planning.
+<p align="center">
+  <strong>Smart food choices</strong> — recipe recommendations, ingredient detection, and health guides.
+</p>
 
-Built with **Laravel**, **Inertia.js**, and **React**.
+<p align="center">
+  <a href="#tech-stack--services">Tech Stack</a> •
+  <a href="#key-features">Features</a> •
+  <a href="#installation-local">Install</a> •
+  <a href="#getting-api-keys-step-by-step">API Keys</a>
+</p>
+
+<p align="center">
+  <img alt="Laravel" src="https://img.shields.io/badge/Laravel-12-red" />
+  <img alt="PHP" src="https://img.shields.io/badge/PHP-8.2%2B-777bb4" />
+  <img alt="React" src="https://img.shields.io/badge/React-frontend-61DAFB" />
+  <img alt="Inertia.js" src="https://img.shields.io/badge/Inertia.js-adapter-9553E9" />
+  <img alt="MySQL" src="https://img.shields.io/badge/MySQL-database-4479A1" />
+</p>
+
+<hr />
 
 ---
 
