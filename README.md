@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./public/assets/logo/logo-transparent.png" alt="Trofes logo" width="160" />
+</p>
+
 # Trofes
 
 **Trofes** is an application that helps users choose food intelligently and personally through recipe recommendations tailored to their preferences, allergies, and nutritional needs. It is complemented with easy-to-understand health articles to support healthy and sustainable meal planning.
@@ -9,7 +13,7 @@ Built with **Laravel**, **Inertia.js**, and **React**.
 ## Tech Stack & Services
 
 ### Core
-- **Laravel** (Backend)
+- **Laravel 12** (Backend)
 - **Inertia.js** (Server-driven SPA adapter)
 - **React** (Frontend UI)
 - **Vite** (Frontend bundler / dev server)
@@ -313,7 +317,9 @@ Trofes shows a simple analytics panel on the admin dashboard using an **embedded
    - Find the **Share** option in the Umami UI for your website/dashboard (Typically in the top right Edit button)
    - Enable/add sharing (enter name and create) and copy the generated **share URL**
 4. Put the share link into your `.env`:
-   - `VITE_UMAMI_SHARE_URL` = your share url
+```env
+VITE_UMAMI_SHARE_URL=your_share_url
+```
 5. Restart `php artisan serve` and check if the analytics shows on the Home Dashboard
 
 ### Notes / Security
