@@ -1,59 +1,334 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Trofes
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Trofes** is an application that helps users choose food intelligently and personally through recipe recommendations tailored to their preferences, allergies, and nutritional needs. It is complemented with easy-to-understand health articles to support healthy and sustainable meal planning.
 
-## About Laravel
+Built with **Laravel**, **Inertia.js**, and **React**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack & Services
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Core
+- **Laravel** (Backend)
+- **Inertia.js** (Server-driven SPA adapter)
+- **React** (Frontend UI)
+- **Vite** (Frontend bundler / dev server)
+- **MySQL** (Database)
 
-## Learning Laravel
+### Integrations / Services
+- **Trofes AI Recommendation & Ingredient Detection API**  
+  Backing services for personalized recommendations and ingredient image detection:
+  1. **AI Recommendation**: https://github.com/neebulaa/trofes-model-recommendation  
+  2. **AI Ingredient Detector**: https://github.com/neebulaa/trofes-model-ingredient-detection  
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Google OAuth 2.0** — Login with Google  
+- **Cloudflare Turnstile** — Bot protection / verification  
+- **YouTube Data API v3** — Recipe video integration  
+- **Umami Analytics** — Web analytics (optional)  
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Key Features
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 01. Authentication & User Management
+- Login (Credentials + Google OAuth)
+- Register & Logout
+- Forgot Password
+- Email Verification
+- Onboarding Setup
+- Profile Management
 
-### Premium Partners
+### 02. Smart Recipe System
+- All Recipes
+- Recommendations based on likes & preferences
+- Simple Search, Filters, and Sorting
+- Advanced Search + Ingredient Image Detection
+- Recipe Detail + YouTube Video API Integration
+- Cooking Timer
+- Like Recipe
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 03. Nutrition & Health Tools
+- All Guides (Search & Sorting)
+- Nutrients Calculator
+- Food recommendations based on nutrition
+- Healthy Guides & Articles
+- Guide Detail
 
-## Contributing
+### 04. Dashboard & Admin Management
+- Web Analytics (Umami Services)
+- Allergies Data Management
+- Dietary Preferences Data Management
+- Guides Data Management
+- User/Admin Role Settings
+- Contact Us Message Management
+- Activity Logging
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## Requirements
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- PHP **8.2+** (requires >= 8.2 and < 9.0)
+- Composer
+- Node.js + npm
+- MySQL (or MariaDB)
 
-## Security Vulnerabilities
+Optional but recommended:
+- SMTP credentials (for email verification / forgot password), e.g. Gmail SMTP + App Password
+- Google account (for OAuth setup)
+- Cloudflare account (for Turnstile)
+- Google Cloud project (for YouTube Data API)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
+
+## Installation (Local)
+
+### 1) Clone the repository
+```bash
+git clone https://github.com/neebulaa/trofes.git
+cd trofes
+```
+
+### 2) Install backend dependencies
+```bash
+composer install
+```
+
+### 3) Install frontend dependencies
+```bash
+npm install
+```
+
+### 4) Create your environment file
+```bash
+cp .env.example .env
+```
+
+### 5) Generate app key
+```bash
+php artisan key:generate
+```
+
+### 6) Create the storage symlink
+```bash
+php artisan storage:link
+```
+
+### 7) Configure database (MySQL)
+
+**Fix / correction:** if you're using MySQL, ensure `.env` uses `DB_CONNECTION=mysql` (not sqlite).
+
+Example:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_db_name
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Notes:
+- Create `your_db_name` in MySQL first.
+- If you use **MAMP**, your local MySQL password is commonly `root`.
+
+### 8) Run migrations + seeders
+```bash
+php artisan migrate --seed
+```
+
+### 9) Start the frontend dev server (Vite)
+```bash
+npm run dev
+```
+
+### 10) Start Laravel (in a second terminal)
+```bash
+php artisan serve
+```
+
+### 11) Open the app
+- http://127.0.0.1:8000
+
+---
+
+## Environment Variables (API Keys / Integrations)
+
+Add or fill in these keys in your `.env`:
+
+```env
+# Cloudflare Turnstile verification
+TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
+
+# Google OAuth authentication
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8000/auth/google/callback
+
+# YouTube Data API
+YOUTUBE_API_KEY=
+
+# SMTP (Gmail example) - used for email verification / forgot password
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="no-reply@trofes.site"
+MAIL_FROM_NAME="${APP_NAME}"
+
+# Umami Analytics
+VITE_UMAMI_SHARE_URL=
+
+```
+
+---
+
+## Getting API Keys (Step-by-step)
+
+### A) Cloudflare Turnstile (TURNSTILE_SITE_KEY / TURNSTILE_SECRET_KEY)
+
+1. Go to **Cloudflare Dashboard**: https://dash.cloudflare.com/
+2. Open **Turnstile** (Application Security → Turnstile).
+3. Under **Turnstile widgets**, click **Add widget**.
+4. Fill in a **Widget name** (e.g. `Trofes Local`).
+5. Configure **Hostname Management**:
+   - Click **Add Hostnames**
+   - Add the hostname(s) you will use, for example:
+     - `127.0.0.1` (if you access your app via IP)
+     - `localhost` (if you access your app via localhost)
+     - your dev/staging domain (recommended for team/shared testing)
+6. Choose a **Widget Mode** (Managed is usually recommended).
+7. (Optional) Configure **Pre-clearance**:
+   - **No** (default / recommended for most cases), unless your site is proxied through Cloudflare and you specifically want verified users to bypass some future security challenges.
+8. Create/save the widget.
+9. Copy the generated keys:
+   - **Site key** → set as `TURNSTILE_SITE_KEY`
+   - **Secret key** → set as `TURNSTILE_SECRET_KEY`
+10. Paste them into your `.env` and restart your app.
+
+```env
+TURNSTILE_SITE_KEY=your_site_key
+TURNSTILE_SECRET_KEY=your_secret_key
+```
+
+---
+
+### B) Google OAuth (GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_REDIRECT_URI)
+
+1. Go to **Google Cloud Console**: https://console.cloud.google.com/
+2. Create a **new project** (or select an existing one).
+3. Navigate to **APIs & Services → OAuth consent screen** to get into Google Auth Platform
+4. Click **Get started** (if you are new to the app)
+5. On **Project configuration**, complete the setup sections:
+   - **1) App Information**: set your **App name** and **User support email**, then click **Next**
+   - **2) Audience**: choose **External** (or **Internal** if you’re using a Google Workspace org), then click **Next**
+   - **3) Contact Information**: fill in required contact email(s), then click **Next**
+   - **4) Finish**: click **Create**
+6. Create an OAuth client:
+   - In the left sidebar, go to **Clients**
+   - Click **Create client**
+   - Choose application type **Web application**
+   - For the name just make it yourself.
+7. Add the redirect URI:
+   - Under **Authorized redirect URIs**, add:
+     - `http://127.0.0.1:8000/auth/google/callback`
+     - `http://localhost:8000/auth/google/callback`
+8. Create/save the client, then copy the credentials:
+   - **Client ID** → `GOOGLE_CLIENT_ID`
+   - **Client secret** → `GOOGLE_CLIENT_SECRET`
+9. Set your `.env` like this:
+```env
+GOOGLE_CLIENT_ID=your_client_id
+GOOGLE_CLIENT_SECRET=your_client_secret
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8000/auth/google/callback
+```
+10. Restart your app and test “Login with Google”.
+
+Notes:
+- If **External** is used, your app typically starts in **Testing** mode and you may need to add **test users** (Google accounts) before it will work for others.
+- The UI changes over time, but the key parts are: configure app (Branding/Audience) → create **Client** → add **Redirect URI**.
+
+---
+
+### C) YouTube Data API (YOUTUBE_API_KEY)
+
+1. Go to **Google Cloud Console**: https://console.cloud.google.com/
+2. Select the same project as OAuth (or create a new one).
+3. Enable the API:
+   - Go to **APIs & Services → Library**
+   - Search for **YouTube Data API v3**
+   - Click **Enable**
+4. Create an API key:
+   - Go to **APIs & Services → Credentials**
+   - Click **Create Credentials → API key**
+   - Enter the API Key name yourself
+5. (Recommended) Restrict the key:
+   - In the API key settings, set **API restrictions** to *YouTube Data API v3*
+   - Optionally restrict by HTTP referrers (for browser usage) or IPs (for server usage), depending on how your app calls the API.
+6. Copy the generated key and set it on the `.env`:
+```env
+YOUTUBE_API_KEY=your_api_key
+```
+
+---
+
+## SMTP Setup (Gmail) — Step-by-step
+
+This app sends emails for features like **email verification** and **forgot password**.  
+For local development you can use Gmail SMTP:
+
+1. Use (or create) a Google account you want to send mail from.
+2. Enable **2-Step Verification** on the Google account.
+3. Create a **Gmail App Password**:
+   - Google Account → Security → **App passwords** (or you can go to this link https://myaccount.google.com/apppasswords)
+   - Create an app password for “Mail” (or “Other”)
+4. Put the credentials into your `.env`:
+   - `MAIL_USERNAME` = your Gmail address (e.g. `yourname@gmail.com`)
+   - `MAIL_PASSWORD` = the generated **App Password** (not your normal password)
+5. Ensure these values are set:
+   - `MAIL_HOST=smtp.gmail.com`
+   - `MAIL_PORT=587`
+   - `MAIL_ENCRYPTION=tls`
+6. Restart `php artisan serve` and test a flow that sends email (e.g. “Forgot Password”).
+
+Troubleshooting:
+- If Gmail blocks sign-in, double-check you are using an **App Password** and that 2FA is enabled.
+- If emails are not arriving, check spam/junk and confirm `MAIL_FROM_ADDRESS`
+
+---
+
+## Umami Analytics (Dashboard Embed)
+
+Trofes shows a simple analytics panel on the admin dashboard using an **embedded Umami share link** (via an `<iframe>`).
+
+### How to set up Umami (Cloud or Self-hosted)
+
+1. Create an Umami account / instance:
+   - Umami Cloud: https://cloud.umami.is/
+   - Or self-host Umami: https://umami.is/
+2. Create a **Website** in Umami for your Trofes deployment. Enter the name and the domain, you can use 'localhost' for local development
+3. Open the Umami website dashboard and create a **Share link**:
+   - Find the **Share** option in the Umami UI for your website/dashboard (Typically in the top right Edit button)
+   - Enable/add sharing (enter name and create) and copy the generated **share URL**
+4. Put the share link into your `.env`:
+   - `VITE_UMAMI_SHARE_URL` = your share url
+5. Restart `php artisan serve` and check if the analytics shows on the Home Dashboard
+
+### Notes / Security
+
+- The Umami **share link** is intended for embedding and typically does not require logging in.
+- Treat the share URL as **semi-private**: Anyone with the link may be able to view analytics, depending on your Umami share settings.
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the [MIT License](./LICENSE).
+
+---
+
+## Contact
+
+If you have questions, feedback, or want to contribute, feel free to open an issue or reach out via the Contact Us feature (if enabled).

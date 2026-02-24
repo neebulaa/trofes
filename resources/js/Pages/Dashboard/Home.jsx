@@ -17,6 +17,8 @@ export default function Home({
         { label: "Active Users", value: user_count },
     ];
 
+    const umamiShareUrl = import.meta.env.VITE_UMAMI_SHARE_URL;
+
     return (
         <DashboardLayout title="Dashboard - Home">
             <div className="dash-home">
@@ -47,7 +49,7 @@ export default function Home({
 
                     <div className="dash-home__chart">
                         <iframe
-                            src="https://cloud.umami.is/share/Llhj7hRjxETnKGfC"
+                            src={umamiShareUrl}
                             title="Umami Analytics"
                             loading="lazy"
                             width="100%"
