@@ -8,6 +8,8 @@
   <strong>Smart food choices</strong> — recipe recommendations, ingredient detection, and health guides.
 </p>
 
+<p align='center'>Trofes is an application that helps users choose food intelligently and personally through recipe recommendations tailored to their preferences, allergies, and nutritional needs. It is complemented with easy-to-understand health articles to support healthy and sustainable meal planning.</p>
+
 <p align="center">
   <a href="#tech-stack--services">Tech Stack</a> •
   <a href="#key-features">Features</a> •
@@ -16,14 +18,22 @@
 </p>
 
 <p align="center">
-  <img alt="Laravel" src="https://img.shields.io/badge/Laravel-12-red" />
-  <img alt="PHP" src="https://img.shields.io/badge/PHP-8.2%2B-777bb4" />
-  <img alt="React" src="https://img.shields.io/badge/React-frontend-61DAFB" />
-  <img alt="Inertia.js" src="https://img.shields.io/badge/Inertia.js-adapter-9553E9" />
-  <img alt="MySQL" src="https://img.shields.io/badge/MySQL-database-4479A1" />
+  <a href="https://laravel.com/" target="_blank" rel="noopener noreferrer">
+    <img alt="Laravel" src="https://img.shields.io/badge/Laravel-12-red" />
+  </a>
+  <a href="https://www.php.net/" target="_blank" rel="noopener noreferrer">
+    <img alt="PHP" src="https://img.shields.io/badge/PHP-8.2%2B-777bb4" />
+  </a>
+  <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">
+    <img alt="React" src="https://img.shields.io/badge/React-frontend-61DAFB" />
+  </a>
+  <a href="https://inertiajs.com/" target="_blank" rel="noopener noreferrer">
+    <img alt="Inertia.js" src="https://img.shields.io/badge/Inertia.js-adapter-9553E9" />
+  </a>
+  <a href="https://www.mysql.com/" target="_blank" rel="noopener noreferrer">
+    <img alt="MySQL" src="https://img.shields.io/badge/MySQL-database-4479A1" />
+  </a>
 </p>
-
-<hr />
 
 ---
 
