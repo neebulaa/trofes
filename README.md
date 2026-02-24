@@ -37,7 +37,7 @@
 
 ---
 
-## Tech Stack & Services
+## 💻 Tech Stack & Services
 
 ### Core
 - **Laravel 12** (Backend)
@@ -59,7 +59,7 @@
 
 ---
 
-## Key Features
+## 🔑 Key Features
 
 ### 01. Authentication & User Management
 - Login (Credentials + Google OAuth)
@@ -96,7 +96,7 @@
 
 ---
 
-## Requirements
+## 📜 Requirements
 
 - PHP **8.2+** (requires >= 8.2 and < 9.0)
 - Composer
@@ -111,7 +111,7 @@ Optional but recommended:
 
 ---
 
-## Installation (Local)
+## 🛠️ Installation (Local)
 
 ### 1) Clone the repository
 ```bash
@@ -182,7 +182,7 @@ php artisan serve
 
 ---
 
-## Environment Variables (API Keys / Integrations)
+## 🔐 Environment Variables (API Keys / Integrations)
 
 Add or fill in these keys in your `.env`:
 
@@ -216,7 +216,7 @@ VITE_UMAMI_SHARE_URL=
 
 ---
 
-## Getting API Keys (Step-by-step)
+## 🔑 Getting API Keys (Step-by-step)
 
 ### A) Cloudflare Turnstile (TURNSTILE_SITE_KEY / TURNSTILE_SECRET_KEY)
 
@@ -305,7 +305,7 @@ YOUTUBE_API_KEY=your_api_key
 
 ---
 
-## SMTP Setup (Gmail) — Step-by-step
+## ✉️ SMTP Setup (Gmail) — Step-by-step
 
 This app sends emails for features like **email verification** and **forgot password**.  
 For local development you can use Gmail SMTP:
@@ -330,7 +330,7 @@ Troubleshooting:
 
 ---
 
-## Umami Analytics (Dashboard Embed)
+## 🍥 Umami Analytics (Dashboard Embed)
 
 Trofes shows a simple analytics panel on the admin dashboard using an **embedded Umami share link** (via an `<iframe>`).
 
@@ -356,12 +356,12 @@ VITE_UMAMI_SHARE_URL=your_share_url
 
 ---
 
-## License
+## 📄 License
 
 This project is licensed under the [MIT License](./LICENSE).
 
 ---
 
-## Contact
+## 📞 Contact
 
 If you have questions, feedback, or want to contribute, feel free to open an issue or reach out via the Contact Us feature (if enabled).
