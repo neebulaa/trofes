@@ -8,8 +8,6 @@
   <strong>Smart food choices</strong> — recipe recommendations, ingredient detection, and health guides.
 </p>
 
-<p align='center'>Trofes is an application that helps users choose food intelligently and personally through recipe recommendations tailored to their preferences, allergies, and nutritional needs. It is complemented with easy-to-understand health articles to support healthy and sustainable meal planning.</p>
-
 <p align="center">
   <a href="#tech-stack--services">Tech Stack</a> •
   <a href="#key-features">Features</a> •
@@ -34,6 +32,8 @@
     <img alt="MySQL" src="https://img.shields.io/badge/MySQL-database-4479A1" />
   </a>
 </p>
+
+<p align='center'>Trofes is an application that helps users choose food intelligently and personally through recipe recommendations tailored to their preferences, allergies, and nutritional needs. It is complemented with easy-to-understand health articles to support healthy and sustainable meal planning.</p>
 
 ---
 
@@ -130,6 +130,7 @@ npm install
 ```
 
 ### 4) Create your environment file
+Copy the `.env.example` file to make a `.env` file or run
 ```bash
 cp .env.example .env
 ```
