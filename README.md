@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/assets/logo/logo-transparent.png" alt="Trofes logo" width="160" />
+  <img src="./public/assets/logo/logo-transparent.png" alt="Trofes logo" width="160" style="background: white; border-radius: 50%" />
 </p>
 
 # Trofes
