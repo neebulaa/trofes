@@ -56,22 +56,22 @@ class DatabaseSeeder extends Seeder
         $guest = User::where('username', 'trofesguest')->first();
 
         LikeRecipe::create([
-            'user_id' => $admin->id,
+            'user_id' => $admin->user_id,
             'recipe_id' => 1,
         ]);
 
         LikeRecipe::create([
-            'user_id' => $admin->id,
+            'user_id' => $admin->user_id,
             'recipe_id' => 2,
         ]);
 
         LikeRecipe::create([
-            'user_id' => $guest->id,
+            'user_id' => $guest->user_id,
             'recipe_id' => 1,
         ]);
 
         LikeRecipe::create([
-            'user_id' => $guest->id,
+            'user_id' => $guest->user_id,
             'recipe_id' => 4,
         ]);
     }
