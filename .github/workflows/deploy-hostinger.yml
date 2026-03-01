@@ -57,7 +57,7 @@ jobs:
 
             ls -la .env
 
-            composer install --no-dev --prefer-dist --optimize-autoloader
+            composer install --prefer-dist --optimize-autoloader
 
             # Recreate storage symlink (Hostinger often disables PHP exec(), so don't use artisan storage:link)
             rm -rf public/storage
