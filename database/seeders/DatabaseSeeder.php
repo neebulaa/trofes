@@ -52,23 +52,26 @@ class DatabaseSeeder extends Seeder
             RecipeDietaryPreferenceSeeder::class,
         ]);
 
+        $admin = User::where('username', 'trofesadmin')->first();
+        $guest = User::where('username', 'trofesguest')->first();
+
         LikeRecipe::create([
-            'user_id' => 11,
+            'user_id' => $admin->id,
             'recipe_id' => 1,
         ]);
 
         LikeRecipe::create([
-            'user_id' => 11,
+            'user_id' => $admin->id,
             'recipe_id' => 2,
         ]);
 
         LikeRecipe::create([
-            'user_id' => 12,
+            'user_id' => $guest->id,
             'recipe_id' => 1,
         ]);
 
         LikeRecipe::create([
-            'user_id' => 12,
+            'user_id' => $guest->id,
             'recipe_id' => 4,
         ]);
     }

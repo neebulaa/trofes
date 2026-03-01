@@ -63,7 +63,7 @@ jobs:
             rm -rf public/storage
             ln -s ${{ secrets.APP_DIR }}/storage/app/public ${{ secrets.APP_DIR }}/public/storage
 
-            "${{ secrets.PHP_BIN }}" artisan migrate:fresh --seed --force
+            "${{ secrets.PHP_BIN }}" artisan migrate:fresh --seed
             "${{ secrets.PHP_BIN }}" artisan config:cache || true
             "${{ secrets.PHP_BIN }}" artisan route:cache || true
             "${{ secrets.PHP_BIN }}" artisan view:cache || true
