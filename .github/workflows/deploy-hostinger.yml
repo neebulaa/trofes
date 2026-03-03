@@ -27,6 +27,8 @@ jobs:
 
       - name: Build frontend
         run: npm run build
+        env:
+          VITE_UMAMI_SHARE_URL: ${{ secrets.VITE_UMAMI_SHARE_URL }}
 
       - name: Setup SSH
         shell: bash
