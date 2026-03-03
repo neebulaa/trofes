@@ -25,21 +25,8 @@ jobs:
       - name: Install JS dependencies
         run: npm ci
 
-      - name: Check Umami env present
-        run: |
-          if [ -z "${VITE_UMAMI_SHARE_URL}" ]; then
-            echo "VITE_UMAMI_SHARE_URL is EMPTY"
-            exit 1
-          else
-            echo "VITE_UMAMI_SHARE_URL is set"
-          fi
-        env:
-          VITE_UMAMI_SHARE_URL: ${{ secrets.VITE_UMAMI_SHARE_URL }}
-
       - name: Build frontend
         run: npm run build
-        env:
-          VITE_UMAMI_SHARE_URL: ${{ secrets.VITE_UMAMI_SHARE_URL }}
 
       - name: Setup SSH
         shell: bash

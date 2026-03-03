@@ -31,6 +31,7 @@ class DashboardController extends Controller
             'popular_recipes' => Recipe::withCount('likes')->orderBy('likes_count', 'desc')->take(3)->get(),
             'latest_guides' => Guide::latest()->take(3)->get(),
             'latest_activity' => $latest_activity,
+            "umamiShareUrl" => env('VITE_UMAMI_SHARE_URL'),
         ]);
     }
 }

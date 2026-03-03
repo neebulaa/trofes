@@ -10,14 +10,13 @@ export default function Home({
     popular_recipes,
     latest_activity,
     latest_guides,
+    umamiShareUrl
 }) {
     const stats = [
         { label: "Total Recipes", value: recipe_count },
         { label: "Total Ingredients", value: ingredient_count },
         { label: "Active Users", value: user_count },
     ];
-
-    const umamiShareUrl = import.meta.env.VITE_UMAMI_SHARE_URL;
 
     return (
         <DashboardLayout title="Dashboard - Home">
