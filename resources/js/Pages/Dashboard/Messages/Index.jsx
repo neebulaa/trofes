@@ -37,7 +37,7 @@ export default function Messages({ messages }) {
             <div className="crud-header space-between">
                 <div>
                     <h1 className="crud-title">Messages</h1>
-                    <p className="text-muted">Manage received messages.</p>
+                    <p className="text-muted">Manage received messages from Contact Us Page.</p>
                 </div>
             </div>
 

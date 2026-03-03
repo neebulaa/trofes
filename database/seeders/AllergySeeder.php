@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Allergy;
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class AllergySeeder extends Seeder
 {
@@ -27,10 +29,23 @@ class AllergySeeder extends Seeder
         while (($row = fgetcsv($csv)) !== false) {            
             $data = array_combine($header, $row);
 
+            $image_path = null;
+            $filename = $data['allergy_name'] . '.png';
+            $sourcePath = public_path('assets/allergies/' . $filename);
+            
+            if (File::exists($sourcePath)) {
+                $image_path = 'allergies/' . $filename;
+                Storage::disk('public')->put(
+                        $image_path,
+                        File::get($sourcePath)
+                    );
+            }
+
             Allergy::create([
                 'allergy_code' => $data['allergy_code'],
                 'allergy_name' => $data['allergy_name'],
-                'examples' => $data['examples']
+                'examples' => $data['examples'],
+                'image' => $image_path
             ]);
         }
 

@@ -24,7 +24,7 @@ class RecipeAllergySeeder extends Seeder
 
             RecipeAllergy::create([
                 'recipe_id' => $data['recipe_id'],
-                'allergy_id' => $data['allergy_id']
+                'allergy_id' => $data['allergy_id'],
             ]);
         }
     }
