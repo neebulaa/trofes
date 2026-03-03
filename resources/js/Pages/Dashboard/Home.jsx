@@ -18,8 +18,6 @@ export default function Home({
         { label: "Active Users", value: user_count },
     ];
 
-    console.log(umamiShareUrl);
-
     return (
         <DashboardLayout title="Dashboard - Home">
             <div className="dash-home">
